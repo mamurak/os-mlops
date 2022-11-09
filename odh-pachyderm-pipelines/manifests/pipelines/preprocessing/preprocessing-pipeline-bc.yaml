@@ -1,0 +1,45 @@
+kind: BuildConfig
+apiVersion: build.openshift.io/v1
+metadata:
+  name: preprocessing-pipeline
+spec:
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: 'preprocessing-pipeline:latest'
+  resources: {}
+  successfulBuildsHistoryLimit: 5
+  failedBuildsHistoryLimit: 5
+  strategy:
+    type: Docker
+    dockerStrategy:
+      env:
+        - name: trino_username
+          valueFrom:
+            secretKeyRef:
+              name: preprocessing-pipeline-secret
+              key: trino_username
+        - name: trino_password
+          valueFrom:
+            secretKeyRef:
+              name: preprocessing-pipeline-secret
+              key: trino_password
+        - name: trino_hostname
+          valueFrom:
+            secretKeyRef:
+              name: preprocessing-pipeline-secret
+              key: trino_hostname
+        - name: trino_port
+          valueFrom:
+            secretKeyRef:
+              name: preprocessing-pipeline-secret
+              key: trino_port
+      dockerfilePath: Containerfile
+  postCommit: {}
+  source:
+    type: Git
+    git:
+      uri: 'https://github.com/mamurak/odh-pachyderm-pipelines.git'
+    contextDir: /container-images/preprocessing-pipeline
+  runPolicy: Serial

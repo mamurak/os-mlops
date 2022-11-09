@@ -1,0 +1,12 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: ds-pipeline-ui-http
+spec:
+  to:
+    kind: Service
+    name: ds-pipeline-ui
+    weight: 100
+  port:
+    targetPort: http
+  wildcardPolicy: None

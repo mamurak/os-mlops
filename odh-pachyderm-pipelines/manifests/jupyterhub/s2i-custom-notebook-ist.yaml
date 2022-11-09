@@ -1,0 +1,332 @@
+kind: ImageStreamTag
+apiVersion: image.openshift.io/v1
+metadata:
+  name: 's2i-custom-notebook:jupyter'
+  labels:
+    app.kubernetes.io/part-of: jupyterhub
+    component.opendatahub.io/name: jupyterhub
+    opendatahub.io/component: 'true'
+    opendatahub.io/notebook-image: 'true'
+  annotations:
+    opendatahub.io/notebook-python-dependencies: >-
+          [{"name":"matplotlib","version":"3.5.2"},{"name":"numpy","version":"1.22.4"},{"name":"pandas","version":"1.4.3"},{"name":"scipy","version":"1.9.0"},{"name":"scikit-learn","version":"1.1.2"},{"name":"scikit-plot","version":"0.3.7"},{"name":"feature-engine","version":"1.4.1"},{"name":"imbalanced-learn","version":"0.9.1"},{"name":"shap","version":"0.41.0"},{"name":"trino","version":"0.315.0"}]
+    opendatahub.io/notebook-software: '[{"name":"Python","version":"3.8.6"},{"name":"Pachctl","version":"2.2.7"}]'
+tag:
+  name: jupyter
+  from:
+    kind: ImageStreamImage
+    name: 'sha256:13089a4c8bf6484b1ed1caba948fe79dfd083f6a1bda8e1b795673cc24560b64'
+  generation: 1
+  importPolicy: {}
+  referencePolicy:
+    type: Source
+  annotations:
+    opendatahub.io/notebook-python-dependencies: >-
+          [{"name":"matplotlib","version":"3.5.2"},{"name":"numpy","version":"1.22.4"},{"name":"pandas","version":"1.4.3"},{"name":"scipy","version":"1.9.0"},{"name":"scikit-learn","version":"1.1.2"},{"name":"scikit-plot","version":"0.3.7"},{"name":"feature-engine","version":"1.4.1"},{"name":"imbalanced-learn","version":"0.9.1"},{"name":"shap","version":"0.41.0"},{"name":"trino","version":"0.315.0"}]
+    opendatahub.io/notebook-software: '[{"name":"Python","version":"3.8.6"},{"name":"Pachctl","version":"2.2.7"}]'
+generation: 1
+lookupPolicy:
+  local: true
+image:
+  metadata:
+    name: 'sha256:13089a4c8bf6484b1ed1caba948fe79dfd083f6a1bda8e1b795673cc24560b64'
+    uid: 7e188f14-ff9e-432b-b791-22c8358a8d61
+    resourceVersion: '2874598'
+    creationTimestamp: '2022-08-09T15:46:12Z'
+    annotations:
+      image.openshift.io/dockerLayersOrder: ascending
+      image.openshift.io/manifestBlobStored: 'true'
+      openshift.io/image.managed: 'true'
+  dockerImageReference: >-
+    image-registry.openshift-image-registry.svc:5000/odh/s2i-custom-notebook@sha256:13089a4c8bf6484b1ed1caba948fe79dfd083f6a1bda8e1b795673cc24560b64
+  dockerImageMetadata:
+    Size: 905562102
+    Container: 1f4214c309895f28f11369b0c3781d95083e1c8c5946137cad8b1dbd7786d2b7
+    Config:
+      Hostname: 995caf4563e9
+      User: '8888'
+      ExposedPorts:
+        8080/tcp: {}
+      Env:
+        - >-
+          PATH=/opt/app-root/src/.local/bin/:/opt/app-root/src/bin:/opt/app-root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+        - container=oci
+        - 'STI_SCRIPTS_URL=image:///usr/libexec/s2i'
+        - STI_SCRIPTS_PATH=/usr/libexec/s2i
+        - APP_ROOT=/opt/app-root
+        - HOME=/opt/app-root/src
+        - PLATFORM=el8
+        - NODEJS_VER=14
+        - PYTHON_VERSION=3.8
+        - PYTHONUNBUFFERED=1
+        - PYTHONIOENCODING=UTF-8
+        - LC_ALL=en_US.UTF-8
+        - LANG=en_US.UTF-8
+        - CNB_STACK_ID=com.redhat.stacks.ubi8-python-38
+        - CNB_USER_ID=1001
+        - CNB_GROUP_ID=0
+        - PIP_NO_CACHE_DIR=off
+        - BASH_ENV=/opt/app-root/etc/scl_enable
+        - ENV=/opt/app-root/etc/scl_enable
+        - PROMPT_COMMAND=. /opt/app-root/etc/scl_enable
+        - THOTH_S2I_NAME=quay.io/thoth-station/s2i-thoth-ubi8-py38
+        - THOTH_S2I_VERSION=0.34.1
+        - THAMOS_NO_PROGRESSBAR=1
+        - THAMOS_NO_EMOJI=1
+        - MICROPIPENV_NO_LOCKFILE_PRINT=0
+        - MICROPIPENV_NO_LOCKFILE_WRITE=0
+        - IMAGE_NAME=quay.io/thoth-station/s2i-minimal-py38-notebook
+        - IMAGE_TAG=latest
+        - >-
+          SUMMARY=Minimal Jupyter Notebook Source-to-Image for Python 3.8
+          applications.
+        - >-
+          DESCRIPTION=Notebook image based on Source-to-Image.These images can
+          be used in OpenDatahub JupterHub.
+        - JUPYTER_ENABLE_LAB=1
+        - ENABLE_MICROPIPENV=1
+        - THAMOS_RUNTIME_ENVIRONMENT=python38
+        - THOTH_ADVISE=0
+        - THOTH_ERROR_FALLBACK=1
+        - THOTH_DRY_RUN=0
+        - THAMOS_DEBUG=0
+        - THAMOS_VERBOSE=1
+        - THOTH_PROVENANCE_CHECK=0
+        - PACHCTL_VERSION=2.2.7
+        - OPENSHIFT_BUILD_NAME=s2i-custom-notebook-10
+        - OPENSHIFT_BUILD_NAMESPACE=odh
+        - >-
+          OPENSHIFT_BUILD_SOURCE=https://gitlab.com/custom-odh-poc/custom-odh-poc.git
+        - OPENSHIFT_BUILD_COMMIT=1078c8ddf701e1fdab675127dc22db214e70b60b
+      Cmd:
+        - /bin/sh
+        - '-c'
+        - /tmp/scripts/run
+      WorkingDir: /opt/app-root/src
+      Entrypoint:
+        - container-entrypoint
+      Labels:
+        vcs-type: git
+        usage: >-
+          s2i build https://github.com/sclorg/s2i-python-container.git
+          --context-dir=3.8/test/setup-test-app/ ubi8/python-38
+          python-sample-app
+        io.openshift.build.commit.author: Max Murakami <mmurakam@redhat.com>
+        io.openshift.s2i.build.source-location: 'https://github/thoth-station/s2i-minimal-notebook'
+        io.k8s.display-name: Minimal Notebook Python 3.8-ubi8 S2I
+        com.redhat.component: python-38-container
+        summary: Minimal Jupyter Notebook Source-to-Image for Python 3.8 applications.
+        release: '0'
+        io.openshift.build.commit.date: 'Tue Aug 9 17:41:28 2022 +0200'
+        io.openshift.s2i.scripts-url: 'image:///usr/libexec/s2i'
+        vendor: 'AICoE at the Office of the CTO, Red Hat Inc.'
+        io.openshift.expose-services: '8888:http'
+        io.openshift.build.name: s2i-custom-notebook-10
+        distribution-scope: public
+        name: quay.io/thoth-station/s2i-minimal-py38-notebook
+        vcs-ref: c5014a480dc3ca5c7c0a897ea5dc9b0abc878fb2
+        io.k8s.description: >-
+          Notebook image based on Source-to-Image.These images can be used in
+          OpenDatahub JupterHub.
+        build-date: '2022-06-20T22:27:39.163584'
+        io.openshift.build.commit.message: added Jupyterlab-Pachyderm plugin
+        url: >-
+          https://access.redhat.com/containers/#/registry.access.redhat.com/ubi8/python-38/images/1-100
+        com.redhat.license_terms: >-
+          https://www.redhat.com/en/about/red-hat-end-user-license-agreements#UBI
+        architecture: x86_64
+        io.openshift.build.commit.id: 1078c8ddf701e1fdab675127dc22db214e70b60b
+        io.openshift.tags: 'python,python38'
+        io.buildah.version: 1.22.4
+        version: latest
+        maintainer: Thoth Station <aicoe-thoth@redhat.com>
+        io.openshift.s2i.build.image: quay.io/thoth-station/s2i-thoth-ubi8-py38
+        io.openshift.build.commit.ref: main
+        io.buildpacks.stack.id: com.redhat.stacks.ubi8-python-38
+        io.openshift.build.source-context-dir: /s2i-custom-notebook
+        authoritative-source-url: 'https://quay.io/thoth-station/s2i-minimal-py38-notebook'
+        ninja.thoth-station.version: 0.7.0-dev
+        description: >-
+          Notebook image based on Source-to-Image.These images can be used in
+          OpenDatahub JupterHub.
+        io.openshift.build.namespace: odh
+        io.s2i.scripts-url: 'image:///usr/libexec/s2i'
+        com.redhat.build-host: cpt-1002.osbs.prod.upshift.rdu2.redhat.com
+        io.openshift.s2i.build.commit.ref: master
+    ContainerConfig:
+      Hostname: 995caf4563e9
+      User: '8888'
+      ExposedPorts:
+        8080/tcp: {}
+      Env:
+        - >-
+          PATH=/opt/app-root/src/.local/bin/:/opt/app-root/src/bin:/opt/app-root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+        - container=oci
+        - 'STI_SCRIPTS_URL=image:///usr/libexec/s2i'
+        - STI_SCRIPTS_PATH=/usr/libexec/s2i
+        - APP_ROOT=/opt/app-root
+        - HOME=/opt/app-root/src
+        - PLATFORM=el8
+        - NODEJS_VER=14
+        - PYTHON_VERSION=3.8
+        - PYTHONUNBUFFERED=1
+        - PYTHONIOENCODING=UTF-8
+        - LC_ALL=en_US.UTF-8
+        - LANG=en_US.UTF-8
+        - CNB_STACK_ID=com.redhat.stacks.ubi8-python-38
+        - CNB_USER_ID=1001
+        - CNB_GROUP_ID=0
+        - PIP_NO_CACHE_DIR=off
+        - BASH_ENV=/opt/app-root/etc/scl_enable
+        - ENV=/opt/app-root/etc/scl_enable
+        - PROMPT_COMMAND=. /opt/app-root/etc/scl_enable
+        - THOTH_S2I_NAME=quay.io/thoth-station/s2i-thoth-ubi8-py38
+        - THOTH_S2I_VERSION=0.34.1
+        - THAMOS_NO_PROGRESSBAR=1
+        - THAMOS_NO_EMOJI=1
+        - MICROPIPENV_NO_LOCKFILE_PRINT=0
+        - MICROPIPENV_NO_LOCKFILE_WRITE=0
+        - IMAGE_NAME=quay.io/thoth-station/s2i-minimal-py38-notebook
+        - IMAGE_TAG=latest
+        - >-
+          SUMMARY=Minimal Jupyter Notebook Source-to-Image for Python 3.8
+          applications.
+        - >-
+          DESCRIPTION=Notebook image based on Source-to-Image.These images can
+          be used in OpenDatahub JupterHub.
+        - JUPYTER_ENABLE_LAB=1
+        - ENABLE_MICROPIPENV=1
+        - THAMOS_RUNTIME_ENVIRONMENT=python38
+        - THOTH_ADVISE=0
+        - THOTH_ERROR_FALLBACK=1
+        - THOTH_DRY_RUN=0
+        - THAMOS_DEBUG=0
+        - THAMOS_VERBOSE=1
+        - THOTH_PROVENANCE_CHECK=0
+        - PACHCTL_VERSION=2.2.7
+        - OPENSHIFT_BUILD_NAME=s2i-custom-notebook-10
+        - OPENSHIFT_BUILD_NAMESPACE=odh
+        - >-
+          OPENSHIFT_BUILD_SOURCE=https://gitlab.com/custom-odh-poc/custom-odh-poc.git
+        - OPENSHIFT_BUILD_COMMIT=1078c8ddf701e1fdab675127dc22db214e70b60b
+      Cmd:
+        - /bin/sh
+        - '-c'
+        - /tmp/scripts/run
+      WorkingDir: /opt/app-root/src
+      Entrypoint:
+        - container-entrypoint
+      Labels:
+        vcs-type: git
+        usage: >-
+          s2i build https://github.com/sclorg/s2i-python-container.git
+          --context-dir=3.8/test/setup-test-app/ ubi8/python-38
+          python-sample-app
+        io.openshift.build.commit.author: Max Murakami <mmurakam@redhat.com>
+        io.openshift.s2i.build.source-location: 'https://github/thoth-station/s2i-minimal-notebook'
+        io.k8s.display-name: Minimal Notebook Python 3.8-ubi8 S2I
+        com.redhat.component: python-38-container
+        summary: Minimal Jupyter Notebook Source-to-Image for Python 3.8 applications.
+        release: '0'
+        io.openshift.build.commit.date: 'Tue Aug 9 17:41:28 2022 +0200'
+        io.openshift.s2i.scripts-url: 'image:///usr/libexec/s2i'
+        vendor: 'AICoE at the Office of the CTO, Red Hat Inc.'
+        io.openshift.expose-services: '8888:http'
+        io.openshift.build.name: s2i-custom-notebook-10
+        distribution-scope: public
+        name: quay.io/thoth-station/s2i-minimal-py38-notebook
+        vcs-ref: c5014a480dc3ca5c7c0a897ea5dc9b0abc878fb2
+        io.k8s.description: >-
+          Notebook image based on Source-to-Image.These images can be used in
+          OpenDatahub JupterHub.
+        build-date: '2022-06-20T22:27:39.163584'
+        io.openshift.build.commit.message: added Jupyterlab-Pachyderm plugin
+        url: >-
+          https://access.redhat.com/containers/#/registry.access.redhat.com/ubi8/python-38/images/1-100
+        com.redhat.license_terms: >-
+          https://www.redhat.com/en/about/red-hat-end-user-license-agreements#UBI
+        architecture: x86_64
+        io.openshift.build.commit.id: 1078c8ddf701e1fdab675127dc22db214e70b60b
+        io.openshift.tags: 'python,python38'
+        io.buildah.version: 1.22.4
+        version: latest
+        maintainer: Thoth Station <aicoe-thoth@redhat.com>
+        io.openshift.s2i.build.image: quay.io/thoth-station/s2i-thoth-ubi8-py38
+        io.openshift.build.commit.ref: main
+        io.buildpacks.stack.id: com.redhat.stacks.ubi8-python-38
+        io.openshift.build.source-context-dir: /s2i-custom-notebook
+        authoritative-source-url: 'https://quay.io/thoth-station/s2i-minimal-py38-notebook'
+        ninja.thoth-station.version: 0.7.0-dev
+        description: >-
+          Notebook image based on Source-to-Image.These images can be used in
+          OpenDatahub JupterHub.
+        io.openshift.build.namespace: odh
+        io.s2i.scripts-url: 'image:///usr/libexec/s2i'
+        com.redhat.build-host: cpt-1002.osbs.prod.upshift.rdu2.redhat.com
+        io.openshift.s2i.build.commit.ref: master
+    Created: '2022-08-09T15:45:37Z'
+    Parent: 'sha256:6eb20b7383c4b36b9d84d5924348edc7024972ede94dc54e7603abf5e7bf5d01'
+    Architecture: amd64
+    kind: DockerImage
+    Id: 'sha256:da937e89963dfab976ead78d5fefb92992a56605d8ba29d9a6dfea745e60552e'
+    apiVersion: image.openshift.io/1.0
+  dockerImageMetadataVersion: '1.0'
+  dockerImageLayers:
+    - name: 'sha256:0c673eb68f88b60abc0cba5ef8ddb9c256eaf627bfd49eb7e09a2369bb2e5db0'
+      size: 78357770
+      mediaType: application/vnd.docker.image.rootfs.diff.tar.gzip
+    - name: 'sha256:028bdc977650c08fcf7a2bb4a7abefaead71ff8a84a55ed5940b6dbc7e466045'
+      size: 1780
+      mediaType: application/vnd.docker.image.rootfs.diff.tar.gzip
+    - name: 'sha256:c37fd7de0840b4031b29e532b9c694c59a63983ae93162a2e6476882cd075b21'
+      size: 17329788
+      mediaType: application/vnd.docker.image.rootfs.diff.tar.gzip
+    - name: 'sha256:bf105214519e48fd5c21e598563e367f6f3b7c30996d1745a99428752c0ad1ae'
+      size: 141588088
+      mediaType: application/vnd.docker.image.rootfs.diff.tar.gzip
+    - name: 'sha256:819ccd5eb87778d75c516f3a542ae6a3d2367498bd7062a701cb2237995f6cb5'
+      size: 75089043
+      mediaType: application/vnd.docker.image.rootfs.diff.tar.gzip
+    - name: 'sha256:af38327575d72c979478aaddf6a33ad9cf561844588f5db47e85c4ee721012ec'
+      size: 1373
+      mediaType: application/vnd.docker.image.rootfs.diff.tar.gzip
+    - name: 'sha256:a439c75b0a4f2699983da35fc5e15fd9809bc37f694f54717020886cffc0548b'
+      size: 23843
+      mediaType: application/vnd.docker.image.rootfs.diff.tar.gzip
+    - name: 'sha256:0cdbf2b404cc6f9f91c9f46d490f467080c4b5d8ee3b5d4c925e02a340e8d10b'
+      size: 52559770
+      mediaType: application/vnd.docker.image.rootfs.diff.tar.gzip
+    - name: 'sha256:55a683d8762bbc88bc2beffd3a8a0d27d6e8ded5a8f41fd83f8ffe5e2cca2eeb'
+      size: 138
+      mediaType: application/vnd.docker.image.rootfs.diff.tar.gzip
+    - name: 'sha256:a2a00367e4fb5e4f3cfbc960ad066428f9beb12a4927866491eb3f68c899f6e8'
+      size: 1863
+      mediaType: application/vnd.docker.image.rootfs.diff.tar.gzip
+    - name: 'sha256:1bb11535e39f27b3499309c0961397a51e8f79ad66f63b37f453b4ec5f6a5e18'
+      size: 2038542
+      mediaType: application/vnd.docker.image.rootfs.diff.tar.gzip
+    - name: 'sha256:53e0061ab02b6b6b2b46f9fe5e84b04c41854d219fdc7beecee454912ed11ac3'
+      size: 2038340
+      mediaType: application/vnd.docker.image.rootfs.diff.tar.gzip
+    - name: 'sha256:51031bf1a5faf98a5365104a3b02a84e648b6115e97169cb645a190e60832a09'
+      size: 256340878
+      mediaType: application/vnd.docker.image.rootfs.diff.tar.gzip
+    - name: 'sha256:146a6a03e38e3460e008f69a1d37a53ff25b19bcad3113b37909b6139af19cf4'
+      size: 34819065
+      mediaType: application/vnd.docker.image.rootfs.diff.tar.gzip
+    - name: 'sha256:d67b57cd0e9311e19aa449f94acabd310a657c8743bed0112be543fa95eebc52'
+      size: 33723307
+      mediaType: application/vnd.docker.image.rootfs.diff.tar.gzip
+    - name: 'sha256:4ca545ee6d5db5c1170386eeb39b2ffe3bd46e5d4a73a9acbebc805f19607eb3'
+      size: 42
+      mediaType: application/vnd.docker.image.rootfs.diff.tar.gzip
+    - name: 'sha256:a1548e8303c2d9bf3307953af3b65314e8057c8e4fa3f35d87321373059e8ed2'
+      size: 301
+      mediaType: application/vnd.docker.image.rootfs.diff.tar.gzip
+    - name: 'sha256:cde46298b7c46ea4b2b5e3c7b867a8a309f622d8303381301740e984a3d4e03b'
+      size: 211629132
+      mediaType: application/vnd.docker.image.rootfs.diff.tar.gzip
+    - name: 'sha256:242e49abc39e48809b49ad44b46651ba1e62c01c03eb194a0fc015bd3b0c2d00'
+      size: 108
+      mediaType: application/vnd.docker.image.rootfs.diff.tar.gzip
+  dockerImageManifestMediaType: application/vnd.docker.distribution.manifest.v2+json

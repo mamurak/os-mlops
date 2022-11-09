@@ -1,0 +1,22 @@
+FROM registry.access.redhat.com/ubi8/ubi
+
+USER root
+
+ENV MLFLOW_SERVER_ENDPOINT $mlflow_server_endpoint
+ENV MLFLOW_S3_ENDPOINT_URL $s3_endpoint_url
+ENV AWS_ACCESS_KEY_ID $s3_access_key_id
+ENV AWS_SECRET_ACCESS_KEY $s3_secret_access_key
+
+RUN dnf -y update \
+ && dnf -y install python3-pip \
+ && dnf -y clean all && \
+ rm -rf /var/cache/dnf
+
+COPY requirements.txt ./requirements.txt
+RUN pip3 install -r ./requirements.txt
+
+COPY training.py ./training.py
+
+USER 8888
+
+ENTRYPOINT python3 training.py

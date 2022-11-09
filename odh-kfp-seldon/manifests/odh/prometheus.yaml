@@ -1,0 +1,10 @@
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  name: odh-monitoring
+spec:
+  evaluationInterval: 30s
+  podMonitorSelector: {}
+  replicas: 2
+  scrapeInterval: 30s
+  serviceAccountName: prometheus-k8s

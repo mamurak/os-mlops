@@ -1,0 +1,22 @@
+FROM registry.access.redhat.com/ubi8/ubi
+
+USER root
+
+ENV TRINO_USERNAME $trino_username
+ENV TRINO_PASSWORD $trino_password
+ENV TRINO_HOSTNAME $trino_hostname
+ENV TRINO_PORT $trino_port
+
+RUN dnf -y update \
+ && dnf -y install python3-pip \
+ && dnf -y clean all && \
+ rm -rf /var/cache/dnf
+
+COPY requirements.txt ./requirements.txt
+RUN pip3 install -r ./requirements.txt
+
+COPY preprocessing.py ./preprocessing.py
+
+USER 8888
+
+ENTRYPOINT python3 preprocessing.py

@@ -1,0 +1,37 @@
+apiVersion: aiml.pachyderm.com/v1beta1
+kind: Pachyderm
+metadata:
+  name: pachyderm
+spec:
+  console:
+    disable: true
+  etcd:
+    storageSize: 10Gi
+  pachd:
+    logLevel: info
+    metrics: {}
+    postgresql:
+      database: pachyderm
+      host: postgres
+      port: 5432
+      ssl: disable
+      user: pachyderm
+    ppsWorkerGRPCPort: 1080
+    storage:
+      amazon:
+        credentialSecretName: pachyderm-s3-secret
+        maxUploadParts: 10000
+        partSize: 5242880
+        retries: 10
+        reverse: true
+        timeout: 5m
+        uploadACL: bucket-owner-full-control
+      backend: AMAZON
+      putFileConcurrencyLimit: 100
+      uploadFileConcurrencyLimit: 100
+  postgresql:
+    service:
+      type: ''
+  version: v2.1.6
+  worker:
+    serviceAccountName: pachyderm-worker

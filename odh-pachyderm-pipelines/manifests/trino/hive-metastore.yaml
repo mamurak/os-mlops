@@ -1,0 +1,176 @@
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: hive-metastore
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hive
+      app.kubernetes.io/part-of: trino
+      component.opendatahub.io/name: trino
+      hive: metastore
+      opendatahub.io/component: 'true'
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: hive
+        app.kubernetes.io/part-of: trino
+        component.opendatahub.io/name: trino
+        hive: metastore
+        opendatahub.io/component: 'true'
+    spec:
+      volumes:
+        - name: hive-config
+          configMap:
+            name: hive-config
+            defaultMode: 420
+        - name: hive-scripts
+          configMap:
+            name: hive-scripts
+            defaultMode: 509
+        - name: hive-jmx-config
+          configMap:
+            name: hive-jmx-config
+            defaultMode: 420
+        - name: namenode-empty
+          emptyDir: {}
+        - name: datanode-empty
+          emptyDir: {}
+        - name: hadoop-logs
+          emptyDir: {}
+        - name: hive-metastore-db-data
+          emptyDir: {}
+        - name: hadoop-config
+          secret:
+            secretName: hadoop-config
+            defaultMode: 420
+      containers:
+        - resources:
+            limits:
+              cpu: '1'
+              memory: 1Gi
+            requests:
+              cpu: 300m
+              memory: 1Gi
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8082
+              scheme: HTTP
+            initialDelaySeconds: 180
+            timeoutSeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: /dev/termination-log
+          name: metastore
+          command:
+            - /hive-scripts/entrypoint.sh
+          livenessProbe:
+            tcpSocket:
+              port: 9083
+            initialDelaySeconds: 180
+            timeoutSeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          env:
+            - name: HIVE_LOGLEVEL
+              value: INFO
+            - name: S3_ENDPOINT
+              value: >-
+                fully-qualified-s3-endpoint-url/
+            - name: S3_ENDPOINT_URL_PREFIX
+              value: 'https://'
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: trino-s3-credentials
+                  key: AWS_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: trino-s3-credentials
+                  key: AWS_SECRET_ACCESS_KEY
+            - name: S3_BUCKET_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: trino-s3-credentials
+                  key: BUCKET
+            - name: S3_DATA_DIR
+              value: data
+            - name: DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: trino-db-secret
+                  key: database-user
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: trino-db-secret
+                  key: database-password
+            - name: DATABASE_HOST
+              value: trino-db
+            - name: DATABASE_PORT
+              value: '5432'
+            - name: DATABASE_NAME
+              value: trino
+            - name: DATABASE_SSLMODE
+              value: allow
+            - name: MY_MEM_REQUEST
+              valueFrom:
+                resourceFieldRef:
+                  containerName: metastore
+                  resource: requests.memory
+                  divisor: '0'
+            - name: MY_MEM_LIMIT
+              valueFrom:
+                resourceFieldRef:
+                  containerName: metastore
+                  resource: limits.memory
+                  divisor: '0'
+          ports:
+            - name: meta
+              containerPort: 9083
+              protocol: TCP
+            - name: metrics
+              containerPort: 8082
+              protocol: TCP
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: hive-config
+              mountPath: /hive-config
+            - name: hive-scripts
+              mountPath: /hive-scripts
+            - name: hive-jmx-config
+              mountPath: /opt/jmx_exporter/config
+            - name: hive-metastore-db-data
+              mountPath: /var/lib/hive
+            - name: namenode-empty
+              mountPath: /hadoop/dfs/name
+            - name: datanode-empty
+              mountPath: /hadoop/dfs/data
+            - name: hadoop-logs
+              mountPath: /opt/hadoop/logs
+            - name: hadoop-config
+              mountPath: /hadoop-config
+          terminationMessagePolicy: File
+          image: 'quay.io/cloudservices/ubi-hive:2.3.3-002'
+          args:
+            - /opt/hive/bin/hive
+            - '--service'
+            - metastore
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+  serviceName: hive-metastore
+  podManagementPolicy: OrderedReady
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      partition: 0
+  revisionHistoryLimit: 10

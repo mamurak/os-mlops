@@ -1,0 +1,15 @@
+{
+  "pipeline": {
+    "name": "model"
+  },
+  "spout": {
+  },
+  "description": "A test pipeline for training a model.",
+  "transform": {
+    "image": "image-registry.openshift-image-registry.svc:5000/odh/training-pipeline:latest",
+    "cmd": [
+      "python3",
+      "./training.py"
+    ]
+  }
+}

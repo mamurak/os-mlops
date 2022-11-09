@@ -1,0 +1,23 @@
+apiVersion: kfdef.apps.kubeflow.org/v1
+kind: KfDef
+metadata:
+  name: pipelines
+spec:
+  applications:
+    - kustomizeConfig:
+        repoRef:
+          name: manifests
+          path: odh-common
+      name: odh-common
+    - kustomizeConfig:
+        overlays:
+          - metadata-store-mysql
+          - ds-pipeline-ui
+          - object-store-minio
+        repoRef:
+          name: manifests
+          path: data-science-pipelines
+      name: data-science-pipelines
+  repos:
+    - name: manifests
+      uri: 'https://github.com/opendatahub-io/odh-manifests/tarball/master'

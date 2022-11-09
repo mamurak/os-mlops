@@ -1,0 +1,97 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: trino-worker
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/part-of: trino
+      component.opendatahub.io/name: trino
+      instance: trino
+      opendatahub.io/component: 'true'
+      role: trino-worker
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/part-of: trino
+        component.opendatahub.io/name: trino
+        instance: trino
+        opendatahub.io/component: 'true'
+        role: trino-worker
+    spec:
+      volumes:
+        - name: trino-config-volume
+          secret:
+            secretName: trino-config
+            items:
+              - key: config-worker.properties
+                path: config-worker.properties
+              - key: jvm-worker.config
+                path: jvm-worker.config
+              - key: log.properties
+                path: log.properties
+              - key: node.properties
+                path: node.properties
+            defaultMode: 420
+        - name: trino-catalogs-volume
+          secret:
+            secretName: trino-catalog
+            items:
+              - key: hive.properties
+                path: hive.properties
+              - key: postgresql.properties
+                path: postgresql.properties
+            defaultMode: 420
+      containers:
+        - resources:
+            limits:
+              cpu: '1'
+              memory: 4Gi
+            requests:
+              cpu: 300m
+              memory: 4Gi
+          terminationMessagePath: /dev/termination-log
+          name: trino-worker
+          command:
+            - /usr/lib/trino/bin/run-trino
+          env:
+            - name: POD_ID
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.uid
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: trino-s3-credentials
+                  key: AWS_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: trino-s3-credentials
+                  key: AWS_SECRET_ACCESS_KEY
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: trino-config-volume
+              mountPath: /etc/trino
+            - name: trino-catalogs-volume
+              mountPath: /etc/trino/catalog
+          terminationMessagePolicy: File
+          image: 'quay.io/opendatahub/trino:361'
+          args:
+            - '--config=/etc/trino/config-worker.properties'
+            - '--jvm-config=/etc/trino/jvm-worker.config'
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+  strategy:
+    type: Recreate
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600

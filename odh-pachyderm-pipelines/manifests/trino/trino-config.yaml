@@ -1,0 +1,18 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: trino-config
+data:
+  trino_environment: trino
+  hive_metastore_memory_request: 1Gi
+  trino_memory_request: 4Gi
+  s3_endpoint_url: fully-qualified-s3-endpoint-url/
+  trino_cpu_request: 300m
+  hive_metastore_cpu_request: 300m
+  s3_endpoint_url_prefix: 'https://'
+  hive_metastore_memory_limit: 4Gi
+  trino_memory_limit: 8Gi
+  trino_cpu_limit: '4'
+  hive_metastore_cpu_limit: '4'
+  s3_credentials_secret: trino-s3-credentials
+  trino_db_secret: trino-db-secret

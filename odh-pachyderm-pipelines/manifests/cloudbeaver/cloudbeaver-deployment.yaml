@@ -1,0 +1,57 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: cloudbeaver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudbeaver
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: cloudbeaver
+    spec:
+      volumes:
+        - name: cloudbeaver
+          persistentVolumeClaim:
+            claimName: cloudbeaver
+      containers:
+        - resources:
+            limits:
+              cpu: '1'
+              memory: 2Gi
+            requests:
+              cpu: 512m
+              memory: 500Mi
+          terminationMessagePath: /dev/termination-log
+          name: cloudbeaver
+          command:
+            - ./run-server.sh
+          ports:
+            - name: web
+              containerPort: 8978
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: cloudbeaver
+              mountPath: /opt/cloudbeaver/workspace
+            - name: cloudbeaver
+              mountPath: /opt/cloudbeaver/logs
+            - name: cloudbeaver
+              mountPath: /.eclipse
+          terminationMessagePolicy: File
+          image: 'quay.io/operate-first/cloudbeaver:21.1.1'
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600

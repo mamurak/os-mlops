@@ -1,0 +1,32 @@
+apiVersion: postgres-operator.crunchydata.com/v1beta1
+kind: PostgresCluster
+metadata:
+  name: custom-sql
+spec:
+  backups:
+    pgbackrest:
+      repos:
+        - name: repo2
+          volume:
+            volumeClaimSpec:
+              accessModes:
+                - ReadWriteOnce
+              resources:
+                requests:
+                  storage: 1Gi
+  instances:
+    - dataVolumeClaimSpec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+      name: instance-custom
+      replicas: 2
+  openshift: true
+  port: 5432
+  postgresVersion: 14
+  proxy:
+    pgBouncer:
+      port: 5432
+      replicas: 2
