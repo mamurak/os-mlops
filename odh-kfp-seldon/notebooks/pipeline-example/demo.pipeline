@@ -326,11 +326,6 @@
         },
         "version": 7,
         "properties": {
-<<<<<<< refs/remotes/origin/main:notebooks/demo.pipeline
-          "name": "demo",
-          "runtime": "Generic"
-        }
-=======
           "pipeline_defaults": {
             "runtime_image": "odh-applications/runtime-demo:latest"
           },
@@ -338,7 +333,6 @@
           "runtime": "Kubeflow Pipelines"
         },
         "runtime_type": "KUBEFLOW_PIPELINES"
->>>>>>> extended examples:notebooks/pipeline-example/demo.pipeline
       },
       "runtime_ref": ""
     }
