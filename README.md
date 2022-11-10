@@ -9,7 +9,7 @@ odh-pachyderm-pipelines:
 - JupyterHub for notebook-based development,
 - mlflow for experiment tracking.
 
-odh-kfp-seldon
+odh-kfp-seldon:
 - JupyterHub for notebook-based development,
 - Kubeflow Pipelines for workflow orchestration and experiment tracking,
 - Seldon Core for model serving,
