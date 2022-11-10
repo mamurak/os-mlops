@@ -28,7 +28,7 @@
             "label": "preprocessing.ipynb",
             "ui_data": {
               "label": "preprocessing.ipynb",
-              "image": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20viewBox%3D%220%200%2022%2022%22%3E%0A%20%20%3Cg%20class%3D%22jp-icon-warn0%20jp-icon-selectable%22%20fill%3D%22%23EF6C00%22%3E%0A%20%20%20%20%3Cpath%20d%3D%22M18.7%203.3v15.4H3.3V3.3h15.4m1.5-1.5H1.8v18.3h18.3l.1-18.3z%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M16.5%2016.5l-5.4-4.3-5.6%204.3v-11h11z%22%2F%3E%0A%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E%0A",
+              "image": "/notebook/odh-applications/jupyter-nb-opentlc-2dmgr/static/elyra/notebook.svg",
               "x_pos": 50,
               "y_pos": 50,
               "description": "Run notebook file"
@@ -82,7 +82,7 @@
             "label": "feature_extraction.ipynb",
             "ui_data": {
               "label": "feature_extraction.ipynb",
-              "image": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20viewBox%3D%220%200%2022%2022%22%3E%0A%20%20%3Cg%20class%3D%22jp-icon-warn0%20jp-icon-selectable%22%20fill%3D%22%23EF6C00%22%3E%0A%20%20%20%20%3Cpath%20d%3D%22M18.7%203.3v15.4H3.3V3.3h15.4m1.5-1.5H1.8v18.3h18.3l.1-18.3z%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M16.5%2016.5l-5.4-4.3-5.6%204.3v-11h11z%22%2F%3E%0A%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E%0A",
+              "image": "/notebook/odh-applications/jupyter-nb-opentlc-2dmgr/static/elyra/notebook.svg",
               "x_pos": 290,
               "y_pos": 50,
               "description": "Run notebook file"
@@ -142,7 +142,7 @@
             "label": "training.ipynb",
             "ui_data": {
               "label": "training.ipynb",
-              "image": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20viewBox%3D%220%200%2022%2022%22%3E%0A%20%20%3Cg%20class%3D%22jp-icon-warn0%20jp-icon-selectable%22%20fill%3D%22%23EF6C00%22%3E%0A%20%20%20%20%3Cpath%20d%3D%22M18.7%203.3v15.4H3.3V3.3h15.4m1.5-1.5H1.8v18.3h18.3l.1-18.3z%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M16.5%2016.5l-5.4-4.3-5.6%204.3v-11h11z%22%2F%3E%0A%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E%0A",
+              "image": "/notebook/odh-applications/jupyter-nb-opentlc-2dmgr/static/elyra/notebook.svg",
               "x_pos": 530,
               "y_pos": 50,
               "description": "Run notebook file"
@@ -193,7 +193,10 @@
               "filename": "verification.ipynb",
               "runtime_image": "image-registry.openshift-image-registry.svc:5000/odh-applications/runtime-demo:latest",
               "env_vars": [
-                "MODEL_FILE=model.joblib"
+                {
+                  "env_var": "MODEL_FILE",
+                  "value": "model.joblib"
+                }
               ],
               "include_subdirectories": false,
               "outputs": [],
@@ -202,7 +205,7 @@
             "label": "verification.ipynb",
             "ui_data": {
               "label": "verification.ipynb",
-              "image": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20viewBox%3D%220%200%2022%2022%22%3E%0A%20%20%3Cg%20class%3D%22jp-icon-warn0%20jp-icon-selectable%22%20fill%3D%22%23EF6C00%22%3E%0A%20%20%20%20%3Cpath%20d%3D%22M18.7%203.3v15.4H3.3V3.3h15.4m1.5-1.5H1.8v18.3h18.3l.1-18.3z%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M16.5%2016.5l-5.4-4.3-5.6%204.3v-11h11z%22%2F%3E%0A%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E%0A",
+              "image": "/notebook/odh-applications/jupyter-nb-opentlc-2dmgr/static/elyra/notebook.svg",
               "x_pos": 770,
               "y_pos": 50,
               "description": "Run notebook file"
@@ -253,12 +256,25 @@
               "filename": "push-model.ipynb",
               "runtime_image": "image-registry.openshift-image-registry.svc:5000/odh-applications/runtime-demo:latest",
               "env_vars": [
-                "S3_ENDPOINT_URL=http://s3.openshift-storage.svc.cluster.local/",
-                "S3_ACCESS_KEY=",
-                "S3_SECRET_KEY=",
-                "OPS_REPO_LOCATION=",
-                "GIT_USER=",
-                "GIT_PASSWORD="
+                {
+                  "env_var": "S3_ENDPOINT_URL",
+                  "value": "http://s3.openshift-storage.svc.cluster.local/"
+                },
+                {
+                  "env_var": "S3_ACCESS_KEY"
+                },
+                {
+                  "env_var": "S3_SECRET_KEY"
+                },
+                {
+                  "env_var": "OPS_REPO_LOCATION"
+                },
+                {
+                  "env_var": "GIT_USER"
+                },
+                {
+                  "env_var": "GIT_PASSWORD"
+                }
               ],
               "include_subdirectories": false,
               "outputs": [],
@@ -266,18 +282,42 @@
                 "deployment.py"
               ],
               "kubernetes_secrets": [
-                "S3_ENDPOINT_URL=demo-pipeline-secret:s3_endpoint_url",
-                "S3_ACCESS_KEY=demo-pipeline-secret:s3_accesskey",
-                "S3_SECRET_KEY=demo-pipeline-secret:s3_secret_key",
-                "OPS_REPO_LOCATION=demo-pipeline-secret:ops_repo_location",
-                "GIT_USER=demo-pipeline-secret:git_user",
-                "GIT_PASSWORD=demo-pipeline-secret:git_password"
+                {
+                  "env_var": "S3_ENDPOINT_URL",
+                  "name": "demo-pipeline-secret",
+                  "key": "s3_endpoint_url"
+                },
+                {
+                  "env_var": "S3_ACCESS_KEY",
+                  "name": "demo-pipeline-secret",
+                  "key": "s3_accesskey"
+                },
+                {
+                  "env_var": "S3_SECRET_KEY",
+                  "name": "demo-pipeline-secret",
+                  "key": "s3_secret_key"
+                },
+                {
+                  "env_var": "OPS_REPO_LOCATION",
+                  "name": "demo-pipeline-secret",
+                  "key": "ops_repo_location"
+                },
+                {
+                  "env_var": "GIT_USER",
+                  "name": "demo-pipeline-secret",
+                  "key": "git_user"
+                },
+                {
+                  "env_var": "GIT_PASSWORD",
+                  "name": "demo-pipeline-secret",
+                  "key": "git_password"
+                }
               ]
             },
             "label": "push-model.ipynb",
             "ui_data": {
               "label": "push-model.ipynb",
-              "image": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20viewBox%3D%220%200%2022%2022%22%3E%0A%20%20%3Cg%20class%3D%22jp-icon-warn0%20jp-icon-selectable%22%20fill%3D%22%23EF6C00%22%3E%0A%20%20%20%20%3Cpath%20d%3D%22M18.7%203.3v15.4H3.3V3.3h15.4m1.5-1.5H1.8v18.3h18.3l.1-18.3z%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M16.5%2016.5l-5.4-4.3-5.6%204.3v-11h11z%22%2F%3E%0A%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E%0A",
+              "image": "/notebook/odh-applications/jupyter-nb-opentlc-2dmgr/static/elyra/notebook.svg",
               "x_pos": 1008,
               "y_pos": 48,
               "description": "Run notebook file"
@@ -324,7 +364,7 @@
         "ui_data": {
           "comments": []
         },
-        "version": 7,
+        "version": 8,
         "properties": {
           "pipeline_defaults": {
             "runtime_image": "odh-applications/runtime-demo:latest"
