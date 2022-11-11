@@ -1,0 +1,411 @@
+{
+  "doc_type": "pipeline",
+  "version": "3.0",
+  "json_schema": "http://api.dataplatform.ibm.com/schemas/common-pipeline/pipeline-flow/pipeline-flow-v3-schema.json",
+  "id": "62ee18e8-216b-40de-b83e-e089dc7b7bc7",
+  "primary_pipeline": "6261f038-8e72-4249-b389-cd264eb932ce",
+  "pipelines": [
+    {
+      "id": "6261f038-8e72-4249-b389-cd264eb932ce",
+      "nodes": [
+        {
+          "id": "cf7addb4-b1d1-4e35-bad2-f99de8411c0f",
+          "type": "execution_node",
+          "op": "execute-notebook-node",
+          "app_data": {
+            "component_parameters": {
+              "dependencies": [
+                "raw-data.csv"
+              ],
+              "include_subdirectories": false,
+              "outputs": [
+                "sensor-training-data.csv"
+              ],
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [],
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "preprocessing.ipynb",
+              "runtime_image": "quay.io/mmurakam/industrial-edge-ml-pipeline-image:modelmesh-0.1.1"
+            },
+            "label": "preprocessing.ipynb",
+            "ui_data": {
+              "label": "preprocessing.ipynb",
+              "image": "/notebook/odh-applications/jupyter-nb-opentlc-2dmgr/static/elyra/notebook.svg",
+              "x_pos": 50,
+              "y_pos": 50,
+              "description": "Run notebook file"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              }
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "fd364bc1-ad49-4faa-af78-62d845793372",
+          "type": "execution_node",
+          "op": "execute-notebook-node",
+          "app_data": {
+            "component_parameters": {
+              "dependencies": [],
+              "include_subdirectories": false,
+              "outputs": [
+                "features.pickle",
+                "labels.pickle"
+              ],
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [],
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "feature_extraction.ipynb",
+              "runtime_image": "quay.io/mmurakam/industrial-edge-ml-pipeline-image:modelmesh-0.1.1"
+            },
+            "label": "feature_extraction.ipynb",
+            "ui_data": {
+              "label": "feature_extraction.ipynb",
+              "image": "/notebook/odh-applications/jupyter-nb-opentlc-2dmgr/static/elyra/notebook.svg",
+              "x_pos": 290,
+              "y_pos": 50,
+              "description": "Run notebook file"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              },
+              "links": [
+                {
+                  "id": "af995f01-a5d7-453f-a90d-0c7077030705",
+                  "node_id_ref": "cf7addb4-b1d1-4e35-bad2-f99de8411c0f",
+                  "port_id_ref": "outPort"
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "a94aff2a-3f60-40c8-896b-bf5238effdfd",
+          "type": "execution_node",
+          "op": "execute-notebook-node",
+          "app_data": {
+            "component_parameters": {
+              "dependencies": [],
+              "include_subdirectories": false,
+              "outputs": [
+                "model.joblib"
+              ],
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [],
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "training.ipynb",
+              "runtime_image": "quay.io/mmurakam/industrial-edge-ml-pipeline-image:modelmesh-0.1.1"
+            },
+            "label": "training.ipynb",
+            "ui_data": {
+              "label": "training.ipynb",
+              "image": "/notebook/odh-applications/jupyter-nb-opentlc-2dmgr/static/elyra/notebook.svg",
+              "x_pos": 530,
+              "y_pos": 50,
+              "description": "Run notebook file"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              },
+              "links": [
+                {
+                  "id": "35233631-b10c-4f56-a6e3-a52721e00b68",
+                  "node_id_ref": "fd364bc1-ad49-4faa-af78-62d845793372",
+                  "port_id_ref": "outPort"
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "d2a68d54-e066-4bdf-9c29-e947bc6234c2",
+          "type": "execution_node",
+          "op": "execute-notebook-node",
+          "app_data": {
+            "component_parameters": {
+              "dependencies": [],
+              "include_subdirectories": false,
+              "outputs": [],
+              "env_vars": [
+                {
+                  "env_var": "MODEL_FILE",
+                  "value": "model.joblib"
+                }
+              ],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [],
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "verification.ipynb",
+              "runtime_image": "quay.io/mmurakam/industrial-edge-ml-pipeline-image:modelmesh-0.1.1"
+            },
+            "label": "verification.ipynb",
+            "ui_data": {
+              "label": "verification.ipynb",
+              "image": "/notebook/odh-applications/jupyter-nb-opentlc-2dmgr/static/elyra/notebook.svg",
+              "x_pos": 770,
+              "y_pos": 50,
+              "description": "Run notebook file"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              },
+              "links": [
+                {
+                  "id": "72c2917d-35ee-4843-addd-9fe643af40e7",
+                  "node_id_ref": "a94aff2a-3f60-40c8-896b-bf5238effdfd",
+                  "port_id_ref": "outPort"
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "d2878897-fd08-4ad8-902f-89d829aae819",
+          "type": "execution_node",
+          "op": "execute-notebook-node",
+          "app_data": {
+            "component_parameters": {
+              "dependencies": [
+                "deployment.py"
+              ],
+              "include_subdirectories": false,
+              "outputs": [],
+              "env_vars": [
+                {
+                  "env_var": "S3_ENDPOINT_URL",
+                  "value": "http://s3.openshift-storage.svc.cluster.local/"
+                },
+                {
+                  "env_var": "S3_ACCESS_KEY"
+                },
+                {
+                  "env_var": "S3_SECRET_KEY"
+                },
+                {
+                  "env_var": "OPS_REPO_LOCATION"
+                },
+                {
+                  "env_var": "GIT_USER"
+                },
+                {
+                  "env_var": "GIT_PASSWORD"
+                }
+              ],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [
+                {
+                  "env_var": "S3_ENDPOINT_URL",
+                  "name": "demo-pipeline-secret",
+                  "key": "s3_endpoint_url"
+                },
+                {
+                  "env_var": "S3_ACCESS_KEY",
+                  "name": "demo-pipeline-secret",
+                  "key": "s3_accesskey"
+                },
+                {
+                  "env_var": "S3_SECRET_KEY",
+                  "name": "demo-pipeline-secret",
+                  "key": "s3_secret_key"
+                },
+                {
+                  "env_var": "OPS_REPO_LOCATION",
+                  "name": "demo-pipeline-secret",
+                  "key": "ops_repo_location"
+                },
+                {
+                  "env_var": "GIT_USER",
+                  "name": "demo-pipeline-secret",
+                  "key": "git_user"
+                },
+                {
+                  "env_var": "GIT_PASSWORD",
+                  "name": "demo-pipeline-secret",
+                  "key": "git_password"
+                }
+              ],
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "push-model.ipynb",
+              "runtime_image": "quay.io/mmurakam/industrial-edge-ml-pipeline-image:modelmesh-0.1.1"
+            },
+            "label": "push-model.ipynb",
+            "ui_data": {
+              "label": "push-model.ipynb",
+              "image": "/notebook/odh-applications/jupyter-nb-opentlc-2dmgr/static/elyra/notebook.svg",
+              "x_pos": 1008,
+              "y_pos": 48,
+              "description": "Run notebook file"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              },
+              "links": [
+                {
+                  "id": "ee3aae0e-fb24-4ea4-aea4-1ca01123a5e8",
+                  "node_id_ref": "d2a68d54-e066-4bdf-9c29-e947bc6234c2",
+                  "port_id_ref": "outPort"
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "app_data": {
+        "ui_data": {
+          "comments": []
+        },
+        "version": 8,
+        "properties": {
+          "pipeline_defaults": {
+            "mounted_volumes": [],
+            "kubernetes_pod_labels": [],
+            "kubernetes_pod_annotations": [],
+            "kubernetes_tolerations": [],
+            "env_vars": [],
+            "kubernetes_secrets": [],
+            "runtime_image": "quay.io/mmurakam/industrial-edge-ml-pipeline-image:modelmesh-0.1.1"
+          },
+          "name": "demo",
+          "runtime": "Kubeflow Pipelines"
+        },
+        "runtime_type": "KUBEFLOW_PIPELINES"
+      },
+      "runtime_ref": ""
+    }
+  ],
+  "schemas": []
+}

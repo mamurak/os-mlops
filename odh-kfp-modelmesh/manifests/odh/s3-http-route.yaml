@@ -1,0 +1,12 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: s3-http
+spec:
+  to:
+    kind: Service
+    name: s3
+    weight: 100
+  port:
+    targetPort: s3
+  wildcardPolicy: None

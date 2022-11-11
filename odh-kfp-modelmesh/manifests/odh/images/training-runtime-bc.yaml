@@ -1,0 +1,24 @@
+kind: BuildConfig
+apiVersion: build.openshift.io/v1
+metadata:
+  name: training-runtime
+spec:
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: 'training-runtime:latest'
+  resources: {}
+  successfulBuildsHistoryLimit: 5
+  failedBuildsHistoryLimit: 5
+  strategy:
+    type: Docker
+    dockerStrategy:
+      dockerfilePath: Containerfile
+  postCommit: {}
+  source:
+    type: Git
+    git:
+      uri: 'https://github.com/mamurak/odh-ml-pipelines-seldon.git'
+    contextDir: '/container-images/training-runtime'
+  runPolicy: Serial

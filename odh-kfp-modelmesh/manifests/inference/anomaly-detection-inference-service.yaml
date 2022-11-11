@@ -1,0 +1,16 @@
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  annotations:
+    serving.kserve.io/deploymentMode: ModelMesh
+  name: anomaly-detection
+spec:
+  predictor:
+    model:
+      modelFormat:
+        name: sklearn
+      storage:
+        key: odf
+        parameters:
+          bucket: anomaly-detection-2211111426
+        path: model.joblib
