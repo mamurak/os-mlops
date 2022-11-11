@@ -14,16 +14,21 @@
           "op": "execute-notebook-node",
           "app_data": {
             "component_parameters": {
-              "filename": "preprocessing.ipynb",
-              "runtime_image": "image-registry.openshift-image-registry.svc:5000/odh-applications/runtime-demo:latest",
-              "env_vars": [],
+              "dependencies": [
+                "raw-data.csv"
+              ],
               "include_subdirectories": false,
               "outputs": [
                 "sensor-training-data.csv"
               ],
-              "dependencies": [
-                "raw-data.csv"
-              ]
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [],
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "preprocessing.ipynb",
+              "runtime_image": "quay.io/mmurakam/industrial-edge-ml-pipeline-image:v1.0.0"
             },
             "label": "preprocessing.ipynb",
             "ui_data": {
@@ -69,15 +74,20 @@
           "op": "execute-notebook-node",
           "app_data": {
             "component_parameters": {
-              "filename": "feature_extraction.ipynb",
-              "runtime_image": "image-registry.openshift-image-registry.svc:5000/odh-applications/runtime-demo:latest",
-              "env_vars": [],
+              "dependencies": [],
               "include_subdirectories": false,
               "outputs": [
                 "features.pickle",
                 "labels.pickle"
               ],
-              "dependencies": []
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [],
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "feature_extraction.ipynb",
+              "runtime_image": "quay.io/mmurakam/industrial-edge-ml-pipeline-image:v1.0.0"
             },
             "label": "feature_extraction.ipynb",
             "ui_data": {
@@ -130,14 +140,19 @@
           "op": "execute-notebook-node",
           "app_data": {
             "component_parameters": {
-              "filename": "training.ipynb",
-              "runtime_image": "image-registry.openshift-image-registry.svc:5000/odh-applications/runtime-demo:latest",
-              "env_vars": [],
+              "dependencies": [],
               "include_subdirectories": false,
               "outputs": [
                 "model.joblib"
               ],
-              "dependencies": []
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [],
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "training.ipynb",
+              "runtime_image": "quay.io/mmurakam/industrial-edge-ml-pipeline-image:v1.0.0"
             },
             "label": "training.ipynb",
             "ui_data": {
@@ -190,17 +205,22 @@
           "op": "execute-notebook-node",
           "app_data": {
             "component_parameters": {
-              "filename": "verification.ipynb",
-              "runtime_image": "image-registry.openshift-image-registry.svc:5000/odh-applications/runtime-demo:latest",
+              "dependencies": [],
+              "include_subdirectories": false,
+              "outputs": [],
               "env_vars": [
                 {
                   "env_var": "MODEL_FILE",
                   "value": "model.joblib"
                 }
               ],
-              "include_subdirectories": false,
-              "outputs": [],
-              "dependencies": []
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [],
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "verification.ipynb",
+              "runtime_image": "quay.io/mmurakam/industrial-edge-ml-pipeline-image:v1.0.0"
             },
             "label": "verification.ipynb",
             "ui_data": {
@@ -253,8 +273,11 @@
           "op": "execute-notebook-node",
           "app_data": {
             "component_parameters": {
-              "filename": "push-model.ipynb",
-              "runtime_image": "image-registry.openshift-image-registry.svc:5000/odh-applications/runtime-demo:latest",
+              "dependencies": [
+                "deployment.py"
+              ],
+              "include_subdirectories": false,
+              "outputs": [],
               "env_vars": [
                 {
                   "env_var": "S3_ENDPOINT_URL",
@@ -276,11 +299,8 @@
                   "env_var": "GIT_PASSWORD"
                 }
               ],
-              "include_subdirectories": false,
-              "outputs": [],
-              "dependencies": [
-                "deployment.py"
-              ],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
               "kubernetes_secrets": [
                 {
                   "env_var": "S3_ENDPOINT_URL",
@@ -312,7 +332,11 @@
                   "name": "demo-pipeline-secret",
                   "key": "git_password"
                 }
-              ]
+              ],
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "push-model.ipynb",
+              "runtime_image": "quay.io/mmurakam/industrial-edge-ml-pipeline-image:v1.0.0"
             },
             "label": "push-model.ipynb",
             "ui_data": {
@@ -367,7 +391,13 @@
         "version": 8,
         "properties": {
           "pipeline_defaults": {
-            "runtime_image": "odh-applications/runtime-demo:latest"
+            "mounted_volumes": [],
+            "kubernetes_pod_labels": [],
+            "kubernetes_pod_annotations": [],
+            "kubernetes_tolerations": [],
+            "env_vars": [],
+            "kubernetes_secrets": [],
+            "runtime_image": "quay.io/mmurakam/industrial-edge-ml-pipeline-image:v1.0.0"
           },
           "name": "demo",
           "runtime": "Kubeflow Pipelines"
