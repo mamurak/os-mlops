@@ -1,0 +1,53 @@
+apiVersion: opendatahub.io/v1alpha
+kind: OdhDashboardConfig
+metadata:
+  name: odh-dashboard-config
+  namespace: odh-applications
+spec:
+  dashboardConfig:
+    disableBYONImageStream: false
+    disableClusterManager: false
+    disableISVBadges: false
+    disableInfo: false
+    disableSupport: false
+    disableTracking: false
+    disableUserManagement: false
+    enablement: true
+  groupsConfig:
+    adminGroups: odh-admins
+    allowedGroups: 'system:authenticated'
+  notebookController:
+    enabled: true
+  notebookSizes:
+    - name: small
+      resources:
+        limits:
+          cpu: '2'
+          memory: 8Gi
+        requests:
+          cpu: '1'
+          memory: 8Gi
+    - name: medium
+      resources:
+        limits:
+          cpu: '6'
+          memory: 24Gi
+        requests:
+          cpu: '3'
+          memory: 24Gi
+    - name: large
+      resources:
+        limits:
+          cpu: '14'
+          memory: 56Gi
+        requests:
+          cpu: '7'
+          memory: 56Gi
+    - name: XL
+      resources:
+        limits:
+          cpu: '30'
+          memory: 120Gi
+        requests:
+          cpu: '15'
+          memory: 120Gi

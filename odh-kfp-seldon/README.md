@@ -117,6 +117,10 @@ There are multiple artifacts from Github that will need to be downloaded while s
 
 # How-To
 
+* Change the available notebook deployment sizes.
+    * Find the `odh-dashboard-config` object of kind `OdhDashboardConfig` in project `odh-applications`.
+    * Add or update the `spec.notebookSizes` property. Check `manifests/odh/odh-dashboard-config.yaml` for reference.
+
 * Clone git repositories with JupyterLab.
     * Open git client (`Git` in left toolbar).
     * Select `Clone a Repository`.
