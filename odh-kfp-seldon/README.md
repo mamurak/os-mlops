@@ -85,7 +85,7 @@ There are multiple artifacts from Github that will need to be downloaded while s
 
 ### Set up runtime
 
-* Launch custom notebook in JupyterHub spawner page.
+* Launch Elyra KFNBC notebook in the Jupyter spawner page.
 * Open Runtimes configuration (`Runtime` in left toolbar).
 * Next to `Default`, select `Edit`.
 * Update the `Kubeflow Pipelines` settings as shown below.
@@ -101,6 +101,19 @@ There are multiple artifacts from Github that will need to be downloaded while s
     * `ops_repo_location`: the git URL of your ops repo fork.
     * `git_user`: git user with RW permissions to your ops repo fork.
     * `git_password`: password or RW token for git user.
+
+# Run the pipeline
+
+* Enter or launch the Elyra KFNBC notebook in the Jupyter spawner page.
+* Clone this repository.
+    * Open git client (`Git` in left toolbar).
+    * Select `Clone a Repository`.
+    * Enter the repository URL `https://github.com/mamurak/os-mlops.git` and select `Clone`.
+    * Authenticate if necessary.
+* Open `odh-kfp-seldon/notebooks/pipeline-example/demo.pipeline` in the Kubeflow Pipeline Editor.
+* Select `Run Pipeline` in the top toolbar.
+* Select `OK`.
+* Monitor pipeline execution in the Kubeflow Pipelines user interface (`ds-pipelines-ui` route URL) under `Runs`.
 
 # How-To
 
