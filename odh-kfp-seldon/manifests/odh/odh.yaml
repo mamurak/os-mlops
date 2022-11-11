@@ -10,21 +10,6 @@ spec:
           path: odh-common
       name: odh-common
     - kustomizeConfig:
-        parameters:
-          - name: s3_endpoint_url
-            value: s3.odh.com
-        repoRef:
-          name: manifests
-          path: jupyterhub/jupyterhub
-      name: jupyterhub
-    - kustomizeConfig:
-        overlays:
-          - additional
-        repoRef:
-          name: manifests
-          path: jupyterhub/notebook-images
-      name: notebook-images
-    - kustomizeConfig:
         overlays:
           - authentication
         repoRef:
@@ -34,26 +19,26 @@ spec:
     - kustomizeConfig:
         repoRef:
           name: manifests
-          path: grafana/cluster
-      name: grafana-cluster
+          path: odh-notebook-controller
+      name: odh-notebook-controller
     - kustomizeConfig:
+        overlays:
+          - metadata-store-mariadb
+          - ds-pipeline-ui
+          - object-store-minio
+          - integration-odhdashboard
+          - default-configs
         repoRef:
           name: manifests
-          path: grafana/grafana
-      name: grafana-instance
+          path: data-science-pipelines
+      name: ds-pipelines
     - kustomizeConfig:
+        overlays:
+          - additional
         repoRef:
           name: manifests
-          path: prometheus/cluster
-      name: prometheus-cluster
-    - kustomizeConfig:
-        repoRef:
-          name: manifests
-          path: prometheus/operator
-      name: prometheus-operator
+          path: jupyterhub/notebook-images
+      name: notebook-images
   repos:
-    - name: kf-manifests
-      uri: >-
-        https://github.com/opendatahub-io/manifests/tarball/v1.5-branch-openshift
     - name: manifests
-      uri: 'https://github.com/opendatahub-io/odh-manifests/tarball/v1.3'
+      uri: 'https://github.com/opendatahub-io/odh-manifests/tarball/v1.4'

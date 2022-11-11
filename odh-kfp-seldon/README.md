@@ -18,17 +18,16 @@
 ## Prerequisites
 
 * OpenShift Container Platform version 4.10 or above.
-* OpenShift Pipelines operator.
+* OpenShift Pipelines operator version 1.7.2 or above.
 * OpenShift GitOps operator.
+* OpenShift Data Foundation storage cluster.
 * Seldon Core operator.
-* S3 compliant object store, e.g. OpenShift Data Foundation.
+* A fork of the [ops repository](https://github.com/mamurak/odh-ml-pipelines-seldon-ops-repo) and RW credentials to it.
 
 ### Restricted access to Internet
 
 There are multiple artifacts from Github that will need to be downloaded while setting up and running the environment. In case Github is not accessible from the OpenShift cluster, make the following files available on a file server that is accessible from the OpenShift cluster:
-* the [Kubeflow manifests](https://github.com/opendatahub-io/manifests/tarball/v1.5-branch-openshift),
-* the [ODH 1.3 manifests](https://github.com/opendatahub-io/odh-manifests/tarball/v1.3),
-* the [latest ODH manifests](https://github.com/opendatahub-io/odh-manifests/tarball/master),
+* the [ODH 1.4 manifests](https://github.com/opendatahub-io/odh-manifests/tarball/v1.4),
 * the Elyra bootstrap files located in `manifests/elyra/`.
 
 ## Deploying the environment
@@ -39,27 +38,19 @@ There are multiple artifacts from Github that will need to be downloaded while s
 * Install the Open Data Hub operator from the Operator Hub.
 * Select Open Data Hub operator in Installed Operators within project `odh-applications`.
 * Deploy `manifests/odh.yaml`.
-* Deploy `manifests/pipelines.yaml`.
 * After all components have been deployed, scale down the `opendatahub-operator` pod to 0 in the `openshift-operators` project. This is required so we can freely configure the ODH components.
-* Adapt and deploy `manifests/odh-jupyterhub-admins.yaml`, defining all users that should receive ODH admin permissions.
+* Adapt and deploy `manifests/odh-admins.yaml`, defining all users that should receive ODH admin permissions.
 * Verify the deployment by opening the `odh-dashboard`route URL. You should see the ODH dashboard. If your user is included in the ODH admin group, you should see the `Settings` tab in the dashboard.
 * Verify that ML Pipelines is deployed correctly by opening the `ds-pipeline-ui` route. You should see the Kubeflow Pipelines GUI.
 * Verify that Prometheus is deployed correctly by opening the `prometheus-portal` route. You should see the Prometheus GUI.
 * Verify that Grafana is deployed correctly by opening the `grafana-route` route. You should see the Grafana GUI.
 
-### Set up image builds
-
-* Adapt and deploy `manifests/odh/images/bitbucket-secret.yaml`.
-* Deploy the imagestream manifests located in `manifests/odh/images/` (files with `-is.yaml` suffix).
-* Deploy the build config manifests located in `manifests/odh/images/` (files with `-bc.yaml` suffix).
-* Trigger builds of the new build configs.
-
-### Set up custom notebook
+### Set up Elyra notebook
 
 * As an ODH admin user, open the `Settings` tab in the ODH dashboard.
-* Select `Custom notebook`.
-* Add new notebook with image URL `custom-notebook:latest` and appropriate metadata.
-* Verify custom notebook integration in the JupyterHub provisioning page. You should be able to provision an instance of the custom notebook that you have defined in the previous step.
+* Select `Notebook Images` and `Import new image`.
+* Add new notebook with repository URL `quay.io/thoth-station/s2i-lab-elyra:v0.2.1` and name `Elyra KFNBC`.
+* Verify Elyra notebook integration in the notebook spawn page. You should be able to provision an instance of the Elyra KFNBC notebook.
 
 ### Prepare the model deployment
 
@@ -90,46 +81,43 @@ There are multiple artifacts from Github that will need to be downloaded while s
 ### Prepare backend services
 
 * Deploy `manifests/odh/ds-pipeline-ui-service.yaml`.
-* Deploy `manifests/odh/ds-pipeline-obc.yaml`. Wait until the object bucket claim is bound and note the generated bucket name, access key, and secret key.
 * In project `openshift-storage` deploy `manifests/odh/s3-http-route.yaml`.
 
 ### Set up runtime
 
 * Launch custom notebook in JupyterHub spawner page.
 * Open Runtimes configuration (`Runtime` in left toolbar).
-* Select `Create new runtime configuration` (plus symbol in top right corner of the frame).
-* Select `New Kubeflow Pipelines runtime configuration`.
-* Fill out the required fields:
-    * `Display name`: name for pipeline and experiment in Kubeflow Pipelines.
-    * `Kubeflow Pipelines API Endpoint`: the service endpoint of the `ds-pipelines-ui` service with `http://` prefix and port 3000.
-    * `Authentication Type`: NO_AUTHENTICATION.
-    * As `Kubeflow Pipelines engine` select `Tekton`.
-    * `Cloud Object Storage Endpoint`: URL of `s3-http` route with `http://` prefix.
-    * `Cloud Object Storage Bucket Name`: the generated bucket name of the object bucket claim.
-    * `Cloud Object Storage Authentication Type`: USER_CREDENTIALS
-    * `Cloud Object Storage Username`: the generated access key of the object bucket claim.
-    * `Cloud Object Storage Password`: the generated secret key of the object bucket claim.
-* TODO: move this configuration into the custom notebook image.
+* Next to `Default`, select `Edit`.
+* Update the `Kubeflow Pipelines` settings as shown below.
 
-### Set up runtime image
+![Elyra runtime](elyra-runtime.png "Eyra runtime")
 
-* Open Runtime Images configuration (`Runtime Images` in left toolbar).
-* Select `Create new runtime image` (plus symbol in top right corner of the frame).
-* Fill out the required fields:
-    * `Display Name`: name for the runtime image.
-    * `Image Name`: fully qualified image location including tag. Look up image repository reference of the corresponding image stream if using images built on-cluster.
-* TODO: move this configuration into the custom notebook image.
+### Configure pipeline
+
+* Update and deploy `manifests/odh/demo-pipeline-secret.yaml`:
+    * `s3_endpoint_url`: your S3 endpoint URL such as `http://s3.openshift-storage.svc.cluster.local`
+    * `s3_accesskey`: S3 access key with bucket creation permissions, for example value of `AWS_ACCESS_KEY_ID` in secret `noobaa-admin` in project `openshift-storage`.
+    * `s3_secret_key`: corresponding S3 secret key, for example value of `AWS_SECRET_ACCESS_KEY_ID` in secret `noobaa-admin` in project `openshift-storage`.
+    * `ops_repo_location`: the git URL of your ops repo fork.
+    * `git_user`: git user with RW permissions to your ops repo fork.
+    * `git_password`: password or RW token for git user.
 
 # How-To
-
-* Change the available deployment sizes of Jupyter pods.
-    * Adapt and deploy `manifests/odh/odh-jupyterhub-sizes.yaml` in the `odh-applications` project.
 
 * Clone git repositories with JupyterLab.
     * Open git client (`Git` in left toolbar).
     * Select `Clone a Repository`.
     * Enter the repository URL and select `Clone`.
     * Authenticate if necessary.
+
+* Build and add custom notebook
+    * Deploy `manifests/odh/images/custom-notebook-is.yaml`.
+    * Deploy `manifests/odh/images/custom-notebook-bc.yaml`.
+    * Trigger build of the new build config and wait until build finishes.
+    * As an ODH admin user, open the `Settings` tab in the ODH dashboard.
+    * Select `Notebook Images` and `Import new image`.
+    * Add new notebook with repository URL `custom-notebook:latest` and appropriate metadata.
+    * Verify custom notebook integration in the JupyterHub provisioning page. You should be able to provision an instance of the custom notebook that you have defined in the previous step.
 
 * Add packages to custom notebook image with pinned versions.
     * Within a custom notebook instance, install the package through `pip install {your-package}`.
@@ -159,9 +147,6 @@ There are multiple artifacts from Github that will need to be downloaded while s
 
 # Troubleshooting
 
-* In case you're using custom certificates in your environment, you might not be able to access the JupyterHub entry page (HTTP error 599). To work around this issue, do the following:
-    * In the `jupyterhub-cfg` configmap, set the `jupyterhub_config.py` parameter to `c.OpenShiftOAuthenticator.validate_cert = False`.
-    * Restart the JupyterHub pods.
 * If you don't have cluster admin privileges and you're denied access to the ML Pipelines UI route, you may have to update the oauth proxy arguments in the `ds-pipeline-ui` deployment. Refer to `manifests/odh/ds-pipeline-ui-deployment.yaml` for details.
 
 # Folder structure
