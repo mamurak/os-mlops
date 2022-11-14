@@ -99,7 +99,7 @@ There are multiple artifacts from Github that will need to be downloaded while s
     * `s3_accesskey`: S3 access key with bucket creation permissions, for example value of `AWS_ACCESS_KEY_ID` in secret `noobaa-admin` in project `openshift-storage`.
     * `s3_secret_key`: corresponding S3 secret key, for example value of `AWS_SECRET_ACCESS_KEY_ID` in secret `noobaa-admin` in project `openshift-storage`.
     * `ops_repo_location`: the git URL of your ops repo fork.
-    * `git_user`: git user with RW permissions to your ops repo fork.
+    * `git_user`: git user with RW permissions to your ops repo fork. Omit if using token-based authentication.
     * `git_password`: password or RW token for git user.
 
 # Run the pipeline
