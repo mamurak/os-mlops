@@ -20,5 +20,5 @@ spec:
     type: Git
     git:
       uri: 'https://github.com/mamurak/odh-ml-pipelines-seldon.git'
-    contextDir: '/container-images/custom-notebook'
+    contextDir: '/odh-kfp-seldon/container-images/custom-notebook'
   runPolicy: Serial

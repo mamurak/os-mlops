@@ -24,7 +24,7 @@ spec:
     type: Git
     git:
       uri: 'https://github.com/mamurak/odh-ml-pipelines-seldon.git'
-    contextDir: '/container-images/batching-runtime'
+    contextDir: '/odh-kfp-seldon/container-images/batching-runtime'
     sourceSecret:
       name: bitbucket-access
   runPolicy: Serial

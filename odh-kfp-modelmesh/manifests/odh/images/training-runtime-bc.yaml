@@ -20,5 +20,5 @@ spec:
     type: Git
     git:
       uri: 'https://github.com/mamurak/odh-ml-pipelines-seldon.git'
-    contextDir: '/container-images/training-runtime'
+    contextDir: '/odh-kfp-modelmesh/container-images/training-runtime'
   runPolicy: Serial
