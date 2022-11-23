@@ -1,4 +1,4 @@
-FROM quay.io/thoth-station/s2i-lab-elyra:v0.1.4
+FROM quay.io/thoth-station/s2i-lab-elyra:v0.2.1
 
 USER root
 
