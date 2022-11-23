@@ -7,6 +7,11 @@ RUN pip install pip==22.2.2 setuptools==65.3.0
 # uncomment following line if working in an air-gapped environment
 # RUN pip uninstall -y jupyterlab-tabnine
 
+COPY requirements.txt ./requirements.txt
+RUN pip install --no-cache-dir -r ./requirements.txt
+
+USER 8888
+
 RUN elyra-metadata create runtimes \
        --schema_name kfp \
        --display_name "DS Pipelines" \
@@ -18,8 +23,3 @@ RUN elyra-metadata create runtimes \
        --cos_username "$AWS_ACCESS_KEY_ID" \
        --cos_password "$AWS_SECRET_ACCESS_KEY" \
        --cos_bucket "$COS_BUCKET"
-
-COPY requirements.txt ./requirements.txt
-RUN pip install --no-cache-dir -r ./requirements.txt
-
-USER 8888
