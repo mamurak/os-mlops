@@ -7,6 +7,18 @@ RUN pip install pip==22.2.2 setuptools==65.3.0
 # uncomment following line if working in an air-gapped environment
 # RUN pip uninstall -y jupyterlab-tabnine
 
+RUN elyra-metadata install runtimes \
+       --schema_name kfp \
+       --display_name "DS Pipelines" \
+       --api_endpoint http://ds-pipeline-ui."$KF_DEPLOYMENT_NAMESPACE".svc.cluster.local:3000/pipeline \
+       --auth_type "NO_AUTHENTICATION" \
+       --engine Tekton \
+       --cos_endpoint http://s3.openshift-storage.svc.cluster.local \
+       --cos_auth_type "USER_CREDENTIALS" \
+       --cos_username "$AWS_ACCESS_KEY_ID" \
+       --cos_password "$AWS_SECRET_ACCESS_KEY" \
+       --cos_bucket "$COS_BUCKET"
+
 COPY requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir -r ./requirements.txt
 
