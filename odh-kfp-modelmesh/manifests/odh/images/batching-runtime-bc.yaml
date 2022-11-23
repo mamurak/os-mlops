@@ -23,7 +23,7 @@ spec:
   source:
     type: Git
     git:
-      uri: 'https://github.com/mamurak/odh-ml-pipelines-seldon.git'
+      uri: 'https://github.com/mamurak/os-mlops.git'
     contextDir: '/odh-kfp-modelmesh/container-images/batching-runtime'
     sourceSecret:
       name: bitbucket-access
