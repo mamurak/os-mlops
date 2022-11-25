@@ -16,10 +16,8 @@ requests==2.23.0
 tornado==6.0.4
 traitlets==4.3.3
 urllib3==1.25.9
-gitpython==3.1.14
 pandas
 numpy
 scikit-learn
 joblib
 boto3
-pyyaml
