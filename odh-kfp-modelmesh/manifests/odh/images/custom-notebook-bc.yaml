@@ -7,7 +7,7 @@ spec:
   output:
     to:
       kind: ImageStreamTag
-      name: 'custom-notebook:latest'
+      name: 'custom-notebook:v0.1.0'
   resources: {}
   successfulBuildsHistoryLimit: 5
   failedBuildsHistoryLimit: 5
@@ -15,6 +15,27 @@ spec:
     type: Docker
     dockerStrategy:
       dockerfilePath: Containerfile
+      env:
+        - name: KF_DEPLOYMENT_NAMESPACE
+          valueFrom:
+            secretKeyRef:
+              name: elyra-runtime
+              key: KF_DEPLOYMENT_NAMESPACE
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: elyra-runtime
+              key: AWS_ACCESS_KEY_ID
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: elyra-runtime
+              key: AWS_SECRET_ACCESS_KEY
+        - name: COS_BUCKET
+          valueFrom:
+            secretKeyRef:
+              name: elyra-runtime
+              key: COS_BUCKET
   postCommit: {}
   source:
     type: Git
