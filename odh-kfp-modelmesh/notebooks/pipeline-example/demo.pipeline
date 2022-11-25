@@ -33,7 +33,7 @@
             "label": "preprocessing.ipynb",
             "ui_data": {
               "label": "preprocessing.ipynb",
-              "image": "/notebook/odh-applications/jupyter-nb-opentlc-2dmgr/static/elyra/notebook.svg",
+              "image": "/notebook/rhods-notebooks/jupyter-nb-opentlc-2dmgr/static/elyra/notebook.svg",
               "x_pos": 50,
               "y_pos": 50,
               "description": "Run notebook file"
@@ -92,7 +92,7 @@
             "label": "feature_extraction.ipynb",
             "ui_data": {
               "label": "feature_extraction.ipynb",
-              "image": "/notebook/odh-applications/jupyter-nb-opentlc-2dmgr/static/elyra/notebook.svg",
+              "image": "/notebook/rhods-notebooks/jupyter-nb-opentlc-2dmgr/static/elyra/notebook.svg",
               "x_pos": 290,
               "y_pos": 50,
               "description": "Run notebook file"
@@ -157,7 +157,7 @@
             "label": "training.ipynb",
             "ui_data": {
               "label": "training.ipynb",
-              "image": "/notebook/odh-applications/jupyter-nb-opentlc-2dmgr/static/elyra/notebook.svg",
+              "image": "/notebook/rhods-notebooks/jupyter-nb-opentlc-2dmgr/static/elyra/notebook.svg",
               "x_pos": 530,
               "y_pos": 50,
               "description": "Run notebook file"
@@ -225,7 +225,7 @@
             "label": "verification.ipynb",
             "ui_data": {
               "label": "verification.ipynb",
-              "image": "/notebook/odh-applications/jupyter-nb-opentlc-2dmgr/static/elyra/notebook.svg",
+              "image": "/notebook/rhods-notebooks/jupyter-nb-opentlc-2dmgr/static/elyra/notebook.svg",
               "x_pos": 770,
               "y_pos": 50,
               "description": "Run notebook file"
@@ -273,9 +273,7 @@
           "op": "execute-notebook-node",
           "app_data": {
             "component_parameters": {
-              "dependencies": [
-                "deployment.py"
-              ],
+              "dependencies": [],
               "include_subdirectories": false,
               "outputs": [],
               "env_vars": [
@@ -290,13 +288,7 @@
                   "env_var": "S3_SECRET_KEY"
                 },
                 {
-                  "env_var": "OPS_REPO_LOCATION"
-                },
-                {
-                  "env_var": "GIT_USER"
-                },
-                {
-                  "env_var": "GIT_PASSWORD"
+                  "env_var": "S3_BUCKET_NAME"
                 }
               ],
               "kubernetes_pod_annotations": [],
@@ -318,19 +310,9 @@
                   "key": "s3_secret_key"
                 },
                 {
-                  "env_var": "OPS_REPO_LOCATION",
+                  "env_var": "S3_BUCKET_NAME",
                   "name": "demo-pipeline-secret",
-                  "key": "ops_repo_location"
-                },
-                {
-                  "env_var": "GIT_USER",
-                  "name": "demo-pipeline-secret",
-                  "key": "git_user"
-                },
-                {
-                  "env_var": "GIT_PASSWORD",
-                  "name": "demo-pipeline-secret",
-                  "key": "git_password"
+                  "key": "s3_bucket_name"
                 }
               ],
               "kubernetes_tolerations": [],
@@ -341,7 +323,7 @@
             "label": "push-model.ipynb",
             "ui_data": {
               "label": "push-model.ipynb",
-              "image": "/notebook/odh-applications/jupyter-nb-opentlc-2dmgr/static/elyra/notebook.svg",
+              "image": "/notebook/rhods-notebooks/jupyter-nb-opentlc-2dmgr/static/elyra/notebook.svg",
               "x_pos": 1008,
               "y_pos": 48,
               "description": "Run notebook file"
@@ -391,12 +373,12 @@
         "version": 8,
         "properties": {
           "pipeline_defaults": {
-            "mounted_volumes": [],
             "kubernetes_pod_labels": [],
-            "kubernetes_pod_annotations": [],
+            "mounted_volumes": [],
             "kubernetes_tolerations": [],
-            "env_vars": [],
+            "kubernetes_pod_annotations": [],
             "kubernetes_secrets": [],
+            "env_vars": [],
             "runtime_image": "quay.io/mmurakam/industrial-edge-ml-pipeline-image:modelmesh-0.1.1"
           },
           "name": "demo",
