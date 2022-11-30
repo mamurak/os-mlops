@@ -36,6 +36,11 @@ spec:
             secretKeyRef:
               name: elyra-runtime
               key: COS_BUCKET
+        - name: S3_ENDPOINT_URL
+          valueFrom:
+            secretKeyRef:
+              name: elyra-runtime
+              key: S3_ENDPOINT_URL
   postCommit: {}
   source:
     type: Git
