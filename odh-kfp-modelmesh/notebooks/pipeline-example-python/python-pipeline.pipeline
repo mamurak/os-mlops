@@ -2,16 +2,16 @@
   "doc_type": "pipeline",
   "version": "3.0",
   "json_schema": "http://api.dataplatform.ibm.com/schemas/common-pipeline/pipeline-flow/pipeline-flow-v3-schema.json",
-  "id": "62ee18e8-216b-40de-b83e-e089dc7b7bc7",
-  "primary_pipeline": "6261f038-8e72-4249-b389-cd264eb932ce",
+  "id": "elyra-auto-generated-pipeline",
+  "primary_pipeline": "primary",
   "pipelines": [
     {
-      "id": "6261f038-8e72-4249-b389-cd264eb932ce",
+      "id": "primary",
       "nodes": [
         {
-          "id": "cf7addb4-b1d1-4e35-bad2-f99de8411c0f",
+          "id": "8740898a-a811-4eeb-b7c1-e9ca27d50fd7",
           "type": "execution_node",
-          "op": "execute-notebook-node",
+          "op": "execute-python-node",
           "app_data": {
             "component_parameters": {
               "dependencies": [
@@ -27,16 +27,15 @@
               "kubernetes_secrets": [],
               "kubernetes_tolerations": [],
               "mounted_volumes": [],
-              "filename": "preprocessing.ipynb",
-              "runtime_image": "quay.io/mmurakam/industrial-edge-ml-pipeline-image:modelmesh-0.1.1"
+              "filename": "preprocessing.py"
             },
-            "label": "preprocessing.ipynb",
+            "label": "",
             "ui_data": {
-              "label": "preprocessing.ipynb",
-              "image": "/notebook/rhods-notebooks/jupyter-nb-opentlc-2dmgr/static/elyra/notebook.svg",
-              "x_pos": 50,
-              "y_pos": 50,
-              "description": "Run notebook file"
+              "label": "preprocessing.py",
+              "image": "/notebook/myproject/elyra/static/elyra/python.svg",
+              "x_pos": 61,
+              "y_pos": 287,
+              "description": "Run Python script"
             }
           },
           "inputs": [
@@ -69,9 +68,9 @@
           ]
         },
         {
-          "id": "fd364bc1-ad49-4faa-af78-62d845793372",
+          "id": "b30fc9dc-c7fa-4868-a3ac-ca7e84477cad",
           "type": "execution_node",
-          "op": "execute-notebook-node",
+          "op": "execute-python-node",
           "app_data": {
             "component_parameters": {
               "dependencies": [],
@@ -86,16 +85,15 @@
               "kubernetes_secrets": [],
               "kubernetes_tolerations": [],
               "mounted_volumes": [],
-              "filename": "feature_extraction.ipynb",
-              "runtime_image": "quay.io/mmurakam/industrial-edge-ml-pipeline-image:modelmesh-0.1.1"
+              "filename": "feature_extraction.py"
             },
-            "label": "feature_extraction.ipynb",
+            "label": "",
             "ui_data": {
-              "label": "feature_extraction.ipynb",
-              "image": "/notebook/rhods-notebooks/jupyter-nb-opentlc-2dmgr/static/elyra/notebook.svg",
-              "x_pos": 290,
-              "y_pos": 50,
-              "description": "Run notebook file"
+              "label": "feature_extraction.py",
+              "image": "/notebook/myproject/elyra/static/elyra/python.svg",
+              "x_pos": 298,
+              "y_pos": 286,
+              "description": "Run Python script"
             }
           },
           "inputs": [
@@ -112,8 +110,8 @@
               },
               "links": [
                 {
-                  "id": "af995f01-a5d7-453f-a90d-0c7077030705",
-                  "node_id_ref": "cf7addb4-b1d1-4e35-bad2-f99de8411c0f",
+                  "id": "d8002555-53d5-464b-ae30-3c273fa44b3c",
+                  "node_id_ref": "8740898a-a811-4eeb-b7c1-e9ca27d50fd7",
                   "port_id_ref": "outPort"
                 }
               ]
@@ -135,9 +133,9 @@
           ]
         },
         {
-          "id": "a94aff2a-3f60-40c8-896b-bf5238effdfd",
+          "id": "384fb260-d2a1-43bc-9ce7-88d174e73ed2",
           "type": "execution_node",
-          "op": "execute-notebook-node",
+          "op": "execute-python-node",
           "app_data": {
             "component_parameters": {
               "dependencies": [],
@@ -151,16 +149,15 @@
               "kubernetes_secrets": [],
               "kubernetes_tolerations": [],
               "mounted_volumes": [],
-              "filename": "training.ipynb",
-              "runtime_image": "quay.io/mmurakam/industrial-edge-ml-pipeline-image:modelmesh-0.1.1"
+              "filename": "training.py"
             },
-            "label": "training.ipynb",
+            "label": "",
             "ui_data": {
-              "label": "training.ipynb",
-              "image": "/notebook/rhods-notebooks/jupyter-nb-opentlc-2dmgr/static/elyra/notebook.svg",
-              "x_pos": 530,
-              "y_pos": 50,
-              "description": "Run notebook file"
+              "label": "training.py",
+              "image": "/notebook/myproject/elyra/static/elyra/python.svg",
+              "x_pos": 539,
+              "y_pos": 287,
+              "description": "Run Python script"
             }
           },
           "inputs": [
@@ -177,8 +174,8 @@
               },
               "links": [
                 {
-                  "id": "35233631-b10c-4f56-a6e3-a52721e00b68",
-                  "node_id_ref": "fd364bc1-ad49-4faa-af78-62d845793372",
+                  "id": "99c78748-2d68-46ba-8835-d0ba4ed84eb4",
+                  "node_id_ref": "b30fc9dc-c7fa-4868-a3ac-ca7e84477cad",
                   "port_id_ref": "outPort"
                 }
               ]
@@ -200,35 +197,29 @@
           ]
         },
         {
-          "id": "d2a68d54-e066-4bdf-9c29-e947bc6234c2",
+          "id": "91f20909-91d6-445f-b1ac-e3605818209f",
           "type": "execution_node",
-          "op": "execute-notebook-node",
+          "op": "execute-python-node",
           "app_data": {
             "component_parameters": {
               "dependencies": [],
               "include_subdirectories": false,
               "outputs": [],
-              "env_vars": [
-                {
-                  "env_var": "MODEL_FILE",
-                  "value": "model.joblib"
-                }
-              ],
+              "env_vars": [],
               "kubernetes_pod_annotations": [],
               "kubernetes_pod_labels": [],
               "kubernetes_secrets": [],
               "kubernetes_tolerations": [],
               "mounted_volumes": [],
-              "filename": "verification.ipynb",
-              "runtime_image": "quay.io/mmurakam/industrial-edge-ml-pipeline-image:modelmesh-0.1.1"
+              "filename": "verification.py"
             },
-            "label": "verification.ipynb",
+            "label": "",
             "ui_data": {
-              "label": "verification.ipynb",
-              "image": "/notebook/rhods-notebooks/jupyter-nb-opentlc-2dmgr/static/elyra/notebook.svg",
-              "x_pos": 770,
-              "y_pos": 50,
-              "description": "Run notebook file"
+              "label": "verification.py",
+              "image": "/notebook/myproject/elyra/static/elyra/python.svg",
+              "x_pos": 471,
+              "y_pos": 461,
+              "description": "Run Python script"
             }
           },
           "inputs": [
@@ -245,8 +236,8 @@
               },
               "links": [
                 {
-                  "id": "72c2917d-35ee-4843-addd-9fe643af40e7",
-                  "node_id_ref": "a94aff2a-3f60-40c8-896b-bf5238effdfd",
+                  "id": "b88e36d0-9652-49a2-9a11-35b265876526",
+                  "node_id_ref": "384fb260-d2a1-43bc-9ce7-88d174e73ed2",
                   "port_id_ref": "outPort"
                 }
               ]
@@ -268,9 +259,9 @@
           ]
         },
         {
-          "id": "d2878897-fd08-4ad8-902f-89d829aae819",
+          "id": "b3ca4f79-27ea-462f-a481-12418f815673",
           "type": "execution_node",
-          "op": "execute-notebook-node",
+          "op": "execute-python-node",
           "app_data": {
             "component_parameters": {
               "dependencies": [],
@@ -278,8 +269,7 @@
               "outputs": [],
               "env_vars": [
                 {
-                  "env_var": "S3_ENDPOINT_URL",
-                  "value": "http://s3.openshift-storage.svc.cluster.local/"
+                  "env_var": "S3_ENDPOINT_URL"
                 },
                 {
                   "env_var": "S3_ACCESS_KEY"
@@ -317,16 +307,15 @@
               ],
               "kubernetes_tolerations": [],
               "mounted_volumes": [],
-              "filename": "push-model.ipynb",
-              "runtime_image": "quay.io/mmurakam/industrial-edge-ml-pipeline-image:modelmesh-0.1.1"
+              "filename": "push-model.py"
             },
-            "label": "push-model.ipynb",
+            "label": "",
             "ui_data": {
-              "label": "push-model.ipynb",
-              "image": "/notebook/rhods-notebooks/jupyter-nb-opentlc-2dmgr/static/elyra/notebook.svg",
-              "x_pos": 1008,
-              "y_pos": 48,
-              "description": "Run notebook file"
+              "label": "push-model.py",
+              "image": "/notebook/myproject/elyra/static/elyra/python.svg",
+              "x_pos": 879,
+              "y_pos": 493,
+              "description": "Run Python script"
             }
           },
           "inputs": [
@@ -343,8 +332,8 @@
               },
               "links": [
                 {
-                  "id": "ee3aae0e-fb24-4ea4-aea4-1ca01123a5e8",
-                  "node_id_ref": "d2a68d54-e066-4bdf-9c29-e947bc6234c2",
+                  "id": "fed63043-04b3-42ab-b4ea-bf416abcf858",
+                  "node_id_ref": "91f20909-91d6-445f-b1ac-e3605818209f",
                   "port_id_ref": "outPort"
                 }
               ]
@@ -371,20 +360,20 @@
           "comments": []
         },
         "version": 8,
+        "runtime_type": "KUBEFLOW_PIPELINES",
         "properties": {
           "pipeline_defaults": {
-            "kubernetes_pod_labels": [],
             "mounted_volumes": [],
-            "kubernetes_tolerations": [],
+            "kubernetes_pod_labels": [],
             "kubernetes_pod_annotations": [],
-            "kubernetes_secrets": [],
+            "kubernetes_tolerations": [],
             "env_vars": [],
-            "runtime_image": "quay.io/mmurakam/industrial-edge-ml-pipeline-image:modelmesh-0.1.1"
+            "kubernetes_secrets": [],
+            "runtime_image": "quay.io/mmurakam/industrial-edge-ml-pipeline-image:v1.0.0"
           },
-          "name": "demo",
+          "name": "demo-2",
           "runtime": "Kubeflow Pipelines"
-        },
-        "runtime_type": "KUBEFLOW_PIPELINES"
+        }
       },
       "runtime_ref": ""
     }
