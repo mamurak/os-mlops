@@ -15,3 +15,10 @@ This repository contains a number of open source MLOps architectures that can be
 - Seldon Core for model serving,
 - ArgoCD for continuous model deployment,
 - Prometheus and Grafana for model monitoring.
+
+### odh-kfp-modelmesh
+- Kubeflow Notebook Controller for notebook-based development,
+- Kubeflow Pipelines for workflow orchestration and experiment tracking,
+- KServe ModelMesh for model serving,
+- ArgoCD for continuous model deployment,
+- Prometheus and Grafana for model monitoring.
