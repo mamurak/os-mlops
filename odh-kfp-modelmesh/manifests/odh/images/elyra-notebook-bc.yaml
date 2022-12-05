@@ -1,13 +1,13 @@
 kind: BuildConfig
 apiVersion: build.openshift.io/v1
 metadata:
-  name: custom-notebook
+  name: elyra-notebook
 spec:
   nodeSelector: null
   output:
     to:
       kind: ImageStreamTag
-      name: 'custom-notebook:v0.1.0'
+      name: 'elyra-notebook:v0.1.0'
   resources: {}
   successfulBuildsHistoryLimit: 5
   failedBuildsHistoryLimit: 5
@@ -46,5 +46,5 @@ spec:
     type: Git
     git:
       uri: 'https://github.com/mamurak/os-mlops.git'
-    contextDir: '/odh-kfp-modelmesh/container-images/custom-notebook'
+    contextDir: '/odh-kfp-modelmesh/container-images/elyra-notebook'
   runPolicy: Serial

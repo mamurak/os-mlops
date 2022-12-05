@@ -1,0 +1,17 @@
+FROM quay.io/mmurakam/pyspark-ubi8-py3.8:v0.1.1
+
+ENV JUPYTER_ENABLE_LAB=true
+ENV CRIO_RUNTIME=true
+
+WORKDIR /opt/app-root/bin
+
+RUN pip install pip==22.2.2 setuptools==65.3.0
+
+# uncomment following line if working in an air-gapped environment
+# RUN pip uninstall -y jupyterlab-tabnine
+
+COPY setup-elyra.sh start-notebook.sh requirements.txt ./
+
+RUN pip install --no-cache-dir -r ./requirements.txt && \
+    chmod -R g+w /opt/app-root/lib/python3.8/site-packages && \
+    fix-permissions /opt/app-root -P
