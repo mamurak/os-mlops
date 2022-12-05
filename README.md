@@ -1,6 +1,6 @@
 # OS MLOps
 
-This repository contains a number of open source MLOps architectures that can be deployed on OpenShift Container Platform.
+This repository contains a number of open source MLOps tool chains that can be deployed on OpenShift Container Platform.
 
 ### odh-pachyderm-pipelines
 - OpenShift Data Foundation / Ceph S3 as a data lake,

@@ -1,0 +1,31 @@
+FROM quay.io/thoth-station/s2i-generic-data-science-notebook:v0.0.5
+
+USER root
+
+RUN dnf -y update \
+ && dnf -y install curl fuse \
+ && dnf -y clean all && \
+ rm -rf /var/cache/dnf
+
+ENV PACHCTL_VERSION 2.1.5
+ENV JUPYTERLAB_PACHYDERM_VERSION 0.4.0
+
+# https://github.com/pachyderm/pachyderm/releases/download/v2.1.5/pachctl_2.1.5_linux_amd64.tar.gz
+RUN cd /tmp \
+ && curl -f -o pachctl.tar.gz -L https://github.com/pachyderm/pachyderm/releases/download/v${PACHCTL_VERSION}/pachctl_${PACHCTL_VERSION}_linux_amd64.tar.gz \
+ && tar xzf pachctl.tar.gz \
+ && cd pachctl_${PACHCTL_VERSION}_linux_amd64 \
+ && chmod a+rx pachctl \
+ && mv pachctl /usr/local/bin \
+ && cd /opt \
+ && rm -rf /tmp/*
+
+RUN echo $(command -v pachctl)
+
+RUN pip install --no-cache-dir jupyterlab-pachyderm==${JUPYTERLAB_PACHYDERM_VERSION}
+
+# This is the directory files will be mounted to, mirroring how pipelines are run.
+RUN mkdir -p /pfs \
+ && chmod 1777 /pfs
+
+USER 8888
