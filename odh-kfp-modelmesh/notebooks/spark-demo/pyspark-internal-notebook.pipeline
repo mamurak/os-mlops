@@ -49,12 +49,12 @@
               ],
               "kubernetes_tolerations": [],
               "mounted_volumes": [],
-              "filename": "wordcount.ipynb",
+              "filename": "pyspark-internal.ipynb",
               "runtime_image": "quay.io/mmurakam/spark-kfp-runtime:spark-kfp-runtime-v0.1.0"
             },
             "label": "",
             "ui_data": {
-              "label": "wordcount.ipynb",
+              "label": "pyspark-internal.ipynb",
               "image": "/notebook/my-project/elyra-spark/static/elyra/notebook.svg",
               "x_pos": 575,
               "y_pos": 268,

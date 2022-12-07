@@ -42,7 +42,7 @@ i = 0
 for word, count in sorted_counts.collect()[0:500]:
     print(f'{i} : {word} : {count} ')
     i += 1
-    
+
 now = datetime.now()
 date_time = now.strftime('%d-%m-%Y_%H:%M:%S')
 
