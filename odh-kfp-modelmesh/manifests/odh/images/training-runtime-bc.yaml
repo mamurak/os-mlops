@@ -20,5 +20,5 @@ spec:
     type: Git
     git:
       uri: 'https://github.com/mamurak/os-mlops.git'
-    contextDir: '/odh-kfp-modelmesh/container-images/training-runtime'
+    contextDir: '/container-images/training-runtime'
   runPolicy: Serial

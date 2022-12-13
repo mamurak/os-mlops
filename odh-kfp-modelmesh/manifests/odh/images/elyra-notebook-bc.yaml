@@ -46,5 +46,5 @@ spec:
     type: Git
     git:
       uri: 'https://github.com/mamurak/os-mlops.git'
-    contextDir: '/odh-kfp-modelmesh/container-images/elyra-notebook'
+    contextDir: '/container-images/elyra-notebook'
   runPolicy: Serial
