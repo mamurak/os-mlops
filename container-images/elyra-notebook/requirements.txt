@@ -1,4 +1,3 @@
-elyra[kfp-tekton]==3.12.0
 pandas==1.4.3
 scikit-learn==1.1.2
 boto3==1.24.49
