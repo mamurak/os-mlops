@@ -24,7 +24,7 @@
               "kubernetes_tolerations": [],
               "mounted_volumes": [],
               "filename": "metrics.ipynb",
-              "runtime_image": "quay.io/mmurakam/industrial-edge-ml-pipeline-image:modelmesh-0.1.1"
+              "runtime_image": "quay.io/mmurakam/elyra-kfp-runtime-base:elyra-kfp-runtime-base-v0.2.0"
             },
             "ui_data": {
               "label": "metrics.ipynb",

@@ -369,7 +369,7 @@
             "kubernetes_tolerations": [],
             "env_vars": [],
             "kubernetes_secrets": [],
-            "runtime_image": "quay.io/mmurakam/industrial-edge-ml-pipeline-image:v1.0.0"
+            "runtime_image": "quay.io/mmurakam/elyra-kfp-runtime-base:elyra-kfp-runtime-base-v0.2.0"
           },
           "name": "demo-2",
           "runtime": "Kubeflow Pipelines"

@@ -28,7 +28,7 @@
               "kubernetes_tolerations": [],
               "mounted_volumes": [],
               "filename": "preprocessing.ipynb",
-              "runtime_image": "quay.io/mmurakam/industrial-edge-ml-pipeline-image:modelmesh-0.1.1"
+              "runtime_image": "quay.io/mmurakam/elyra-kfp-runtime-base:elyra-kfp-runtime-base-v0.2.0"
             },
             "label": "preprocessing.ipynb",
             "ui_data": {
@@ -87,7 +87,7 @@
               "kubernetes_tolerations": [],
               "mounted_volumes": [],
               "filename": "feature_extraction.ipynb",
-              "runtime_image": "quay.io/mmurakam/industrial-edge-ml-pipeline-image:modelmesh-0.1.1"
+              "runtime_image": "quay.io/mmurakam/elyra-kfp-runtime-base:elyra-kfp-runtime-base-v0.2.0"
             },
             "label": "feature_extraction.ipynb",
             "ui_data": {
@@ -152,7 +152,7 @@
               "kubernetes_tolerations": [],
               "mounted_volumes": [],
               "filename": "training.ipynb",
-              "runtime_image": "quay.io/mmurakam/industrial-edge-ml-pipeline-image:modelmesh-0.1.1"
+              "runtime_image": "quay.io/mmurakam/elyra-kfp-runtime-base:elyra-kfp-runtime-base-v0.2.0"
             },
             "label": "training.ipynb",
             "ui_data": {
@@ -220,7 +220,7 @@
               "kubernetes_tolerations": [],
               "mounted_volumes": [],
               "filename": "verification.ipynb",
-              "runtime_image": "quay.io/mmurakam/industrial-edge-ml-pipeline-image:modelmesh-0.1.1"
+              "runtime_image": "quay.io/mmurakam/elyra-kfp-runtime-base:elyra-kfp-runtime-base-v0.2.0"
             },
             "label": "verification.ipynb",
             "ui_data": {
@@ -318,7 +318,7 @@
               "kubernetes_tolerations": [],
               "mounted_volumes": [],
               "filename": "push-model.ipynb",
-              "runtime_image": "quay.io/mmurakam/industrial-edge-ml-pipeline-image:modelmesh-0.1.1"
+              "runtime_image": "quay.io/mmurakam/elyra-kfp-runtime-base:elyra-kfp-runtime-base-v0.2.0"
             },
             "label": "push-model.ipynb",
             "ui_data": {
@@ -379,7 +379,7 @@
             "kubernetes_pod_annotations": [],
             "kubernetes_secrets": [],
             "env_vars": [],
-            "runtime_image": "quay.io/mmurakam/industrial-edge-ml-pipeline-image:modelmesh-0.1.1"
+            "runtime_image": "quay.io/mmurakam/elyra-kfp-runtime-base:elyra-kfp-runtime-base-v0.2.0"
           },
           "name": "demo",
           "runtime": "Kubeflow Pipelines"
