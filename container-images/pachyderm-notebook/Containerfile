@@ -1,4 +1,4 @@
-FROM quay.io/thoth-station/s2i-generic-data-science-notebook:v0.0.5
+FROM FROM quay.io/thoth-station/s2i-minimal-py38-notebook:v0.5.1
 
 USER root
 
