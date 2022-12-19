@@ -76,11 +76,8 @@ spec:
             - '--tls-key=/etc/tls/private/tls.key'
             - '--cookie-secret=SECRET'
             - >-
-              --openshift-delegate-urls={"/": {"resource": "routes", "verb":
-              "get", "namespace": "odh-applications"}}
-            - >-
-              --openshift-sar={"resource": "routes", "namespace":
-              "odh-applications", "verb": "get"}
+              --openshift-delegate-urls={"/": {"resource": "services", "verb":
+              "get", "name": "ds-pipeline-ui"}}
             - '--skip-auth-regex=''(^/metrics|^/apis/v1beta1/healthz)'''
         - resources:
             requests:
