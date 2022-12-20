@@ -1,4 +1,4 @@
-FROM FROM quay.io/thoth-station/s2i-minimal-py38-notebook:v0.5.1
+FROM quay.io/thoth-station/s2i-minimal-py38-notebook:v0.5.1
 
 ENV PACHCTL_VERSION 2.4.2
 ENV JUPYTERLAB_PACHYDERM_VERSION 2.4.2
@@ -22,6 +22,8 @@ USER 8888
 RUN pip install --upgrade pip
 
 USER root
+
+RUN mkdir /app
 WORKDIR /app
 COPY /scripts/config.sh .
 RUN chmod +x config.sh
