@@ -17,8 +17,8 @@ RUN pip install --no-cache-dir -r ./requirements.txt && \
     fix-permissions /opt/app-root -P
 
 # environment variables used for Elyra runtime setup at runtime
-ENV KF_DEPLOYMENT_NAMESPACE=odh-applications
-ENV S3_ENDPOINT_URL=http://minio-service.minio.svc.cluster.local:9000
-ENV AWS_ACCESS_KEY_ID=minio
-ENV AWS_SECRET_ACCESS_KEY=minio123
-ENV COS_BUCKET=elyra
+ENV KF_DEPLOYMENT_NAMESPACE=${KF_DEPLOYMENT_NAMESPACE:-odh-applications}
+ENV S3_ENDPOINT_URL=${S3_ENDPOINT_URL:-http://minio-service.minio.svc.cluster.local:9000}
+ENV AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-minio}
+ENV AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-minio123}
+ENV COS_BUCKET=${COS_BUCKET:-elyra}
