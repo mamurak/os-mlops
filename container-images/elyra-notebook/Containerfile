@@ -15,3 +15,10 @@ COPY setup-elyra.sh start-notebook.sh requirements.txt ./
 RUN pip install --no-cache-dir -r ./requirements.txt && \
     chmod -R g+w /opt/app-root/lib/python3.8/site-packages && \
     fix-permissions /opt/app-root -P
+
+# environment variables used for Elyra runtime setup at runtime
+ENV KF_DEPLOYMENT_NAMESPACE=odh-applications
+ENV S3_ENDPOINT_URL=http://minio-service.minio.svc.cluster.local:9000
+ENV AWS_ACCESS_KEY_ID=minio
+ENV AWS_SECRET_ACCESS_KEY=minio123
+ENV COS_BUCKET=elyra
