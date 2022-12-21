@@ -4,17 +4,12 @@ ENV PACHCTL_VERSION 2.4.2
 ENV JUPYTERLAB_PACHYDERM_VERSION 2.4.2
 
 USER root
-RUN mkdir -p /pfs \
- && chmod 1777 /pfs \
- && dnf -y update \
- && dnf -y install curl fuse \
+RUN dnf -y update \
+ && dnf -y install curl \
  && dnf -y clean all \
  && rm -rf /var/cache/dnf \
- && echo "user_allow_other" | tee -a /etc/fuse.conf > /dev/null \
  && curl -f -o pachctl.tar.gz -L https://github.com/pachyderm/pachyderm/releases/download/v${PACHCTL_VERSION}/pachctl_${PACHCTL_VERSION}_linux_amd64.tar.gz \
- && tar zxfv pachctl.tar.gz && mv pachctl_${PACHCTL_VERSION}_linux_amd64/pachctl /usr/local/bin/ \
- && curl -f -o mount-server.tar.gz -L https://github.com/pachyderm/pachyderm/releases/download/v${JUPYTERLAB_PACHYDERM_VERSION}/mount-server_${JUPYTERLAB_PACHYDERM_VERSION}_linux_amd64.tar.gz \
- && tar zxfv mount-server.tar.gz && mv mount-server_${JUPYTERLAB_PACHYDERM_VERSION}_linux_amd64/mount-server /usr/local/bin/
+ && tar zxfv pachctl.tar.gz && mv pachctl_${PACHCTL_VERSION}_linux_amd64/pachctl /usr/local/bin/
 
 USER 8888
 RUN pip install --upgrade pip

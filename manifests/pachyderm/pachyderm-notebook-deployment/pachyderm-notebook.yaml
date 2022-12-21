@@ -16,8 +16,8 @@ spec:
           name: pachyderm-notebook
           env:
             - name: NOTEBOOK_ARGS
+              #  --allow-root
               value: |-
-                --allow-root
                 --ServerApp.port=8888
                 --ServerApp.token=''
                 --ServerApp.password=''
@@ -35,30 +35,30 @@ spec:
           image: >-
             quay.io/mmurakam/pachyderm-notebook:pachyderm-notebook-v0.1.4
           workingDir: /opt/app-root/src
-          securityContext:
-              privileged: true
-              runAsUser: 0
-              capabilities:
-                add:
-                  - SYS_ADMIN
-        #  VolumeMounts:
-        #    - name: shared-pfs
-        #      mountPath: /pfs
-        #      mountPropagation: HostToContainer
-        #- name: mount-server-manager
-        #  image: pachyderm/mount-server:2.4.2
-        #  command: ["/bin/bash"]
-        #  args: ["-c", "mount-server"]
-        #  volumeMounts:
-        #      - name: shared-pfs
-        #        mountPath: /pfs
-        #        mountPropagation: Bidirectional
         #  securityContext:
         #      privileged: true
         #      runAsUser: 0
         #      capabilities:
         #        add:
         #          - SYS_ADMIN
+        #  VolumeMounts:
+        #    - name: shared-pfs
+        #      mountPath: /pfs
+        #      mountPropagation: HostToContainer
+        - name: mount-server-manager
+          image: pachyderm/mount-server:2.4.2
+          command: ["/bin/bash"]
+          args: ["-c", "mount-server"]
+          volumeMounts:
+              - name: shared-pfs
+                mountPath: /pfs
+                mountPropagation: Bidirectional
+          securityContext:
+              privileged: true
+              runAsUser: 0
+              capabilities:
+                add:
+                  - SYS_ADMIN
         - name: oauth-proxy
           ports:
             - containerPort: 8443
@@ -104,5 +104,5 @@ spec:
           secret:
             defaultMode: 420
             secretName: jupyter-nb-opentlc-2dmgr-tls
-      #  - name: shared-pfs
-      #    emptyDir: {}
+        - name: shared-pfs
+          emptyDir: {}
