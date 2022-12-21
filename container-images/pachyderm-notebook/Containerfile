@@ -17,15 +17,5 @@ RUN mkdir -p /pfs \
  && tar zxfv mount-server.tar.gz && mv mount-server_${JUPYTERLAB_PACHYDERM_VERSION}_linux_amd64/mount-server /usr/local/bin/
 
 USER 8888
-RUN pip install --upgrade pip
-
-USER root
-
-RUN mkdir /app
-WORKDIR /app
-COPY /scripts/config.sh .
-RUN chmod +x config.sh
-
-USER 8888
-
-RUN pip install --no-cache-dir jupyterlab-pachyderm==${JUPYTERLAB_PACHYDERM_VERSION} python-pachyderm==7.3.3
+RUN pip install --upgrade pip \
+ && pip install --no-cache-dir jupyterlab-pachyderm==${JUPYTERLAB_PACHYDERM_VERSION} python-pachyderm==7.3.3
