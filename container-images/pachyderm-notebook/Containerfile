@@ -28,6 +28,6 @@ WORKDIR /app
 COPY /scripts/config.sh .
 RUN chmod +x config.sh
 
-USER 8888
+#USER 8888
 
 RUN pip install --no-cache-dir jupyterlab-pachyderm==${JUPYTERLAB_PACHYDERM_VERSION}
