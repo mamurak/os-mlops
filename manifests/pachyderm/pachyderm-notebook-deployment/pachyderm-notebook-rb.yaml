@@ -1,0 +1,12 @@
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pachyderm-notebook-rb
+subjects:
+  - kind: ServiceAccount
+    name: pachyderm-notebook
+    namespace: odh
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: pachyderm-notebook-role

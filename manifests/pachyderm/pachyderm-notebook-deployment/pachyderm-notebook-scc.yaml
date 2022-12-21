@@ -1,0 +1,34 @@
+kind: SecurityContextConstraints
+apiVersion: security.openshift.io/v1
+metadata:
+  name: pachyderm-notebook-scc
+users:
+  - pachyderm-notebook
+# TODO: find minimal set of privileges
+allowHostPorts: true
+priority: null
+requiredDropCapabilities: null
+allowPrivilegedContainer: true
+runAsUser:
+  type: RunAsAny
+allowHostDirVolumePlugin: true
+seccompProfiles:
+  - '*'
+allowHostIPC: true
+seLinuxContext:
+  type: RunAsAny
+readOnlyRootFilesystem: false
+fsGroup:
+  type: RunAsAny
+defaultAddCapabilities: null
+allowedUnsafeSysctls:
+  - '*'
+supplementalGroups:
+  type: RunAsAny
+volumes:
+  - '*'
+allowHostPID: true
+allowHostNetwork: true
+allowPrivilegeEscalation: true
+allowedCapabilities:
+  - '*'

@@ -1,0 +1,108 @@
+apiVersion: kubeflow.org/v1
+kind: Notebook
+metadata:
+  name: pachyderm-notebook
+spec:
+  template:
+    spec:
+      containers:
+        - resources:
+            limits:
+              cpu: '2'
+              memory: 8Gi
+            requests:
+              cpu: '1'
+              memory: 8Gi
+          name: pachyderm-notebook
+          env:
+            - name: NOTEBOOK_ARGS
+              value: |-
+                --allow-root
+                --ServerApp.port=8888
+                --ServerApp.token=''
+                --ServerApp.password=''
+                --ServerApp.base_url=/notebook/odh/pachyderm-notebook
+                --ServerApp.quit_button=False
+                --ServerApp.tornado_settings={"user":"opentlc-2dmgr","hub_host":"https://odh-dashboard-odh.apps.cluster-np7gl.np7gl.sandbox1923.opentlc.com","hub_prefix":"/notebookController/pachyderm-notebook"}
+            - name: JUPYTER_IMAGE
+              value: >-
+                quay.io/mmurakam/pachyderm-notebook:pachyderm-notebook-v0.1.4
+          ports:
+            - containerPort: 8888
+              name: notebook-port
+              protocol: TCP
+          imagePullPolicy: Always
+          image: >-
+            quay.io/mmurakam/pachyderm-notebook:pachyderm-notebook-v0.1.4
+          workingDir: /opt/app-root/src
+          securityContext:
+              privileged: true
+              runAsUser: 0
+              capabilities:
+                add:
+                  - SYS_ADMIN
+        #  VolumeMounts:
+        #    - name: shared-pfs
+        #      mountPath: /pfs
+        #      mountPropagation: HostToContainer
+        #- name: mount-server-manager
+        #  image: pachyderm/mount-server:2.4.2
+        #  command: ["/bin/bash"]
+        #  args: ["-c", "mount-server"]
+        #  volumeMounts:
+        #      - name: shared-pfs
+        #        mountPath: /pfs
+        #        mountPropagation: Bidirectional
+        #  securityContext:
+        #      privileged: true
+        #      runAsUser: 0
+        #      capabilities:
+        #        add:
+        #          - SYS_ADMIN
+        - name: oauth-proxy
+          ports:
+            - containerPort: 8443
+              name: oauth-proxy
+              protocol: TCP
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /etc/oauth/config
+              name: oauth-config
+            - mountPath: /etc/tls/private
+              name: tls-certificates
+          image: 'registry.redhat.io/openshift4/ose-oauth-proxy:v4.10'
+          args:
+            - '--provider=openshift'
+            - '--https-address=:8443'
+            - '--http-address='
+            - '--openshift-service-account=jupyter-nb-opentlc-2dmgr'
+            - '--cookie-secret-file=/etc/oauth/config/cookie_secret'
+            - '--cookie-expire=24h0m0s'
+            - '--tls-cert=/etc/tls/private/tls.crt'
+            - '--tls-key=/etc/tls/private/tls.key'
+            - '--upstream=http://localhost:8888'
+            - '--upstream-ca=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt'
+            - >-
+              --skip-auth-regex=^(?:/notebook/$(NAMESPACE)/pachyderm-notebook)?/api$
+            - '--email-domain=*'
+            - '--skip-provider-button'
+            - >-
+              --openshift-sar={"verb":"get","resource":"notebooks","resourceAPIGroup":"kubeflow.org","resourceName":"pachyderm-notebook","namespace":"$(NAMESPACE)"}
+            - >-
+              --logout-url=https://odh-dashboard-odh.apps.cluster-np7gl.np7gl.sandbox1923.opentlc.com/notebookController/pachyderm-notebook/home
+      enableServiceLinks: false
+      serviceAccountName: pachyderm-notebook
+      volumes:
+        - name: pachyderm-notebook
+          persistentVolumeClaim:
+            claimName: pachyderm-notebook
+        - name: oauth-config
+          secret:
+            defaultMode: 420
+            secretName: jupyter-nb-opentlc-2dmgr-oauth-config
+        - name: tls-certificates
+          secret:
+            defaultMode: 420
+            secretName: jupyter-nb-opentlc-2dmgr-tls
+      #  - name: shared-pfs
+      #    emptyDir: {}
