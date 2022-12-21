@@ -10,13 +10,12 @@ RUN mkdir -p /pfs \
 RUN dnf -y update \
  && dnf -y install curl fuse \
  && dnf -y clean all \
- && rm -rf /var/cache/dnf
-
-RUN echo "user_allow_other" | tee -a /etc/fuse.conf > /dev/null
-RUN curl -f -o pachctl.tar.gz -L https://github.com/pachyderm/pachyderm/releases/download/v${PACHCTL_VERSION}/pachctl_${PACHCTL_VERSION}_linux_amd64.tar.gz
-RUN tar zxfv pachctl.tar.gz && mv pachctl_${PACHCTL_VERSION}_linux_amd64/pachctl /usr/local/bin/
-RUN curl -f -o mount-server.tar.gz -L https://github.com/pachyderm/pachyderm/releases/download/v${JUPYTERLAB_PACHYDERM_VERSION}/mount-server_${JUPYTERLAB_PACHYDERM_VERSION}_linux_amd64.tar.gz
-RUN tar zxfv mount-server.tar.gz && mv mount-server_${JUPYTERLAB_PACHYDERM_VERSION}_linux_amd64/mount-server /usr/local/bin/
+ && rm -rf /var/cache/dnf \
+ && echo "user_allow_other" | tee -a /etc/fuse.conf > /dev/null \
+ && curl -f -o pachctl.tar.gz -L https://github.com/pachyderm/pachyderm/releases/download/v${PACHCTL_VERSION}/pachctl_${PACHCTL_VERSION}_linux_amd64.tar.gz \
+ && tar zxfv pachctl.tar.gz && mv pachctl_${PACHCTL_VERSION}_linux_amd64/pachctl /usr/local/bin/ \
+ && curl -f -o mount-server.tar.gz -L https://github.com/pachyderm/pachyderm/releases/download/v${JUPYTERLAB_PACHYDERM_VERSION}/mount-server_${JUPYTERLAB_PACHYDERM_VERSION}_linux_amd64.tar.gz \
+ && tar zxfv mount-server.tar.gz && mv mount-server_${JUPYTERLAB_PACHYDERM_VERSION}_linux_amd64/mount-server /usr/local/bin/
 
 USER 8888
 RUN pip install --upgrade pip
@@ -30,4 +29,4 @@ RUN chmod +x config.sh
 
 #USER 8888
 
-RUN pip install --no-cache-dir jupyterlab-pachyderm==${JUPYTERLAB_PACHYDERM_VERSION}
+RUN pip install --no-cache-dir jupyterlab-pachyderm==${JUPYTERLAB_PACHYDERM_VERSION} python-pachyderm==7.3.3
