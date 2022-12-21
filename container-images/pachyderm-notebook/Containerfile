@@ -5,9 +5,8 @@ ENV JUPYTERLAB_PACHYDERM_VERSION 2.4.2
 
 USER root
 RUN mkdir -p /pfs \
- && chmod 1777 /pfs
-
-RUN dnf -y update \
+ && chmod 1777 /pfs \
+ && dnf -y update \
  && dnf -y install curl fuse \
  && dnf -y clean all \
  && rm -rf /var/cache/dnf \
@@ -27,6 +26,6 @@ WORKDIR /app
 COPY /scripts/config.sh .
 RUN chmod +x config.sh
 
-#USER 8888
+USER 8888
 
 RUN pip install --no-cache-dir jupyterlab-pachyderm==${JUPYTERLAB_PACHYDERM_VERSION} python-pachyderm==7.3.3
