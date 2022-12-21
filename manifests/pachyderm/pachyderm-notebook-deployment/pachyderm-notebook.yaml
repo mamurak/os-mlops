@@ -26,21 +26,18 @@ spec:
                 --ServerApp.tornado_settings={"user":"opentlc-2dmgr","hub_host":"https://odh-dashboard-odh.apps.cluster-np7gl.np7gl.sandbox1923.opentlc.com","hub_prefix":"/notebookController/pachyderm-notebook"}
             - name: JUPYTER_IMAGE
               value: >-
-                quay.io/mmurakam/pachyderm-notebook:pachyderm-notebook-v0.1.6
+                quay.io/mmurakam/pachyderm-notebook:pachyderm-notebook-v0.1.7
           ports:
             - containerPort: 8888
               name: notebook-port
               protocol: TCP
           imagePullPolicy: Always
           image: >-
-            quay.io/mmurakam/pachyderm-notebook:pachyderm-notebook-v0.1.6
+            quay.io/mmurakam/pachyderm-notebook:pachyderm-notebook-v0.1.7
           workingDir: /opt/app-root/src
           securityContext:
               privileged: true
               runAsUser: 0
-              capabilities:
-                add:
-                  - SYS_ADMIN
           volumeMounts:
             - mountPath: /opt/app-root/src
               name: pachyderm-notebook
