@@ -11,7 +11,7 @@
 
 # High-level architecture
 
-![Architecture diagram](high-level-architecture.png "Architecture diagram")
+![Architecture diagram](odh-kfp-seldon-high-level-architecture.png "Architecture diagram")
 
 # Getting started
 
