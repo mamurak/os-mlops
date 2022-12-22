@@ -1,4 +1,4 @@
-ENV cuda-ubi8-python-3.8-pr-30
+FROM cuda-ubi8-python-3.8-pr-30
 
 ENV COS_VERSION ubi-8
 ENV PYTHON_VERSION 3.8
