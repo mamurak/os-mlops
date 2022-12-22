@@ -1,4 +1,4 @@
-FROM quay.io/guimou/s2i-base-ubi9-py39:0.1.0
+FROM quay.io/guimou/s2i-minimal-cuda-notebook-c9s-py39:0.1.0
 
 ENV COS_VERSION 9
 ENV PYTHON_VERSION 3.9
@@ -15,19 +15,10 @@ LABEL name="s2i-rstudio-${COS_VERSION}-${PYTHON_VERSION}:latest" \
     io.openshift.s2i.build.image="https://quay.io/guimou/s2i-rstudio-${COS_VERSION}-${PYTHON_VERSION}"
 
 ####################
-# CUDA             #
+# RStudio          #
 ####################
 
 USER 0
-
-RUN yum install -y https://developer.download.nvidia.com/compute/cuda/11.8.0/local_installers/cuda-repo-rhel8-11-8-local-11.8.0_520.61.05-1.x86_64.rpm && \
-    yum clean all && \
-    yum -y module install nvidia-driver:latest-dkms && \
-    yum -y install cuda
-
-####################
-# RStudio          #
-####################
 
 # Install R
 RUN yum install -y yum-utils && \
