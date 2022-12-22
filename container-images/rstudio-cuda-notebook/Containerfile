@@ -1,8 +1,8 @@
-FROM quay.io/opendatahub/notebooks:cuda-ubi8-python-3.8-pr-30
+FROM quay.io/guimou/s2i-base-ubi9-py39:0.1.0
 
-ENV COS_VERSION ubi-8
-ENV PYTHON_VERSION 3.8
-ENV PYTHON_VERSION_LONG 3.8
+ENV COS_VERSION 9
+ENV PYTHON_VERSION 3.9
+ENV PYTHON_VERSION_LONG "Python 3.9"
 
 LABEL name="s2i-rstudio-${COS_VERSION}-${PYTHON_VERSION}:latest" \
     summary="S2I RStudio with ${PYTHON_VERSION_LONG} image based on ${COS_VERSION}" \
@@ -15,17 +15,26 @@ LABEL name="s2i-rstudio-${COS_VERSION}-${PYTHON_VERSION}:latest" \
     io.openshift.s2i.build.image="https://quay.io/guimou/s2i-rstudio-${COS_VERSION}-${PYTHON_VERSION}"
 
 ####################
-# RStudio          #
+# CUDA             #
 ####################
 
 USER 0
+
+RUN yum install -y https://developer.download.nvidia.com/compute/cuda/11.8.0/local_installers/cuda-repo-rhel8-11-8-local-11.8.0_520.61.05-1.x86_64.rpm && \
+    yum clean all && \
+    yum -y module install nvidia-driver:latest-dkms && \
+    yum -y install cuda
+
+####################
+# RStudio          #
+####################
 
 # Install R
 RUN yum install -y yum-utils && \
     yum-config-manager --enable crb && \
     yum install -y https://download.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
     INSTALL_PKGS="R-core R-core-devel R-java R-Rcpp R-highlight \
-    R-littler R-littler-examples openssl-libs compat-openssl11 R-base64enc" && \
+    R-littler R-littler-examples openssl-libs compat-openssl11" && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     echo 'options(repos = c(CRAN = "https://cran.rstudio.com/"), download.file.method = "libcurl")' >> /usr/lib64/R/etc/Rprofile.site && \
     yum -y clean all && \
@@ -53,9 +62,6 @@ COPY rsession.conf /etc/rstudio/rsession.conf
 
 # Launcher
 COPY run-rstudio.sh setup_rstudio.py rsession.sh /opt/app-root/bin/
-
-# Install R packages
-RUN R -e -q 'install.packages(c("keras", "tidyverse", "remotes", "mlflow", "torch", "devtools", "tesseract", "BiocManager", "Shiny", "carat", "e1071", "igraph", "ROCR", "randomForest", "tm"))'
 
 WORKDIR /opt/app-root/src
 
