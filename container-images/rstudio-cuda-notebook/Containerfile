@@ -12,7 +12,7 @@ RUN wget https://developer.download.nvidia.com/compute/cuda/11.5.2/local_install
 
 # R packages
 
-RUN yum install -y R-base64enc && \
-    R -q -e 'install.packages(c("keras", "tidyverse", "remotes", "mlflow", "torch", "devtools", "tesseract", "BiocManager", "Shiny", "carat", "e1071", "igraph", "ROCR", "randomForest", "tm"))'
+#RUN yum install -y R-base64enc && \
+#    R -q -e 'install.packages(c("keras", "tidyverse", "remotes", "mlflow", "torch", "devtools", "tesseract", "BiocManager", "Shiny", "carat", "e1071", "igraph", "ROCR", "randomForest", "tm"))'
 
 USER 8888
