@@ -1,4 +1,4 @@
-FROM quay.io/guimou/odh-minimal-data-science-r-notebook:0.1.0
+FROM quay.io/mmurakam/rstudio-cuda-base:rstudio-cuda-base-v0.1.0
 
 USER root
 
