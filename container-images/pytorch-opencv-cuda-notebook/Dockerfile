@@ -1,8 +1,8 @@
 # ARGS found in the different build layers
-ENV BASE_IMAGE=quay.io/opendatahub/notebooks:cuda-jupyter-minimal-ubi8-python-3.8-pr-30
-ENV OPENCV_VERSION=4.6.0
-ENV CUDA_VERSION=11.6.2-cudnn8-devel-centosstream8
-ENV CUDA_ARCH_BIN=6.1
+ARG BASE_IMAGE=quay.io/guimou/s2i-minimal-cuda-notebook-c9s-py39:0.1.0
+ARG OPENCV_VERSION=4.6.0
+ARG CUDA_VERSION=11.6.2-cudnn8-devel-centosstream8
+ARG CUDA_ARCH_BIN=6.1
 
 
 FROM ${BASE_IMAGE} as BUILDER
@@ -14,10 +14,10 @@ USER 0
 ##########################################
 
 RUN yum install -y yum-utils && \
-    yum-config-manager --enable powertools && \
-    yum install -y https://download.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm && \
-    yum install -y https://download1.rpmfusion.org/free/el/rpmfusion-free-release-8.noarch.rpm && \
-    yum install -y https://download1.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-8.noarch.rpm && \
+    yum config-manager --set-enabled crb && \
+    yum install -y https://download.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
+    yum install -y https://download1.rpmfusion.org/free/el/rpmfusion-free-release-9.noarch.rpm && \
+    yum install -y https://download1.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-9.noarch.rpm && \
     INSTALL_PKGS="libsndfile \
     ffmpeg \
     ffmpeg-devel" && \
