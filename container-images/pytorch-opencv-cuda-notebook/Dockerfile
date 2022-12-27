@@ -1,5 +1,5 @@
 # ARGS found in the different build layers
-ENV BASE_IMAGE=cuda-jupyter-minimal-ubi8-python-3.8-pr-30
+ENV BASE_IMAGE=quay.io/opendatahub/notebooks:cuda-jupyter-minimal-ubi8-python-3.8-pr-30
 ENV OPENCV_VERSION=4.6.0
 ENV CUDA_VERSION=11.6.2-cudnn8-devel-centosstream8
 ENV CUDA_ARCH_BIN=6.1
