@@ -25,14 +25,14 @@ RUN yum install -y yum-utils && \
 
 # Install needed packages to build
 RUN INSTALL_PKGS="epel-release git gcc gcc-c++ cmake qt5-qtbase-devel \
-    gtk2-devel libpng-devel jasper-devel libwebp-devel \
+    gtk2-devel libpng-devel jasper-devel OpenEXR-devel libwebp-devel \
     libjpeg-turbo-devel libtiff-devel tbb-devel libv4l-devel \
     eigen3-devel freeglut-devel mesa-libGL mesa-libGL-devel \
     boost boost-thread boost-devel gstreamer1-plugins-base \
     gstreamer1-plugins-base-devel hdf5  hdf5-devel openblas openblas-devel \
     lapack lapack-devel" && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
-    rpm -V $INSTALL_PKGS && \
+    #rpm -V $INSTALL_PKGS && \
     yum -y clean all --enablerepo='*' && \
     rm -rf /var/cache/dnf && \
     pip install --no-cache-dir numpy==1.24.1
