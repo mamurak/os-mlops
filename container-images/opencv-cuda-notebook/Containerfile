@@ -79,8 +79,9 @@ RUN cmake3 -D CMAKE_BUILD_TYPE=RELEASE \
     -D CUDA_ARCH_BIN=6.0,6.1,7.0,7.5,8.0,8.6 \
     -D OPENCV_EXTRA_MODULES_PATH=/tmp/opencv_build/opencv_contrib/modules \
     -D BUILD_EXAMPLES=OFF \
+    -D BUILD_LIBPROTOBUF_FROM_SOURCES=ON \
     -D INSTALL_TESTS=OFF .. && \
-    make -j`nproc --ignore=2` && \
+    make && \
     make install
 
 
