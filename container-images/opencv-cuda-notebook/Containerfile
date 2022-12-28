@@ -1,6 +1,7 @@
 FROM quay.io/guimou/s2i-minimal-notebook-c9s-py39:0.1.0
 
 ENV OPENCV_VERSION=4.6.0
+ENV DLIB_VERSION=19.24
 
 USER 0
 
@@ -13,9 +14,7 @@ RUN yum install -y yum-utils && \
     yum install -y https://download.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
     yum install -y https://download1.rpmfusion.org/free/el/rpmfusion-free-release-9.noarch.rpm && \
     yum install -y https://download1.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-9.noarch.rpm && \
-    INSTALL_PKGS="libsndfile \
-    ffmpeg \
-    ffmpeg-devel" && \
+    INSTALL_PKGS="libsndfile ffmpeg ffmpeg-devel" && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
     yum -y clean all --enablerepo='*' && \
@@ -90,5 +89,26 @@ RUN ln -s /opt/opencv/lib64/pkgconfig/opencv4.pc /usr/share/pkgconfig/ && \
     ldconfig && \
     ln -s /opt/opencv/lib/python3.9/site-packages/cv2 /opt/app-root/lib/python3.9/site-packages/cv2 && \
     fix-permissions /opt/app-root
+
+##
+# DLIB & Face recognition
+##
+
+RUN wget http://dlib.net/files/dlib-${DLIB_VERSION}.tar.bz2 && \
+    tar xvf dlib* && \
+    rm *.tar.bz2 && \
+    cd dlib-${DLIB_VERSION} && \
+    sed -i 's,forward_algo = forward_best_algo;,//forward_algo = forward_best_algo;,g' dlib/cuda/cudnn_dlibapi.cpp && \
+    mkdir build && \
+    cd build && \
+    cmake .. -DDLIB_USE_CUDA=1 && \
+    cmake --build . -- -j 5 
+
+RUN yum install -y python3-all-dev python3-setuptools && \
+    cd dlib-${DLIB_VERSION} && \
+    python setup.py install
+
+RUN yum install -y python3-pil python3-pip python3-numpy && \
+    pip install face_recognition
 
 USER 1001
