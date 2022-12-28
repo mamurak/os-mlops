@@ -1,8 +1,6 @@
-ARG BASE_IMAGE=quay.io/guimou/s2i-minimal-notebook-c9s-py39:0.1.0
-ARG OPENCV_VERSION=4.6.0
+FROM quay.io/guimou/s2i-minimal-notebook-c9s-py39:0.1.0
 
-
-FROM ${BASE_IMAGE} as BUILDER
+ENV OPENCV_VERSION=4.6.0
 
 USER 0
 
