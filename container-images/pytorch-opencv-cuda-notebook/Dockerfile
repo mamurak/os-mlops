@@ -10,7 +10,7 @@ USER 0
 ##########################################
 
 RUN yum install -y yum-utils && \
-    yum config-manager --set-enabled crb && \
+    /usr/bin/crb enable && \
     yum install -y https://download.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm && \
     yum install -y https://download1.rpmfusion.org/free/el/rpmfusion-free-release-8.noarch.rpm && \
     yum install -y https://download1.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-8.noarch.rpm && \
