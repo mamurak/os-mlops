@@ -1,6 +1,6 @@
-FROM quay.io/opendatahub/notebooks:cuda-jupyter-datascience-ubi8-python-3.8-pr-30
+FROM quay.io/opendatahub/notebooks:jupyter-datascience-ubi8-python-3.8-pr-30
 
 RUN pip install pip==22.3.1 setuptools==65.3.0
 
 COPY requirements.txt ./
-RUN pip3 install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
