@@ -1,3 +1,5 @@
+# Note: This is not building yet. Will need to add libcudnn8-devel.
+
 # ARGS found in the different build layers
 ARG BASE_IMAGE=quay.io/guimou/s2i-minimal-cuda-notebook-c9s-py39:0.1.0
 ARG OPENCV_VERSION=4.6.0
