@@ -1,4 +1,4 @@
-FROM quay.io/opendatahub/notebooks:jupyter-datascience-ubi8-python-3.8-pr-30
+FROM quay.io/mmurakam/elyra-notebook:elyra-notebook-v0.2.2
 
 RUN pip install pip==22.3.1 setuptools==65.3.0
 
