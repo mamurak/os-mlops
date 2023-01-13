@@ -8,7 +8,6 @@ spec:
   resources:
     requests:
       storage: 20Gi
-  storageClassName: gp2
   volumeMode: Filesystem
 ---
 kind: Secret

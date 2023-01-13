@@ -3,6 +3,8 @@ apiVersion: image.openshift.io/v1
 metadata:
   annotations:
     opendatahub.io/notebook-image-name: "Face recognition Elyra"
+    opendatahub.io/notebook-image-desc: >-
+      Jupyter notebook image enabling computer vision use cases, in particular face recognition.
   name: face-recognition-elyra
   namespace: redhat-ods-applications
   labels:
@@ -20,12 +22,18 @@ spec:
       importPolicy: {}
       referencePolicy:
         type: Local
+      annotations:
+        opendatahub.io/notebook-python-dependencies: >-
+          [{"name":"opencv","version":"4.6.0.66"},{"name":"face-recognition","version":"1.3.0"},{"name":"elyra","version":"3.14.1"}]
+        opendatahub.io/notebook-software: '[{"name":"Python","version":"3.8"}]'
 ---
 kind: ImageStream
 apiVersion: image.openshift.io/v1
 metadata:
   annotations:
     opendatahub.io/notebook-image-name: "Code Server CUDA Data Science"
+    opendatahub.io/notebook-image-desc: >-
+      Jupyter notebook image with VS Code application.
   name: code-server-cuda-data-science
   namespace: redhat-ods-applications
   labels:
@@ -43,12 +51,18 @@ spec:
       importPolicy: {}
       referencePolicy:
         type: Local
+      annotations:
+        opendatahub.io/notebook-python-dependencies: >-
+          [{"name":"code-server","version":"4.9.0"},{"name":"cuda","version":"11.8.0"},{"name":"cudnn","version":"8.6.0"}]
+        opendatahub.io/notebook-software: '[{"name":"Python","version":"3.9"}]'
 ---
 kind: ImageStream
 apiVersion: image.openshift.io/v1
 metadata:
   annotations:
     opendatahub.io/notebook-image-name: "Spark CUDA"
+    opendatahub.io/notebook-image-desc: >-
+      Jupyter notebook image with PySpark.
   name: spark-cuda
   namespace: redhat-ods-applications
   labels:
@@ -66,12 +80,18 @@ spec:
       importPolicy: {}
       referencePolicy:
         type: Local
+      annotations:
+        opendatahub.io/notebook-python-dependencies: >-
+          [{"name":"pyspark","version":"3.3.1"},{"name":"hadoop","version":"3.3.4"},{"name":"cuda","version":"11.8.0"},{"name":"cudnn","version":"8.6.0"}]
+        opendatahub.io/notebook-software: '[{"name":"Python","version":"3.9"}]'
 ---
 kind: ImageStream
 apiVersion: image.openshift.io/v1
 metadata:
   annotations:
     opendatahub.io/notebook-image-name: "OptaPy"
+    opendatahub.io/notebook-image-desc: >-
+      Jupyter notebook image with OptaPy.
   name: optapy
   namespace: redhat-ods-applications
   labels:
@@ -89,12 +109,18 @@ spec:
       importPolicy: {}
       referencePolicy:
         type: Local
+      annotations:
+        opendatahub.io/notebook-python-dependencies: >-
+          [{"name":"optapy","version":"8.31.1b0"}]
+        opendatahub.io/notebook-software: '[{"name":"Python","version":"3.9"}]'
 ---
 kind: ImageStream
 apiVersion: image.openshift.io/v1
 metadata:
   annotations:
     opendatahub.io/notebook-image-name: "RStudio CUDA Data Science"
+    opendatahub.io/notebook-image-desc: >-
+      Jupyter notebook image RStudio application.
   name: rstudio-cuda-data-science
   namespace: redhat-ods-applications
   labels:
@@ -112,12 +138,18 @@ spec:
       importPolicy: {}
       referencePolicy:
         type: Local
+      annotations:
+        opendatahub.io/notebook-python-dependencies: >-
+          [{"name":"rstudio","version":"2022.07.2-576"},{"name":"cuda","version":"11.8.0"},{"name":"cudnn","version":"8.6.0"}]
+        opendatahub.io/notebook-software: '[{"name":"R","version":"4.2.2"}]'
 ---
 kind: ImageStream
 apiVersion: image.openshift.io/v1
 metadata:
   annotations:
     opendatahub.io/notebook-image-name: "Monai"
+    opendatahub.io/notebook-image-desc: >-
+      Jupyter notebook image with Monai.
   name: monai
   namespace: redhat-ods-applications
   labels:
@@ -135,3 +167,7 @@ spec:
       importPolicy: {}
       referencePolicy:
         type: Local
+      annotations:
+        opendatahub.io/notebook-python-dependencies: >-
+          [{"name":"monai","version":"1.1.0"},{"name":"opencv","version":"4.7.0"},{"name":"torch","version":"1.13.1"},{"name":"elyra","version":"3.14.1"}]
+        opendatahub.io/notebook-software: '[{"name":"Python","version":"3.9"}]'
