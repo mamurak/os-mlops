@@ -1,0 +1,137 @@
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  annotations:
+    opendatahub.io/notebook-image-name: "Face recognition Elyra"
+  name: face-recognition-elyra
+  namespace: redhat-ods-applications
+  labels:
+    component.opendatahub.io/name: jupyterhub
+    opendatahub.io/component: 'true'
+    opendatahub.io/notebook-image: 'true'
+spec:
+  lookupPolicy:
+    local: true
+  tags:
+    - name: "1.1.0"
+      from:
+        kind: DockerImage
+        name: quay.io/mmurakam/face-recognition-notebook:face-recognition-notebook-v1.1.0
+      importPolicy: {}
+      referencePolicy:
+        type: Local
+---
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  annotations:
+    opendatahub.io/notebook-image-name: "Code Server CUDA Data Science"
+  name: code-server-cuda-data-science
+  namespace: redhat-ods-applications
+  labels:
+    component.opendatahub.io/name: jupyterhub
+    opendatahub.io/component: 'true'
+    opendatahub.io/notebook-image: 'true'
+spec:
+  lookupPolicy:
+    local: true
+  tags:
+    - name: "2023a"
+      from:
+        kind: DockerImage
+        name: quay.io/opendatahub-contrib/workbench-images:cuda-jupyter-datascience-code-server-ubi9-py39_2023a_20230101
+      importPolicy: {}
+      referencePolicy:
+        type: Local
+---
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  annotations:
+    opendatahub.io/notebook-image-name: "Spark CUDA"
+  name: spark-cuda
+  namespace: redhat-ods-applications
+  labels:
+    component.opendatahub.io/name: jupyterhub
+    opendatahub.io/component: 'true'
+    opendatahub.io/notebook-image: 'true'
+spec:
+  lookupPolicy:
+    local: true
+  tags:
+    - name: "2023a"
+      from:
+        kind: DockerImage
+        name: quay.io/opendatahub-contrib/workbench-images:cuda-jupyter-spark-ubi9-py39_2023a_20230101
+      importPolicy: {}
+      referencePolicy:
+        type: Local
+---
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  annotations:
+    opendatahub.io/notebook-image-name: "OptaPy"
+  name: optapy
+  namespace: redhat-ods-applications
+  labels:
+    component.opendatahub.io/name: jupyterhub
+    opendatahub.io/component: 'true'
+    opendatahub.io/notebook-image: 'true'
+spec:
+  lookupPolicy:
+    local: true
+  tags:
+    - name: "2023a"
+      from:
+        kind: DockerImage
+        name: quay.io/opendatahub-contrib/workbench-images:jupyter-optapy-ubi9-py39_2023a_20230101
+      importPolicy: {}
+      referencePolicy:
+        type: Local
+---
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  annotations:
+    opendatahub.io/notebook-image-name: "RStudio CUDA Data Science"
+  name: rstudio-cuda-data-science
+  namespace: redhat-ods-applications
+  labels:
+    component.opendatahub.io/name: jupyterhub
+    opendatahub.io/component: 'true'
+    opendatahub.io/notebook-image: 'true'
+spec:
+  lookupPolicy:
+    local: true
+  tags:
+    - name: "2023a"
+      from:
+        kind: DockerImage
+        name: quay.io/opendatahub-contrib/workbench-images:cuda-jupyter-datascience-rstudio-c9s-py39_2023a_toolkit
+      importPolicy: {}
+      referencePolicy:
+        type: Local
+---
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  annotations:
+    opendatahub.io/notebook-image-name: "Monai"
+  name: monai
+  namespace: redhat-ods-applications
+  labels:
+    component.opendatahub.io/name: jupyterhub
+    opendatahub.io/component: 'true'
+    opendatahub.io/notebook-image: 'true'
+spec:
+  lookupPolicy:
+    local: true
+  tags:
+    - name: "2023a"
+      from:
+        kind: DockerImage
+        name: quay.io/opendatahub-contrib/workbench-images:jupyter-monai-c9s-py39_2023a_20230101
+      importPolicy: {}
+      referencePolicy:
+        type: Local
