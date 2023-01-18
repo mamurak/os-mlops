@@ -41,6 +41,33 @@ spec:
             secretKeyRef:
               name: elyra-runtime
               key: S3_ENDPOINT_URL
+        #     set URLs of Elyra bootstrap artifacts if deploying in air-gapped environments
+        #
+        #  - name: ELYRA_BOOTSTRAP_SCRIPT_URL
+        #    valueFrom:
+        #      secretKeyRef:
+        #        name: elyra-runtime
+        #        key: ELYRA_BOOTSTRAP_SCRIPT_URL
+        #  - name: ELYRA_PIP_CONFIG_URL
+        #    valueFrom:
+        #      secretKeyRef:
+        #        name: elyra-runtime
+        #        key: ELYRA_PIP_CONFIG_URL
+        #  - name: ELYRA_REQUIREMENTS_URL
+        #    valueFrom:
+        #      secretKeyRef:
+        #        name: elyra-runtime
+        #        key: ELYRA_REQUIREMENTS_URL
+        #  - name: ELYRA_REQUIREMENTS_URL_PY37
+        #    valueFrom:
+        #      secretKeyRef:
+        #        name: elyra-runtime
+        #        key: ELYRA_REQUIREMENTS_URL_PY37
+        #
+        #     set target domains or IP for bypassing proxy
+        #
+        # - name: NO_PROXY
+        #   value: 
   postCommit: {}
   source:
     type: Git
