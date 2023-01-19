@@ -2,332 +2,321 @@
   "doc_type": "pipeline",
   "version": "3.0",
   "json_schema": "http://api.dataplatform.ibm.com/schemas/common-pipeline/pipeline-flow/pipeline-flow-v3-schema.json",
-  "id": "62ee18e8-216b-40de-b83e-e089dc7b7bc7",
-  "primary_pipeline": "6261f038-8e72-4249-b389-cd264eb932ce",
+  "id": "elyra-auto-generated-pipeline",
+  "primary_pipeline": "primary",
   "pipelines": [
     {
-      "id": "6261f038-8e72-4249-b389-cd264eb932ce",
+      "id": "primary",
       "nodes": [
         {
-          "id": "cf7addb4-b1d1-4e35-bad2-f99de8411c0f",
+          "id": "09b48e95-e953-4a59-977b-bc751bc45798",
           "type": "execution_node",
-          "op": "execute-notebook-node",
+          "op": "execute-python-node",
+          "app_data": {
+            "component_parameters": {
+              "dependencies": [],
+              "include_subdirectories": false,
+              "outputs": [],
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [],
+              "kubernetes_shared_mem_size": {},
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "data_ingestion.py"
+            },
+            "label": "",
+            "ui_data": {
+              "label": "data_ingestion.py",
+              "image": "/notebook/myproject/model-training/static/elyra/python.svg",
+              "x_pos": 199,
+              "y_pos": 267,
+              "description": "Run Python script"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              }
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "b40184b7-b124-4c6a-8fc0-1a58db3859fc",
+          "type": "execution_node",
+          "op": "execute-python-node",
+          "app_data": {
+            "label": "",
+            "component_parameters": {
+              "dependencies": [],
+              "include_subdirectories": false,
+              "outputs": [],
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [],
+              "kubernetes_shared_mem_size": {},
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "model_training.py"
+            },
+            "ui_data": {
+              "label": "model_training.py",
+              "image": "/notebook/myproject/model-training/static/elyra/python.svg",
+              "x_pos": 671,
+              "y_pos": 266,
+              "description": "Run Python script"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              },
+              "links": [
+                {
+                  "id": "d0e01d39-77fe-4968-adbb-ecd7d9c5325a",
+                  "node_id_ref": "eceab942-a848-4482-925d-9ecdd099256f",
+                  "port_id_ref": "outPort"
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "eceab942-a848-4482-925d-9ecdd099256f",
+          "type": "execution_node",
+          "op": "execute-python-node",
+          "app_data": {
+            "label": "",
+            "component_parameters": {
+              "dependencies": [],
+              "include_subdirectories": false,
+              "outputs": [],
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [],
+              "kubernetes_shared_mem_size": {},
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "preprocessing.py"
+            },
+            "ui_data": {
+              "label": "preprocessing.py",
+              "image": "/notebook/myproject/model-training/static/elyra/python.svg",
+              "x_pos": 428,
+              "y_pos": 260,
+              "description": "Run Python script"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              },
+              "links": [
+                {
+                  "id": "2627b0ee-8ed7-4fc2-9381-14726af10260",
+                  "node_id_ref": "09b48e95-e953-4a59-977b-bc751bc45798",
+                  "port_id_ref": "outPort"
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "8124ead5-6286-4483-821e-6369a7083d0b",
+          "type": "execution_node",
+          "op": "execute-python-node",
+          "app_data": {
+            "label": "",
+            "component_parameters": {
+              "dependencies": [],
+              "include_subdirectories": false,
+              "outputs": [],
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [],
+              "kubernetes_shared_mem_size": {},
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "model_validation.py"
+            },
+            "ui_data": {
+              "label": "model_validation.py",
+              "image": "/notebook/myproject/model-training/static/elyra/python.svg",
+              "x_pos": 895,
+              "y_pos": 267,
+              "description": "Run Python script"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              },
+              "links": [
+                {
+                  "id": "144ac4c4-750a-4a34-b072-5e966ad32d1c",
+                  "node_id_ref": "b40184b7-b124-4c6a-8fc0-1a58db3859fc",
+                  "port_id_ref": "outPort"
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "1d3834c6-5f1b-4b5e-a45a-51c0ca032c14",
+          "type": "execution_node",
+          "op": "execute-python-node",
           "app_data": {
             "component_parameters": {
               "dependencies": [
-                "raw-data.csv"
+                "model.onnx"
               ],
-              "include_subdirectories": false,
-              "outputs": [
-                "sensor-training-data.csv"
-              ],
-              "env_vars": [],
-              "kubernetes_pod_annotations": [],
-              "kubernetes_pod_labels": [],
-              "kubernetes_secrets": [],
-              "kubernetes_tolerations": [],
-              "mounted_volumes": [],
-              "filename": "preprocessing.ipynb",
-              "runtime_image": "quay.io/mmurakam/elyra-kfp-runtime-base:elyra-kfp-runtime-base-v0.2.0"
-            },
-            "label": "preprocessing.ipynb",
-            "ui_data": {
-              "label": "preprocessing.ipynb",
-              "image": "/notebook/myproject/kfp-showcase/static/elyra/notebook.svg",
-              "x_pos": 50,
-              "y_pos": 50,
-              "description": "Run notebook file"
-            }
-          },
-          "inputs": [
-            {
-              "id": "inPort",
-              "app_data": {
-                "ui_data": {
-                  "cardinality": {
-                    "min": 0,
-                    "max": -1
-                  },
-                  "label": "Input Port"
-                }
-              }
-            }
-          ],
-          "outputs": [
-            {
-              "id": "outPort",
-              "app_data": {
-                "ui_data": {
-                  "cardinality": {
-                    "min": 0,
-                    "max": -1
-                  },
-                  "label": "Output Port"
-                }
-              }
-            }
-          ]
-        },
-        {
-          "id": "fd364bc1-ad49-4faa-af78-62d845793372",
-          "type": "execution_node",
-          "op": "execute-notebook-node",
-          "app_data": {
-            "component_parameters": {
-              "dependencies": [],
-              "include_subdirectories": false,
-              "outputs": [
-                "features.pickle",
-                "labels.pickle"
-              ],
-              "env_vars": [],
-              "kubernetes_pod_annotations": [],
-              "kubernetes_pod_labels": [],
-              "kubernetes_secrets": [],
-              "kubernetes_tolerations": [],
-              "mounted_volumes": [],
-              "filename": "feature_extraction.ipynb",
-              "runtime_image": "quay.io/mmurakam/elyra-kfp-runtime-base:elyra-kfp-runtime-base-v0.2.0"
-            },
-            "label": "feature_extraction.ipynb",
-            "ui_data": {
-              "label": "feature_extraction.ipynb",
-              "image": "/notebook/myproject/kfp-showcase/static/elyra/notebook.svg",
-              "x_pos": 290,
-              "y_pos": 50,
-              "description": "Run notebook file"
-            }
-          },
-          "inputs": [
-            {
-              "id": "inPort",
-              "app_data": {
-                "ui_data": {
-                  "cardinality": {
-                    "min": 0,
-                    "max": -1
-                  },
-                  "label": "Input Port"
-                }
-              },
-              "links": [
-                {
-                  "id": "af995f01-a5d7-453f-a90d-0c7077030705",
-                  "node_id_ref": "cf7addb4-b1d1-4e35-bad2-f99de8411c0f",
-                  "port_id_ref": "outPort"
-                }
-              ]
-            }
-          ],
-          "outputs": [
-            {
-              "id": "outPort",
-              "app_data": {
-                "ui_data": {
-                  "cardinality": {
-                    "min": 0,
-                    "max": -1
-                  },
-                  "label": "Output Port"
-                }
-              }
-            }
-          ]
-        },
-        {
-          "id": "a94aff2a-3f60-40c8-896b-bf5238effdfd",
-          "type": "execution_node",
-          "op": "execute-notebook-node",
-          "app_data": {
-            "component_parameters": {
-              "dependencies": [],
-              "include_subdirectories": false,
-              "outputs": [
-                "model.joblib"
-              ],
-              "env_vars": [],
-              "kubernetes_pod_annotations": [],
-              "kubernetes_pod_labels": [],
-              "kubernetes_secrets": [],
-              "kubernetes_tolerations": [],
-              "mounted_volumes": [],
-              "filename": "training.ipynb",
-              "runtime_image": "quay.io/mmurakam/elyra-kfp-runtime-base:elyra-kfp-runtime-base-v0.2.0"
-            },
-            "label": "training.ipynb",
-            "ui_data": {
-              "label": "training.ipynb",
-              "image": "/notebook/myproject/kfp-showcase/static/elyra/notebook.svg",
-              "x_pos": 530,
-              "y_pos": 50,
-              "description": "Run notebook file"
-            }
-          },
-          "inputs": [
-            {
-              "id": "inPort",
-              "app_data": {
-                "ui_data": {
-                  "cardinality": {
-                    "min": 0,
-                    "max": -1
-                  },
-                  "label": "Input Port"
-                }
-              },
-              "links": [
-                {
-                  "id": "35233631-b10c-4f56-a6e3-a52721e00b68",
-                  "node_id_ref": "fd364bc1-ad49-4faa-af78-62d845793372",
-                  "port_id_ref": "outPort"
-                }
-              ]
-            }
-          ],
-          "outputs": [
-            {
-              "id": "outPort",
-              "app_data": {
-                "ui_data": {
-                  "cardinality": {
-                    "min": 0,
-                    "max": -1
-                  },
-                  "label": "Output Port"
-                }
-              }
-            }
-          ]
-        },
-        {
-          "id": "d2a68d54-e066-4bdf-9c29-e947bc6234c2",
-          "type": "execution_node",
-          "op": "execute-notebook-node",
-          "app_data": {
-            "component_parameters": {
-              "dependencies": [],
               "include_subdirectories": false,
               "outputs": [],
               "env_vars": [
                 {
-                  "env_var": "MODEL_FILE",
-                  "value": "model.joblib"
-                }
-              ],
-              "kubernetes_pod_annotations": [],
-              "kubernetes_pod_labels": [],
-              "kubernetes_secrets": [],
-              "kubernetes_tolerations": [],
-              "mounted_volumes": [],
-              "filename": "verification.ipynb",
-              "runtime_image": "quay.io/mmurakam/elyra-kfp-runtime-base:elyra-kfp-runtime-base-v0.2.0"
-            },
-            "label": "verification.ipynb",
-            "ui_data": {
-              "label": "verification.ipynb",
-              "image": "/notebook/myproject/kfp-showcase/static/elyra/notebook.svg",
-              "x_pos": 770,
-              "y_pos": 50,
-              "description": "Run notebook file"
-            }
-          },
-          "inputs": [
-            {
-              "id": "inPort",
-              "app_data": {
-                "ui_data": {
-                  "cardinality": {
-                    "min": 0,
-                    "max": -1
-                  },
-                  "label": "Input Port"
-                }
-              },
-              "links": [
-                {
-                  "id": "72c2917d-35ee-4843-addd-9fe643af40e7",
-                  "node_id_ref": "a94aff2a-3f60-40c8-896b-bf5238effdfd",
-                  "port_id_ref": "outPort"
-                }
-              ]
-            }
-          ],
-          "outputs": [
-            {
-              "id": "outPort",
-              "app_data": {
-                "ui_data": {
-                  "cardinality": {
-                    "min": 0,
-                    "max": -1
-                  },
-                  "label": "Output Port"
-                }
-              }
-            }
-          ]
-        },
-        {
-          "id": "d2878897-fd08-4ad8-902f-89d829aae819",
-          "type": "execution_node",
-          "op": "execute-notebook-node",
-          "app_data": {
-            "component_parameters": {
-              "dependencies": [],
-              "include_subdirectories": false,
-              "outputs": [],
-              "env_vars": [
-                {
-                  "env_var": "S3_ENDPOINT_URL",
-                  "value": "http://s3.openshift-storage.svc.cluster.local/"
+                  "env_var": "AWS_S3_ENDPOINT"
                 },
                 {
-                  "env_var": "S3_ACCESS_KEY"
+                  "env_var": "AWS_ACCESS_KEY_ID"
                 },
                 {
-                  "env_var": "S3_SECRET_KEY"
+                  "env_var": "AWS_SECRET_ACCESS_KEY"
                 },
                 {
-                  "env_var": "S3_BUCKET_NAME"
+                  "env_var": "AWS_S3_BUCKET"
+                },
+                {
+                  "env_var": "MODEL_OBJECT_NAME"
                 }
               ],
               "kubernetes_pod_annotations": [],
               "kubernetes_pod_labels": [],
               "kubernetes_secrets": [
                 {
-                  "env_var": "S3_ENDPOINT_URL",
-                  "name": "demo-pipeline-secret",
-                  "key": "s3_endpoint_url"
+                  "env_var": "AWS_S3_ENDPOINT",
+                  "name": "aws-connection-models-s3",
+                  "key": "AWS_S3_ENDPOINT"
                 },
                 {
-                  "env_var": "S3_ACCESS_KEY",
-                  "name": "demo-pipeline-secret",
-                  "key": "s3_accesskey"
+                  "env_var": "AWS_ACCESS_KEY_ID",
+                  "name": "aws-connection-models-s3",
+                  "key": "AWS_ACCESS_KEY_ID"
                 },
                 {
-                  "env_var": "S3_SECRET_KEY",
-                  "name": "demo-pipeline-secret",
-                  "key": "s3_secret_key"
+                  "env_var": "AWS_SECRET_ACCESS_KEY",
+                  "name": "aws-connection-models-s3",
+                  "key": "AWS_SECRET_ACCESS_KEY"
                 },
                 {
-                  "env_var": "S3_BUCKET_NAME",
-                  "name": "demo-pipeline-secret",
-                  "key": "s3_bucket_name"
+                  "env_var": "AWS_S3_BUCKET",
+                  "name": "aws-connection-models-s3",
+                  "key": "AWS_S3_BUCKET"
                 }
               ],
               "kubernetes_shared_mem_size": {},
               "kubernetes_tolerations": [],
               "mounted_volumes": [],
-              "filename": "push-model.ipynb",
-              "runtime_image": "quay.io/mmurakam/elyra-kfp-runtime-base:elyra-kfp-runtime-base-v0.2.0"
+              "filename": "model_upload.py"
             },
-            "label": "push-model.ipynb",
+            "label": "",
             "ui_data": {
-              "label": "push-model.ipynb",
-              "image": "/notebook/myproject/kfp-showcase/static/elyra/notebook.svg",
-              "x_pos": 1008,
-              "y_pos": 48,
-              "description": "Run notebook file"
+              "label": "model_upload.py",
+              "image": "/notebook/myproject/model-training/static/elyra/python.svg",
+              "x_pos": 1106,
+              "y_pos": 269,
+              "description": "Run Python script"
             }
           },
           "inputs": [
@@ -344,8 +333,8 @@
               },
               "links": [
                 {
-                  "id": "ee3aae0e-fb24-4ea4-aea4-1ca01123a5e8",
-                  "node_id_ref": "d2a68d54-e066-4bdf-9c29-e947bc6234c2",
+                  "id": "7358fb20-f54c-4cbf-9c34-8028d36b19f6",
+                  "node_id_ref": "8124ead5-6286-4483-821e-6369a7083d0b",
                   "port_id_ref": "outPort"
                 }
               ]
@@ -372,20 +361,21 @@
           "comments": []
         },
         "version": 8,
+        "runtime_type": "KUBEFLOW_PIPELINES",
         "properties": {
+          "name": "model-training",
+          "runtime": "Kubeflow Pipelines",
           "pipeline_defaults": {
-            "kubernetes_pod_labels": [],
             "mounted_volumes": [],
-            "kubernetes_tolerations": [],
             "kubernetes_pod_annotations": [],
-            "kubernetes_secrets": [],
+            "kubernetes_tolerations": [],
+            "kubernetes_pod_labels": [],
+            "kubernetes_shared_mem_size": {},
             "env_vars": [],
+            "kubernetes_secrets": [],
             "runtime_image": "quay.io/mmurakam/elyra-kfp-runtime-base:elyra-kfp-runtime-base-v0.2.0"
-          },
-          "name": "notebooks-pipeline",
-          "runtime": "Kubeflow Pipelines"
-        },
-        "runtime_type": "KUBEFLOW_PIPELINES"
+          }
+        }
       },
       "runtime_ref": ""
     }
