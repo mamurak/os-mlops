@@ -62,7 +62,7 @@ spec:
         #    valueFrom:
         #      secretKeyRef:
         #        name: elyra-runtime
-        #        key: ELYRA_REQUIREMENTS_URL_PY37
+        #        key: elyra_requirements_url_py37
         #
         #     set target domains or IP for bypassing proxy
         #
