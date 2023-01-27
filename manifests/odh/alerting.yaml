@@ -1,0 +1,19 @@
+apiVersion: monitoring.openshift.io/v1alpha1
+kind: AlertingRule
+metadata:
+  name: modelmesh-traffic
+  namespace: openshift-monitoring
+spec:
+  groups:
+    - name: modelmesh-traffic
+      rules:
+        - alert: ModelMesh_traffic
+          expr: >
+            (sum(irate(container_network_transmit_packets_total{job="kubelet",
+            metrics_path="/metrics/cadvisor", cluster="",
+            namespace="myproject"}[1m]) * on (namespace,pod)
+            group_left(workload,workload_type)
+            namespace_workload_pod:kube_pod_owner:relabel{cluster="",
+            namespace="myproject",
+            workload=~"modelmesh-serving-model-server-myproject",
+            workload_type="deployment"}) by (pod)) > 100
