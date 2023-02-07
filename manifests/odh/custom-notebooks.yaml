@@ -47,7 +47,7 @@ spec:
     - name: "2023a"
       from:
         kind: DockerImage
-        name: quay.io/opendatahub-contrib/workbench-images:cuda-jupyter-datascience-code-server-ubi9-py39_2023a_20230101
+        name: quay.io/opendatahub-contrib/workbench-images:cuda-code-server-ubi9-py39_2023b_latest
       importPolicy: {}
       referencePolicy:
         type: Local
@@ -134,7 +134,7 @@ spec:
     - name: "2023a"
       from:
         kind: DockerImage
-        name: quay.io/opendatahub-contrib/workbench-images:cuda-jupyter-datascience-rstudio-c9s-py39_2023a_toolkit
+        name: quay.io/opendatahub-contrib/workbench-images:cuda-rstudio-c9s-py39_2023b_latest
       importPolicy: {}
       referencePolicy:
         type: Local
