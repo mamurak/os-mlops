@@ -5,6 +5,7 @@ boto3==1.24.59
 numpy==1.23.5
 scipy==1.9.3
 matplotlib==3.6.2
+lightgbm==3.3.5
 
 jupyter-resource-usage==0.6.4
 jupyterlab-s3-browser==0.12.0
