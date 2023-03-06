@@ -189,14 +189,14 @@ spec:
   lookupPolicy:
     local: true
   tags:
-    - name: "0.2.2"
+    - name: "0.3.0"
       from:
         kind: DockerImage
-        name: quay.io/mmurakam/elyra-notebook:elyra-notebook-v0.2.2
+        name: quay.io/mmurakam/elyra-notebook:elyra-notebook-v0.3.0
       importPolicy: {}
       referencePolicy:
         type: Local
       annotations:
         opendatahub.io/notebook-python-dependencies: >-
-          [{"name":"elyra","version":"3.14.1"},{"name":"scikit-learn","version":"1.2.0"},{"name":"boto3","version":"1.24.59"}]
+          [{"name":"elyra","version":"3.14.1"},{"name":"scikit-learn","version":"1.2.0"},{"name":"boto3","version":"1.24.59"},{"name":"lightgbm","version":"3.3.5"}]
         opendatahub.io/notebook-software: '[{"name":"Python","version":"3.8"}]'
