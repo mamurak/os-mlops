@@ -29,7 +29,7 @@
             "label": "",
             "ui_data": {
               "label": "data_ingestion.py",
-              "image": "/notebook/myproject/model-training/static/elyra/python.svg",
+              "image": "/notebook/face-recognition/development/static/elyra/python.svg",
               "x_pos": 199,
               "y_pos": 267,
               "description": "Run Python script"
@@ -85,7 +85,7 @@
             },
             "ui_data": {
               "label": "model_training.py",
-              "image": "/notebook/myproject/model-training/static/elyra/python.svg",
+              "image": "/notebook/face-recognition/development/static/elyra/python.svg",
               "x_pos": 671,
               "y_pos": 266,
               "description": "Run Python script"
@@ -148,7 +148,7 @@
             },
             "ui_data": {
               "label": "preprocessing.py",
-              "image": "/notebook/myproject/model-training/static/elyra/python.svg",
+              "image": "/notebook/face-recognition/development/static/elyra/python.svg",
               "x_pos": 428,
               "y_pos": 260,
               "description": "Run Python script"
@@ -211,7 +211,7 @@
             },
             "ui_data": {
               "label": "model_validation.py",
-              "image": "/notebook/myproject/model-training/static/elyra/python.svg",
+              "image": "/notebook/face-recognition/development/static/elyra/python.svg",
               "x_pos": 895,
               "y_pos": 267,
               "description": "Run Python script"
@@ -286,22 +286,22 @@
               "kubernetes_secrets": [
                 {
                   "env_var": "AWS_S3_ENDPOINT",
-                  "name": "aws-connection-models-s3",
+                  "name": "aws-connection-models",
                   "key": "AWS_S3_ENDPOINT"
                 },
                 {
                   "env_var": "AWS_ACCESS_KEY_ID",
-                  "name": "aws-connection-models-s3",
+                  "name": "aws-connection-models",
                   "key": "AWS_ACCESS_KEY_ID"
                 },
                 {
                   "env_var": "AWS_SECRET_ACCESS_KEY",
-                  "name": "aws-connection-models-s3",
+                  "name": "aws-connection-models",
                   "key": "AWS_SECRET_ACCESS_KEY"
                 },
                 {
                   "env_var": "AWS_S3_BUCKET",
-                  "name": "aws-connection-models-s3",
+                  "name": "aws-connection-models",
                   "key": "AWS_S3_BUCKET"
                 }
               ],
@@ -313,7 +313,7 @@
             "label": "",
             "ui_data": {
               "label": "model_upload.py",
-              "image": "/notebook/myproject/model-training/static/elyra/python.svg",
+              "image": "/notebook/face-recognition/development/static/elyra/python.svg",
               "x_pos": 1106,
               "y_pos": 269,
               "description": "Run Python script"
