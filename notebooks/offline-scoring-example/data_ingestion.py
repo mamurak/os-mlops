@@ -3,7 +3,7 @@ from os import environ
 import boto3
 
 
-def ingest_data(bucket_name='', data_file_name=''):
+def ingest_data(bucket_name='', data_file_name='', data_folder='./data'):
     print('Commencing data ingestion.')
 
     s3_endpoint_url = environ.get('S3_ENDPOINT_URL')
@@ -21,10 +21,10 @@ def ingest_data(bucket_name='', data_file_name=''):
     )
 
     s3_client.download_file(
-        s3_bucket_name, data_file_name, 'raw_data.csv'
+        s3_bucket_name, data_file_name, f'{data_folder}/raw_data.csv'
     )
     print('Finished data ingestion.')
 
 
 if __name__ == '__main__':
-    ingest_data()
+    ingest_data(data_folder='/data')

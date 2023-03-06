@@ -4,11 +4,11 @@ from lightgbm import Booster
 from pandas import DataFrame
 
 
-def predict():
+def predict(data_folder='./data'):
     print('Commencing offline scoring.')
 
     model = Booster(model_file='model.bst')
-    features = load(open('features.pickle', 'rb'))
+    features = load(open(f'{data_folder}/features.pickle', 'rb'))
 
     y_prediction_probs = model.predict(features)
 
@@ -21,10 +21,10 @@ def predict():
 
     print(f'Prediction results: {y_prediction_data}')
 
-    y_prediction_data.to_csv('predictions.csv')
+    y_prediction_data.to_csv(f'{data_folder}/predictions.csv')
 
     print('Offline scoring complete.')
 
 
 if __name__ == '__main__':
-    predict()
+    predict(data_folder='/data')

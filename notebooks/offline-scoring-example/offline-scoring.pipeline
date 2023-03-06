@@ -16,9 +16,7 @@
             "component_parameters": {
               "dependencies": [],
               "include_subdirectories": false,
-              "outputs": [
-                "raw_data.csv"
-              ],
+              "outputs": [],
               "env_vars": [
                 {
                   "env_var": "S3_ENDPOINT_URL"
@@ -67,7 +65,13 @@
               ],
               "kubernetes_shared_mem_size": {},
               "kubernetes_tolerations": [],
-              "mounted_volumes": [],
+              "mounted_volumes": [
+                {
+                  "path": "/data",
+                  "pvc_name": "offline-scoring-pvc",
+                  "read_only": false
+                }
+              ],
               "filename": "data_ingestion.py"
             },
             "label": "",
@@ -116,16 +120,20 @@
             "component_parameters": {
               "dependencies": [],
               "include_subdirectories": false,
-              "outputs": [
-                "features.pickle"
-              ],
+              "outputs": [],
               "env_vars": [],
               "kubernetes_pod_annotations": [],
               "kubernetes_pod_labels": [],
               "kubernetes_secrets": [],
               "kubernetes_shared_mem_size": {},
               "kubernetes_tolerations": [],
-              "mounted_volumes": [],
+              "mounted_volumes": [
+                {
+                  "path": "/data",
+                  "pvc_name": "offline-scoring-pvc",
+                  "read_only": false
+                }
+              ],
               "filename": "preprocessing.py"
             },
             "label": "",
@@ -281,16 +289,20 @@
             "component_parameters": {
               "dependencies": [],
               "include_subdirectories": false,
-              "outputs": [
-                "predictions.csv"
-              ],
+              "outputs": [],
               "env_vars": [],
               "kubernetes_pod_annotations": [],
               "kubernetes_pod_labels": [],
               "kubernetes_secrets": [],
               "kubernetes_shared_mem_size": {},
               "kubernetes_tolerations": [],
-              "mounted_volumes": [],
+              "mounted_volumes": [
+                {
+                  "path": "/data",
+                  "pvc_name": "offline-scoring-pvc",
+                  "read_only": false
+                }
+              ],
               "filename": "scoring.py"
             },
             "label": "",
@@ -392,7 +404,13 @@
               ],
               "kubernetes_shared_mem_size": {},
               "kubernetes_tolerations": [],
-              "mounted_volumes": [],
+              "mounted_volumes": [
+                {
+                  "path": "/data",
+                  "pvc_name": "offline-scoring-pvc",
+                  "read_only": false
+                }
+              ],
               "filename": "results_upload.py"
             },
             "label": "",
@@ -459,7 +477,8 @@
             "kubernetes_secrets": [],
             "env_vars": [],
             "runtime_image": "quay.io/mmurakam/elyra-kfp-runtime-base:elyra-kfp-runtime-base-v0.3.0"
-          }
+          },
+          "pipeline_parameters": []
         }
       },
       "runtime_ref": ""

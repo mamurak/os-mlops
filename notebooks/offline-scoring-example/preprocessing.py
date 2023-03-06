@@ -1,14 +1,14 @@
 from pandas import read_csv
 
 
-def preprocess():
+def preprocess(data_folder='./data'):
     print('Commencing data preprocessing.')
 
-    raw_data = read_csv('raw_data.csv')
+    raw_data = read_csv(f'{data_folder}/raw_data.csv')
 
     features = _extract_features(raw_data)
 
-    features.to_pickle('features.pickle')
+    features.to_pickle(f'{data_folder}/features.pickle')
 
     print('Data preprocessing done.')
 
@@ -19,4 +19,4 @@ def _extract_features(raw_data):
 
 
 if __name__ == '__main__':
-    preprocess()
+    preprocess(data_folder='/data')
