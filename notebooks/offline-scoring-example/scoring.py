@@ -11,12 +11,7 @@ def predict(data_folder='./data'):
     features = load(open(f'{data_folder}/features.pickle', 'rb'))
 
     y_prediction_probs = model.predict(features)
-
-    y_prediction_data = DataFrame(
-        y_prediction_probs,
-        columns=['class A', 'class B', 'class C', 'class D']
-    )
-
+    y_prediction_data = DataFrame(y_prediction_probs)
     y_prediction_data.reset_index(inplace=True)
 
     print(f'Prediction results: {y_prediction_data}')
