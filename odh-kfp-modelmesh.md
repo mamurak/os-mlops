@@ -64,11 +64,18 @@ There are multiple artifacts from Github that will need to be downloaded while s
 
 ### Prepare the model deployment
 
+<<<<<<< HEAD
 - Deploy `manifests/inference/argocd.yaml`.
 - Deploy `manifests/inference/inference-service-app-project.yaml`.
 - Deploy `manifests/inference/inference-server-application.yaml`.
 - Update and deploy `manifests/inference/storage-config-secret.yaml`.
 >>>>>>> 5ae9ae6 (fix path of `odh{-admins}.yaml` in READMEs)
+=======
+- Deploy `manifests/argocd/argocd.yaml`.
+- Deploy `manifests/argocd/inference-service-app-project.yaml`.
+- Deploy `manifests/argocd/inference-server-application.yaml`.
+- Update and deploy `manifests/modelmesh/storage-config-secret.yaml`.
+>>>>>>> 2cbfd52 (fix some paths)
 
 ## Configure the Elyra environment
 
@@ -86,6 +93,7 @@ There are multiple artifacts from Github that will need to be downloaded while s
 ### Prepare backend services
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 * Deploy `manifests/odh/ds-pipeline-ui-service.yaml`.
 * In project `openshift-storage` deploy `manifests/odh/s3-http-route.yaml` if using OpenShift Data Foundation.
 
@@ -98,6 +106,10 @@ There are multiple artifacts from Github that will need to be downloaded while s
 =======
 - Deploy `manifests/odh/ds-pipeline-ui-service.yaml`.
 - In project `openshift-storage` deploy `manifests/odh/s3-http-route.yaml`.
+=======
+- Deploy `manifests/odh/kfp/ds-pipeline-ui-service.yaml`.
+- In project `openshift-storage` deploy `manifests/odh/odf/s3-http-route.yaml`.
+>>>>>>> 2cbfd52 (fix some paths)
 
 ### Set up runtime
 
