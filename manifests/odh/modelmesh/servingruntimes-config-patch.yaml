@@ -19,12 +19,9 @@ data:
         - name: lightgbm
           version: "3" # v3.2.1
           autoSelect: true
-
       multiModel: true
-
       grpcEndpoint: "port:8085"
       grpcDataEndpoint: "port:8001"
-
       containers:
         - name: mlserver
           image: quay.io/opendatahub/mlserver:0.5.2
@@ -61,4 +58,3 @@ data:
         runtimeManagementPort: 8001
         memBufferBytes: 134217728
         modelLoadingTimeoutMillis: 90000
-

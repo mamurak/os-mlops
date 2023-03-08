@@ -1,5 +1,5 @@
 CREATE TABLE labels(
-   customer_id  INTEGER  NOT NULL PRIMARY KEY 
+   customer_id  INTEGER  NOT NULL PRIMARY KEY
   ,snapshotdate DATE  NOT NULL
   ,label        BIT  NOT NULL
 );

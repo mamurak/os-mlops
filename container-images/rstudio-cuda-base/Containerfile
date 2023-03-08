@@ -8,6 +8,6 @@ RUN wget https://developer.download.nvidia.com/compute/cuda/11.5.2/local_install
     rpm -i cuda-repo-fedora34-11-5-local-11.5.2_495.29.05-1.x86_64.rpm && \
     yum clean all && \
     yum -y module install nvidia-driver:latest-dkms && \
-    yum -y install cuda 
+    yum -y install cuda
 
 USER 8888

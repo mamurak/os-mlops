@@ -23,7 +23,7 @@ This pipeline illustrates how to visualize metrics in the Kubeflow Pipelines Cen
 ![The example pipeline](doc/images/metrics_pipeline.png)
 
 
-For this pipeline to produce the expected results 
+For this pipeline to produce the expected results
 - Open `visualize_metrics.pipeline` in JupyterLab with the Elyra version 3 or later installed
 - Review the `metrics.ipynb` notebook
 - Run the pipeline on Kubeflow Pipelines 1.0 or later

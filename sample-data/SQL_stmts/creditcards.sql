@@ -1,5 +1,5 @@
 CREATE TABLE creditcards(
-   customer_id  INTEGER  NOT NULL PRIMARY KEY 
+   customer_id  INTEGER  NOT NULL PRIMARY KEY
   ,snapshotdate DATE  NOT NULL
   ,Feature_2    VARCHAR(21) NOT NULL
   ,Feature_3    VARCHAR(21) NOT NULL

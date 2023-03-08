@@ -63,7 +63,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 del (X,y)
 
 pipe = Pipeline([
-    ('scaler', StandardScaler()), 
+    ('scaler', StandardScaler()),
     ('estimator', LogisticRegression(
         penalty="l2", C=10.0, random_state=0, solver="liblinear"
     ))

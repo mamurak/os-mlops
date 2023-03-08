@@ -1,5 +1,5 @@
 CREATE TABLE demographics(
-   customer_id  INTEGER  NOT NULL PRIMARY KEY 
+   customer_id  INTEGER  NOT NULL PRIMARY KEY
   ,snapshotdate DATE  NOT NULL
   ,Feature_5    VARCHAR(21) NOT NULL
   ,Feature_6    VARCHAR(21) NOT NULL

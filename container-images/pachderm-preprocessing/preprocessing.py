@@ -20,7 +20,7 @@ conn = trino.dbapi.connect(
 
 def get_sql(sql, connector):
     """Return pandas DataFrame."""
-    
+
     cur = connector.cursor()
     cur.execute(sql)
     response = pandas.DataFrame(
@@ -42,7 +42,7 @@ column_data_types = {
     'feature_6': 'float64',
     'feature_7': 'float64',
     'feature_8': 'float64',
-    'feature_9': 'float64',    
+    'feature_9': 'float64',
 }
 
 table_to_columns = {
@@ -58,7 +58,7 @@ for table_name in table_to_columns.keys():
     print(f'Running query: {sql}')
     df = get_sql(sql, conn)
 
-    
+
     column_names = table_to_columns[table_name]
     type_mapping = {
         column_name: column_data_types[column_name]
