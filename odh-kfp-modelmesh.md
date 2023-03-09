@@ -72,7 +72,7 @@ There are multiple artifacts from Github that will need to be downloaded while s
 >>>>>>> 5ae9ae6 (fix path of `odh{-admins}.yaml` in READMEs)
 =======
 - Deploy `manifests/argocd/argocd.yaml`.
-- Deploy `manifests/argocd/inference-service-app-project.yaml`.
+- Deploy `manifests/argocd/inference-service-app-project.yaml`, make sure to replace `OPS_REPO_URL`.
 - Deploy `manifests/argocd/inference-server-application.yaml`.
 - Update and deploy `manifests/modelmesh/storage-config-secret.yaml`.
 >>>>>>> 2cbfd52 (fix some paths)
