@@ -46,7 +46,7 @@ There are multiple artifacts from Github that will need to be downloaded while s
 
 * As an ODH admin user, open the `Settings` tab in the ODH dashboard.
 * Select `Notebook Images` and `Import new image`.
-* Add new notebook with repository URL `quay.io/mmurakam/elyra-notebook:elyra-notebook-v0.2.0` and name `Elyra KFNBC`.
+* Add new notebook with repository URL `quay.io/mmurakam/elyra-notebook:elyra-notebook-v0.3.0` and name `Elyra KFNBC`.
 * Verify Elyra notebook integration in the notebook spawn page. You should be able to provision an instance of the Elyra KFNBC notebook.
 
 ### Prepare the model deployment
