@@ -11,7 +11,7 @@
 
 # High-level architecture
 
-![Architecture diagram](odh-kfp-modelmesh-high-level-architecture.png "Architecture diagram")
+![Architecture diagram](rhods-workflow.png "Architecture diagram")
 
 # Getting started
 
@@ -19,9 +19,7 @@
 
 * OpenShift Container Platform version 4.10 or above.
 * OpenShift Pipelines operator version 1.7.2 or above.
-* OpenShift GitOps operator.
-* OpenShift Data Foundation storage cluster.
-* A fork of the [ops repository](https://github.com/mamurak/odh-ml-pipelines-seldon-ops-repo) and RW credentials to it.
+* S3 based object storage, e.g. OpenShift Data Foundation or Minio.
 
 ### Restricted access to Internet
 
@@ -31,30 +29,11 @@ There are multiple artifacts from Github that will need to be downloaded while s
 
 ## Deploying the environment
 
-### Install Open Data Hub
+### Install Red Hat OpenShift Data Science
 
-* Create a new project `odh-applications`.
-* Install the Open Data Hub operator from the Operator Hub.
-* Select Open Data Hub operator in Installed Operators within project `odh-applications`.
-* Deploy `manifests/odh.yaml`.
-* After all components have been deployed, scale down the `opendatahub-operator` pod to 0 in the `openshift-operators` project. This is required so we can freely configure the ODH components.
-* Adapt and deploy `manifests/odh-admins.yaml`, defining all users that should receive ODH admin permissions.
-* Verify the deployment by opening the `odh-dashboard`route URL. You should see the ODH dashboard. If your user is included in the ODH admin group, you should see the `Settings` tab in the dashboard.
-* Verify that ML Pipelines is deployed correctly by opening the `ds-pipeline-ui` route. You should see the Kubeflow Pipelines GUI.
-
-### Set up Elyra notebook
-
-* As an ODH admin user, open the `Settings` tab in the ODH dashboard.
-* Select `Notebook Images` and `Import new image`.
-* Add new notebook with repository URL `quay.io/mmurakam/elyra-notebook:elyra-notebook-v0.3.0` and name `Elyra KFNBC`.
-* Verify Elyra notebook integration in the notebook spawn page. You should be able to provision an instance of the Elyra KFNBC notebook.
-
-### Prepare the model deployment
-
-* Deploy `manifests/inference/argocd.yaml`.
-* Deploy `manifests/inference/inference-service-app-project.yaml`.
-* Deploy `manifests/inference/inference-server-application.yaml`.
-* Update and deploy `manifests/inference/storage-config-secret.yaml`.
+* Install the Red Hat OpenShift Data Science operator from the Operator Hub.
+* Deploy `manifests/odh/ds-pipelines.yaml` after updating the S3-related parameters.
+* Deploy `manifests/odh/custom-notebooks.yaml`.
 
 ## Configure the Elyra environment
 
@@ -72,14 +51,14 @@ There are multiple artifacts from Github that will need to be downloaded while s
 ### Prepare backend services
 
 * Deploy `manifests/odh/ds-pipeline-ui-service.yaml`.
-* In project `openshift-storage` deploy `manifests/odh/s3-http-route.yaml`.
+* In project `openshift-storage` deploy `manifests/odh/s3-http-route.yaml` if using OpenShift Data Foundation.
 
 ### Set up runtime
 
 * Launch Elyra KFNBC notebook in the Jupyter spawner page.
 * Open Runtimes configuration (`Runtime` in left toolbar).
 * Next to `Default`, select `Edit`.
-* Update the `Kubeflow Pipelines` settings as shown below.
+* Update the `Kubeflow Pipelines` settings as shown below. In case of RHODS, replace `odh-applications` with `redhat-ods-applications`.
 
 ![Elyra runtime](elyra-runtime.png "Eyra runtime")
 
@@ -89,9 +68,6 @@ There are multiple artifacts from Github that will need to be downloaded while s
     * `s3_endpoint_url`: your S3 endpoint URL such as `http://s3.openshift-storage.svc.cluster.local`
     * `s3_accesskey`: S3 access key with bucket creation permissions, for example value of `AWS_ACCESS_KEY_ID` in secret `noobaa-admin` in project `openshift-storage`.
     * `s3_secret_key`: corresponding S3 secret key, for example value of `AWS_SECRET_ACCESS_KEY_ID` in secret `noobaa-admin` in project `openshift-storage`.
-    * `ops_repo_location`: the git URL of your ops repo fork.
-    * `git_user`: git user with RW permissions to your ops repo fork. Omit if using token-based authentication.
-    * `git_password`: password or RW token for git user.
 
 # Run the pipeline
 
@@ -101,7 +77,7 @@ There are multiple artifacts from Github that will need to be downloaded while s
     * Select `Clone a Repository`.
     * Enter the repository URL `https://github.com/mamurak/os-mlops.git` and select `Clone`.
     * Authenticate if necessary.
-* Open `odh-kfp-seldon/notebooks/pipeline-example/demo.pipeline` in the Kubeflow Pipeline Editor.
+* Open `notebooks/elyra-kfp-onnx-example/model-training.pipeline` in the Kubeflow Pipeline Editor.
 * Select `Run Pipeline` in the top toolbar.
 * Select `OK`.
 * Monitor pipeline execution in the Kubeflow Pipelines user interface (`ds-pipelines-ui` route URL) under `Runs`.

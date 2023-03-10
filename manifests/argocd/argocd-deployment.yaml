@@ -102,3 +102,40 @@ spec:
         cpu: 250m
         memory: 1Gi
     sharding: {}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: inference-service
+spec:
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  destinations:
+    - name: '*'
+      namespace: '*'
+      server: '*'
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  sourceRepos:
+    - '*'
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: inference-service
+spec:
+  destination:
+    name: ''
+    namespace: TARGET_NAMESPACE
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: /manifests
+    repoURL: 'OPS_REPO_URL'
+    targetRevision: HEAD
+  project: inference-service
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
