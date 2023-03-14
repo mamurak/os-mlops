@@ -1,0 +1,16 @@
+FROM quay.io/guimou/s2i-minimal-notebook-c9s-py39:0.1.0
+
+USER 0
+
+RUN yum install -y yum-utils && \
+    yum config-manager --set-enabled crb && \
+    yum install -y https://download.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
+    yum install -y https://download1.rpmfusion.org/free/el/rpmfusion-free-release-9.noarch.rpm && \
+    yum install -y https://download1.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-9.noarch.rpm && \
+    INSTALL_PKGS="libsndfile compat-ffmpeg4 compat-ffmpeg4-devel" && \
+    yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
+    rpm -V $INSTALL_PKGS && \
+    yum -y clean all --enablerepo='*' && \
+    rm -rf /var/cache/dnf
+
+USER 1001
