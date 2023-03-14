@@ -1,0 +1,20 @@
+FROM quay.io/opendatahub/notebooks:jupyter-pytorch-ubi8-python-3.8
+
+USER 0
+
+##########################################
+# Install various dependencies for build #
+##########################################
+
+RUN yum install -y yum-utils && \
+    /usr/bin/crb enable && \
+    yum install -y https://download.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm && \
+    yum install -y https://download1.rpmfusion.org/free/el/rpmfusion-free-release-8.noarch.rpm && \
+    yum install -y https://download1.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-8.noarch.rpm && \
+    INSTALL_PKGS="libsndfile ffmpeg ffmpeg-devel" && \
+    yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
+    rpm -V $INSTALL_PKGS && \
+    yum -y clean all --enablerepo='*' && \
+    rm -rf /var/cache/dnf
+
+USER 1001
