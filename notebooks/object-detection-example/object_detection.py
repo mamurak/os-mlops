@@ -7,8 +7,8 @@ from classes import classes
 def detect_objects(image, prediction_url, token):
     payload = _serialize(image)
     model_response = _get_model_response(payload, prediction_url, token)
-    boxes, scores, class_indices = _postprocess(*model_response)
-    return boxes, scores, class_indices
+    boxes, scores, class_labels = _postprocess(*model_response)
+    return boxes, scores, class_labels
 
 
 def _serialize(image):

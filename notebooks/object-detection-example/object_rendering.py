@@ -13,7 +13,7 @@ def draw_boxes(image, boxes, scores, classes):
         box = boxes[index]
         display_str = f'{class_}: {int(100 * scores[index])}%'
         if class_ not in class_colors:
-            class_colors[class_] = colors[hash(class_) * 4 % len(colors)]
+            class_colors[class_] = colors[hash(class_) * 8 % len(colors)]
         color = class_colors.get(class_)
         _draw_bounding_box_on_image(
             image_pil, box[0], box[1], box[2], box[3], color, font,

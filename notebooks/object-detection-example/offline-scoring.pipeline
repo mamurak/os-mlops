@@ -17,52 +17,10 @@
               "dependencies": [],
               "include_subdirectories": false,
               "outputs": [],
-              "env_vars": [
-                {
-                  "env_var": "S3_ENDPOINT_URL"
-                },
-                {
-                  "env_var": "S3_ACCESS_KEY"
-                },
-                {
-                  "env_var": "S3_SECRET_KEY"
-                },
-                {
-                  "env_var": "S3_BUCKET_NAME"
-                },
-                {
-                  "env_var": "DATA_FILE_NAME"
-                }
-              ],
+              "env_vars": [],
               "kubernetes_pod_annotations": [],
               "kubernetes_pod_labels": [],
-              "kubernetes_secrets": [
-                {
-                  "env_var": "S3_ENDPOINT_URL",
-                  "name": "offline-scoring-pipeline-secret",
-                  "key": "S3_ENDPOINT_URL"
-                },
-                {
-                  "env_var": "S3_ACCESS_KEY",
-                  "name": "offline-scoring-pipeline-secret",
-                  "key": "S3_ACCESS_KEY"
-                },
-                {
-                  "env_var": "S3_SECRET_KEY",
-                  "name": "offline-scoring-pipeline-secret",
-                  "key": "S3_SECRET_KEY"
-                },
-                {
-                  "env_var": "S3_BUCKET_NAME",
-                  "name": "offline-scoring-pipeline-secret",
-                  "key": "S3_DATA_BUCKET_NAME"
-                },
-                {
-                  "env_var": "DATA_FILE_NAME",
-                  "name": "offline-scoring-pipeline-secret",
-                  "key": "DATA_FILE_NAME"
-                }
-              ],
+              "kubernetes_secrets": [],
               "kubernetes_shared_mem_size": {},
               "kubernetes_tolerations": [],
               "mounted_volumes": [
@@ -182,112 +140,14 @@
           ]
         },
         {
-          "id": "53699294-8b5e-4310-a6c3-4feb990c3fe3",
-          "type": "execution_node",
-          "op": "execute-python-node",
-          "app_data": {
-            "component_parameters": {
-              "dependencies": [],
-              "include_subdirectories": false,
-              "outputs": [
-                "model.bst"
-              ],
-              "env_vars": [
-                {
-                  "env_var": "S3_ENDPOINT_URL"
-                },
-                {
-                  "env_var": "S3_ACCESS_KEY"
-                },
-                {
-                  "env_var": "S3_SECRET_KEY"
-                },
-                {
-                  "env_var": "S3_BUCKET_NAME"
-                },
-                {
-                  "env_var": "MODEL_FILE_NAME"
-                }
-              ],
-              "kubernetes_pod_annotations": [],
-              "kubernetes_pod_labels": [],
-              "kubernetes_secrets": [
-                {
-                  "env_var": "S3_ENDPOINT_URL",
-                  "name": "offline-scoring-pipeline-secret",
-                  "key": "S3_ENDPOINT_URL"
-                },
-                {
-                  "env_var": "S3_ACCESS_KEY",
-                  "name": "offline-scoring-pipeline-secret",
-                  "key": "S3_ACCESS_KEY"
-                },
-                {
-                  "env_var": "S3_SECRET_KEY",
-                  "name": "offline-scoring-pipeline-secret",
-                  "key": "S3_SECRET_KEY"
-                },
-                {
-                  "env_var": "S3_BUCKET_NAME",
-                  "name": "offline-scoring-pipeline-secret",
-                  "key": "S3_MODEL_BUCKET_NAME"
-                },
-                {
-                  "env_var": "MODEL_FILE_NAME",
-                  "name": "offline-scoring-pipeline-secret",
-                  "key": "MODEL_FILE_NAME"
-                }
-              ],
-              "kubernetes_shared_mem_size": {},
-              "kubernetes_tolerations": [],
-              "mounted_volumes": [],
-              "filename": "model_loading.py"
-            },
-            "label": "",
-            "ui_data": {
-              "label": "model_loading.py",
-              "image": "/notebook/object-detection/dev/static/elyra/python.svg",
-              "x_pos": 205,
-              "y_pos": 362,
-              "description": "Run Python script"
-            }
-          },
-          "inputs": [
-            {
-              "id": "inPort",
-              "app_data": {
-                "ui_data": {
-                  "cardinality": {
-                    "min": 0,
-                    "max": -1
-                  },
-                  "label": "Input Port"
-                }
-              }
-            }
-          ],
-          "outputs": [
-            {
-              "id": "outPort",
-              "app_data": {
-                "ui_data": {
-                  "cardinality": {
-                    "min": 0,
-                    "max": -1
-                  },
-                  "label": "Output Port"
-                }
-              }
-            }
-          ]
-        },
-        {
           "id": "b1de295b-59f5-4dda-82bf-e6d2bf0503eb",
           "type": "execution_node",
           "op": "execute-python-node",
           "app_data": {
             "component_parameters": {
-              "dependencies": [],
+              "dependencies": [
+                "classes.py"
+              ],
               "include_subdirectories": false,
               "outputs": [],
               "env_vars": [],
@@ -333,8 +193,8 @@
                   "port_id_ref": "outPort"
                 },
                 {
-                  "id": "33bbbf10-0a6a-414a-b1af-9debf985d7c2",
-                  "node_id_ref": "53699294-8b5e-4310-a6c3-4feb990c3fe3",
+                  "id": "4531d566-a01e-4912-86d8-44b4568758cd",
+                  "node_id_ref": "160028ad-0373-4d3a-b9d4-49a2f57c4bbe",
                   "port_id_ref": "outPort"
                 }
               ]
@@ -364,44 +224,10 @@
               "dependencies": [],
               "include_subdirectories": false,
               "outputs": [],
-              "env_vars": [
-                {
-                  "env_var": "S3_ENDPOINT_URL"
-                },
-                {
-                  "env_var": "S3_ACCESS_KEY"
-                },
-                {
-                  "env_var": "S3_SECRET_KEY"
-                },
-                {
-                  "env_var": "S3_BUCKET_NAME"
-                }
-              ],
+              "env_vars": [],
               "kubernetes_pod_annotations": [],
               "kubernetes_pod_labels": [],
-              "kubernetes_secrets": [
-                {
-                  "env_var": "S3_ENDPOINT_URL",
-                  "name": "offline-scoring-pipeline-secret",
-                  "key": "S3_ENDPOINT_URL"
-                },
-                {
-                  "env_var": "S3_ACCESS_KEY",
-                  "name": "offline-scoring-pipeline-secret",
-                  "key": "S3_ACCESS_KEY"
-                },
-                {
-                  "env_var": "S3_SECRET_KEY",
-                  "name": "offline-scoring-pipeline-secret",
-                  "key": "S3_SECRET_KEY"
-                },
-                {
-                  "env_var": "S3_BUCKET_NAME",
-                  "name": "offline-scoring-pipeline-secret",
-                  "key": "S3_DATA_BUCKET_NAME"
-                }
-              ],
+              "kubernetes_secrets": [],
               "kubernetes_shared_mem_size": {},
               "kubernetes_tolerations": [],
               "mounted_volumes": [
@@ -457,6 +283,64 @@
               }
             }
           ]
+        },
+        {
+          "id": "160028ad-0373-4d3a-b9d4-49a2f57c4bbe",
+          "type": "execution_node",
+          "op": "execute-python-node",
+          "app_data": {
+            "component_parameters": {
+              "dependencies": [],
+              "include_subdirectories": false,
+              "outputs": [
+                "model.onnx"
+              ],
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [],
+              "kubernetes_shared_mem_size": {},
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "model_loading.py"
+            },
+            "label": "",
+            "ui_data": {
+              "label": "model_loading.py",
+              "image": "/notebook/object-detection/dev/static/elyra/python.svg",
+              "x_pos": 192,
+              "y_pos": 378,
+              "description": "Run Python script"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              }
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
         }
       ],
       "app_data": {
@@ -470,13 +354,49 @@
           "runtime": "Kubeflow Pipelines",
           "pipeline_defaults": {
             "kubernetes_tolerations": [],
-            "kubernetes_pod_annotations": [],
             "mounted_volumes": [],
             "kubernetes_pod_labels": [],
+            "kubernetes_pod_annotations": [],
             "kubernetes_shared_mem_size": {},
-            "kubernetes_secrets": [],
             "env_vars": [],
-            "runtime_image": "quay.io/mmurakam/elyra-kfp-runtime-base:elyra-kfp-runtime-base-v0.3.0"
+            "kubernetes_secrets": [
+              {
+                "env_var": "S3_ACCESS_KEY",
+                "name": "offline-scoring-pipeline-secret",
+                "key": "S3_ACCESS_KEY"
+              },
+              {
+                "env_var": "S3_DATA_BUCKET_NAME",
+                "name": "offline-scoring-pipeline-secret",
+                "key": "S3_DATA_BUCKET_NAME"
+              },
+              {
+                "env_var": "S3_ENDPOINT_URL",
+                "name": "offline-scoring-pipeline-secret",
+                "key": "S3_ENDPOINT_URL"
+              },
+              {
+                "env_var": "S3_MODEL_BUCKET_NAME",
+                "name": "offline-scoring-pipeline-secret",
+                "key": "S3_MODEL_BUCKET_NAME"
+              },
+              {
+                "env_var": "S3_PREDICTION_BUCKET_NAME",
+                "name": "offline-scoring-pipeline-secret",
+                "key": "S3_PREDICTION_BUCKET_NAME"
+              },
+              {
+                "env_var": "S3_SECRET_KEY",
+                "name": "offline-scoring-pipeline-secret",
+                "key": "S3_SECRET_KEY"
+              },
+              {
+                "env_var": "MODEL_FILE_NAME",
+                "name": "offline-scoring-pipeline-secret",
+                "key": "MODEL_FILE_NAME"
+              }
+            ],
+            "runtime_image": "quay.io/mmurakam/object-detection-kfp-runtime:object-detection-kfp-runtime-v0.1.0"
           },
           "pipeline_parameters": []
         }
