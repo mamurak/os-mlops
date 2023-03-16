@@ -3,7 +3,7 @@ FROM quay.io/opendatahub-contrib/workbench-images:cuda-jupyter-minimal-ubi8-py38
 ENV JUPYTER_ENABLE_LAB=true
 ENV CRIO_RUNTIME=true
 
-WORKDIR /opt/app-root/bin
+WORKDIR /opt/app-root/src
 
 RUN pip install pip==22.3.1 setuptools==65.3.0
 
@@ -22,3 +22,4 @@ ENV S3_ENDPOINT_URL=${S3_ENDPOINT_URL:-http://minio-service.minio.svc.cluster.lo
 ENV AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-minio}
 ENV AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-minio123}
 ENV COS_BUCKET=${COS_BUCKET:-elyra}
+
