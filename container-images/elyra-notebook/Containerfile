@@ -1,4 +1,4 @@
-FROM quay.io/thoth-station/s2i-minimal-py38-notebook:v0.5.1
+FROM quay.io/opendatahub-contrib/workbench-images:cuda-jupyter-minimal-ubi8-py38_2023b_latest
 
 ENV JUPYTER_ENABLE_LAB=true
 ENV CRIO_RUNTIME=true
