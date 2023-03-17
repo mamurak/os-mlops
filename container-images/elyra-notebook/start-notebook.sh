@@ -29,7 +29,7 @@ if [ -n "${NOTEBOOK_ARGS}" ]; then
     NOTEBOOK_PROGRAM_ARGS+=${NOTEBOOK_ARGS}
 fi
 
-. /opt/app-root/src/setup-elyra.sh
+. /opt/app-root/bin/setup-elyra.sh
 
 # Start the JupyterLab notebook
 start_process jupyter lab ${NOTEBOOK_PROGRAM_ARGS} \

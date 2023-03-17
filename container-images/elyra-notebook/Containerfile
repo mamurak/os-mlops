@@ -3,7 +3,7 @@ FROM quay.io/opendatahub-contrib/workbench-images:cuda-jupyter-minimal-ubi8-py38
 ENV JUPYTER_ENABLE_LAB=true
 ENV CRIO_RUNTIME=true
 
-WORKDIR /opt/app-root/src
+WORKDIR /opt/app-root/bin
 
 RUN pip install pip==22.3.1 setuptools==65.3.0
 
