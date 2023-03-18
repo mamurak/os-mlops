@@ -21,7 +21,8 @@ users
 - deploy model, note prediction endpoint
 - run online scoring
 
-- deploy model client and frontend
+- deploy model client with PREDICTION_URL
+- deploy frontend
 - test endpoints
 - test frontend app
 - test app on mobile (QR code)
@@ -36,6 +37,18 @@ users
 
 S3 endpoint:
 http://s3.openshift-storage.svc
+
+model client repo:
+https://github.com/mamurak/object-detection-rest.git
+
+env:
+PREDICTION_URL
+
+frontend repo:
+https://github.com/rh-aiservices-bu/object-detection-app.git
+
+env:
+OBJECT_DETECTION_URL = http://object-detection-rest:8080/predictions
 
 model path:
 tiny-yolov3-11.onnx
