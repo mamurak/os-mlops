@@ -1,0 +1,45 @@
+apiVersion: noobaa.io/v1alpha1
+kind: NamespaceStore
+metadata:
+  name: aws-s3-data
+  namespace: openshift-storage
+  finalizers:
+    - noobaa.io/finalizer
+  labels:
+    app: noobaa
+spec:
+  awsS3:
+    region: eu-central-1
+    secret:
+      name: aws-s3-secret
+      namespace: openshift-storage
+    targetBucket: object-detection-workshop-data
+  type: aws-s3
+---
+apiVersion: noobaa.io/v1alpha1
+kind: NamespaceStore
+metadata:
+  name: aws-s3-models
+  namespace: openshift-storage
+  finalizers:
+    - noobaa.io/finalizer
+  labels:
+    app: noobaa
+spec:
+  awsS3:
+    region: eu-central-1
+    secret:
+      name: aws-s3-secret
+      namespace: openshift-storage
+    targetBucket: object-detection-workshop-models
+  type: aws-s3
+---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: aws-s3-secret
+  namespace: openshift-storage
+stringData:
+  AWS_ACCESS_KEY_ID: ACCESS_KEY
+  AWS_SECRET_ACCESS_KEY: SECRET_KEY
+type: Opaque

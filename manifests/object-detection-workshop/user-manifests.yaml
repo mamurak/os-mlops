@@ -1,0 +1,114 @@
+kind: Project
+apiVersion: project.openshift.io/v1
+metadata:
+  name: user-x
+  labels:
+    kubernetes.io/metadata.name: user-x
+    modelmesh-enabled: 'true'
+    opendatahub.io/dashboard: 'true'
+  annotations:
+    openshift.io/description: ''
+    openshift.io/display-name: user-x
+spec:
+  finalizers:
+    - kubernetes
+---
+apiVersion: objectbucket.io/v1alpha1
+kind: ObjectBucketClaim
+metadata:
+  name: user-x-single
+  namespace: user-x
+  finalizers:
+    - objectbucket.io/finalizer
+  labels:
+    app: noobaa
+    bucket-provisioner: openshift-storage.noobaa.io-obc
+    noobaa-domain: openshift-storage.noobaa.io
+spec:
+  additionalConfig:
+    bucketclass: noobaa-default-bucket-class
+  bucketName: user-x-single
+  generateBucketName: user-x-single
+  storageClassName: openshift-storage.noobaa.io
+---
+apiVersion: noobaa.io/v1alpha1
+kind: NamespaceStore
+metadata:
+  name: user-x
+  namespace: openshift-storage
+  finalizers:
+    - noobaa.io/finalizer
+  labels:
+    app: noobaa
+spec:
+  s3Compatible:
+    endpoint: 'http://s3.openshift-storage.svc'
+    secret:
+      name: user-x-single
+      namespace: user-x
+    targetBucket: user-x-single
+  type: s3-compatible
+---
+apiVersion: noobaa.io/v1alpha1
+kind: BucketClass
+metadata:
+  name: user-x
+  namespace: openshift-storage
+  finalizers:
+    - noobaa.io/finalizer
+  labels:
+    app: noobaa
+spec:
+  namespacePolicy:
+    multi:
+      readResources:
+        - aws-s3-data
+        - aws-s3-models
+        - user-x
+      writeResource: user-x
+    type: Multi
+---
+apiVersion: objectbucket.io/v1alpha1
+kind: ObjectBucketClaim
+metadata:
+  name: user-x
+  namespace: user-x
+  finalizers:
+    - objectbucket.io/finalizer
+  labels:
+    app: noobaa
+    bucket-provisioner: openshift-storage.noobaa.io-obc
+    noobaa-domain: openshift-storage.noobaa.io
+spec:
+  additionalConfig:
+    bucketclass: user-x
+  bucketName: user-x
+  generateBucketName: user-x
+  storageClassName: openshift-storage.noobaa.io
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: admin
+  namespace: user-x
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: user-x
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: user-x
+  namespace: redhat-ods-applications
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  volumeMode: Filesystem
