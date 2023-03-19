@@ -22,7 +22,7 @@ users
 - run online scoring
 
 - deploy model client with PREDICTION_URL
-- deploy frontend
+- deploy frontend container with OBJECT_DETECTION_URL
 - test endpoints
 - test frontend app
 - test app on mobile (QR code)
@@ -44,8 +44,8 @@ https://github.com/mamurak/object-detection-rest.git
 env:
 PREDICTION_URL
 
-frontend repo:
-https://github.com/rh-aiservices-bu/object-detection-app.git
+frontend image:
+quay.io/agroom/object-detection-app
 
 env:
 OBJECT_DETECTION_URL = http://object-detection-rest:8080/predictions

@@ -31,7 +31,6 @@ def get_user_resources(user_id):
         get_single_obc_resource(user_id),
         get_namespace_store_resource(user_id),
         get_combined_obc_resource(user_id),
-        get_namespace_store_resource(user_id),
         get_bucket_class_resource(user_id),
         get_role_binding_resource(user_id),
         get_pvc_resource(user_id),
@@ -206,4 +205,4 @@ def get_pvc_resource(user_id):
 
 
 if __name__ == '__main__':
-    generate_overall_manifest(2)
+    generate_overall_manifest(40)
