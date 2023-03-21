@@ -9,7 +9,7 @@ def generate_overall_manifest(user_count, output_file_path='generated_manifest.y
 def get_overall_resources(user_count):
     overall_resources = []
     for index in range(1, user_count+1):
-        overall_resources += get_user_resources(f'user{index}')
+        overall_resources += get_user_resources(f'user-{index}')
     return overall_resources
 
 
@@ -205,4 +205,4 @@ def get_pvc_resource(user_id):
 
 
 if __name__ == '__main__':
-    generate_overall_manifest(40)
+    generate_overall_manifest(15)
