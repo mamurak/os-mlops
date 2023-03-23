@@ -1,19 +1,35 @@
 import yaml
+from argparse import ArgumentParser
+
+
+def main():
+    arguments = _read_arguments()
+    user_count = arguments.user_count
+    output_file_path = arguments.output_file_path
+    generate_overall_manifest(user_count, output_file_path)
+
+
+def _read_arguments():
+    parser = ArgumentParser()
+    parser.add_argument('--user_count', type=int)
+    parser.add_argument('--output_file_path', default='user_manifests.yaml')
+    arguments = parser.parse_args()
+    return arguments
 
 
 def generate_overall_manifest(user_count, output_file_path='generated_manifest.yaml'):
-    overall_resources = get_overall_resources(user_count)
-    generate_manifest(overall_resources, output_file_path)
+    overall_resources = _get_overall_resources(user_count)
+    _generate_manifest(overall_resources, output_file_path)
 
 
-def get_overall_resources(user_count):
+def _get_overall_resources(user_count):
     overall_resources = []
     for index in range(1, user_count+1):
-        overall_resources += get_user_resources(f'user-{index}')
+        overall_resources += _get_user_resources(f'{index}')
     return overall_resources
 
 
-def generate_manifest(resources, output_file_path):
+def _generate_manifest(resources, output_file_path):
     manifests = [
         yaml.dump(resource) for resource in resources
     ]
@@ -23,22 +39,23 @@ def generate_manifest(resources, output_file_path):
         overall_manifest += '---\n'
     with open(output_file_path, 'w') as outputfile:
         outputfile.write(overall_manifest)
+    print(f'Wrote manifest {output_file_path}')
 
 
-def get_user_resources(user_id):
+def _get_user_resources(user_id):
     user_resources = [
-        get_project_resource(user_id),
-        get_single_obc_resource(user_id),
-        get_namespace_store_resource(user_id),
-        get_combined_obc_resource(user_id),
-        get_bucket_class_resource(user_id),
-        get_role_binding_resource(user_id),
-        get_pvc_resource(user_id),
+        _get_project_resource(user_id),
+        _get_single_obc_resource(user_id),
+        _get_namespace_store_resource(user_id),
+        _get_combined_obc_resource(user_id),
+        _get_bucket_class_resource(user_id),
+        _get_role_binding_resource(user_id),
+        _get_pvc_resource(user_id),
     ]
     return user_resources
 
 
-def get_project_resource(user_id):
+def _get_project_resource(user_id):
     project_resource = {
         'kind': 'Project',
         'apiVersion': 'project.openshift.io/v1',
@@ -61,7 +78,7 @@ def get_project_resource(user_id):
     return project_resource
 
 
-def get_single_obc_resource(user_id):
+def _get_single_obc_resource(user_id):
     obc_resource = {
         'apiVersion': 'objectbucket.io/v1alpha1',
         'kind': 'ObjectBucketClaim',
@@ -87,7 +104,7 @@ def get_single_obc_resource(user_id):
     return obc_resource
 
 
-def get_namespace_store_resource(user_id):
+def _get_namespace_store_resource(user_id):
     namespace_store_resource = {
         'apiVersion': 'noobaa.io/v1alpha1',
         'kind': 'NamespaceStore',
@@ -112,7 +129,7 @@ def get_namespace_store_resource(user_id):
     return namespace_store_resource
 
 
-def get_bucket_class_resource(user_id):
+def _get_bucket_class_resource(user_id):
     bucket_class_resource = {
         'apiVersion': 'noobaa.io/v1alpha1',
         'kind': 'BucketClass',
@@ -137,7 +154,7 @@ def get_bucket_class_resource(user_id):
     return bucket_class_resource
 
 
-def get_combined_obc_resource(user_id):
+def _get_combined_obc_resource(user_id):
     combined_obc_resouce = {
         'apiVersion': 'objectbucket.io/v1alpha1',
         'kind': 'ObjectBucketClaim',
@@ -155,7 +172,6 @@ def get_combined_obc_resource(user_id):
             'additionalConfig': {
                 'bucketclass': user_id,
             },
-            'bucketName': user_id,
             'generateBucketName': user_id,
             'storageClassName': 'openshift-storage.noobaa.io',
         },
@@ -163,7 +179,7 @@ def get_combined_obc_resource(user_id):
     return combined_obc_resouce
 
 
-def get_role_binding_resource(user_id):
+def _get_role_binding_resource(user_id):
     role_binding_resource = {
         'apiVersion': 'rbac.authorization.k8s.io/v1',
         'kind': 'RoleBinding',
@@ -185,7 +201,7 @@ def get_role_binding_resource(user_id):
     return role_binding_resource
 
 
-def get_pvc_resource(user_id):
+def _get_pvc_resource(user_id):
     pvc_resource = {
         'apiVersion': 'v1',
         'kind': 'PersistentVolumeClaim',
@@ -205,4 +221,4 @@ def get_pvc_resource(user_id):
 
 
 if __name__ == '__main__':
-    generate_overall_manifest(15)
+    main()
