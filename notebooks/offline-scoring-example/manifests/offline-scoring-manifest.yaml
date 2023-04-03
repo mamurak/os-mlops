@@ -12,3 +12,16 @@ stringData:
   DATA_FILE_NAME: "raw_data.csv"
   MODEL_FILE_NAME: "model.bst"
 type: Opaque
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: offline-scoring-pvc
+  namespace: redhat-ods-applications
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  volumeMode: Filesystem
