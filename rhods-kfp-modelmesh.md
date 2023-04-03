@@ -17,57 +17,21 @@
 
 ## Prerequisites
 
-* OpenShift Container Platform version 4.10 or above.
-* OpenShift Pipelines operator version 1.7.2 or above.
-* S3 based object storage, e.g. OpenShift Data Foundation or Minio.
+* Red Hat OpenShift Data Science version 1.22 or above.
+* Data Science Pipelines (follow the [deployment guide](rhods-data-science-pipelines.md) for reference.)
 
-### Restricted access to Internet
+## Preparing the environment
 
-There are multiple artifacts from Github that will need to be downloaded while setting up and running the environment. In case Github is not accessible from the OpenShift cluster, make the following files available on a file server that is accessible from the OpenShift cluster:
-* the [ODH 1.4 manifests](https://github.com/opendatahub-io/odh-manifests/tarball/v1.4),
-* the Elyra bootstrap files located in `manifests/elyra/`.
+### Set up S3
 
-## Deploying the environment
+Spin up a Minio instance by deploying the `manifests/minio/minio.yaml` manifest. Once it's running, create the `models` bucket through its GUI, which is exposed through the Minio route in project `minio`. The credentials are:
+- login, access key: `minio`
+- password, secret key: `minio123`
 
-### Install Red Hat OpenShift Data Science
-
-* Install the Red Hat OpenShift Data Science operator from the Operator Hub.
-* Deploy `manifests/odh/ds-pipelines.yaml` after updating the S3-related parameters.
-* Deploy `manifests/odh/custom-notebooks.yaml`.
-
-## Configure the Elyra environment
-
-### If access to internet is restricted
-
-* Ensure Elyra bootstrap files are hosted as described [above](#restricted-access-to-internet).
-* Access JupyterHub spawner page (ODH dashboard -> Launch JupyterHub application).
-* Add the following environment variables
-    * `ELYRA_BOOTSTRAP_SCRIPT_URL`: URL of hosted `bootstrapper.py`
-    * `ELYRA_PIP_CONFIG_URL`: URL of hosted `pip.conf`
-    * `ELYRA_REQUIREMENTS_URL`: URL of hosted `requirements-elyra.txt`
-    * `ELYRA_REQUIREMENTS_URL_PY37`: URL of hosted `requirements-elyra-py37.txt`
-* TODO: move this configuration into the custom notebook image.
-
-### Prepare backend services
-
-* Deploy `manifests/odh/ds-pipeline-ui-service.yaml`.
-* In project `openshift-storage` deploy `manifests/odh/s3-http-route.yaml` if using OpenShift Data Foundation.
-
-### Set up runtime
-
-* Launch Elyra KFNBC notebook in the Jupyter spawner page.
-* Open Runtimes configuration (`Runtime` in left toolbar).
-* Next to `Default`, select `Edit`.
-* Update the `Kubeflow Pipelines` settings as shown below. In case of RHODS, replace `odh-applications` with `redhat-ods-applications`.
-
-![Elyra runtime](elyra-runtime.png "Eyra runtime")
-
-### Configure pipeline
-
-* Update and deploy `manifests/odh/demo-pipeline-secret.yaml`:
-    * `s3_endpoint_url`: your S3 endpoint URL such as `http://s3.openshift-storage.svc.cluster.local`
-    * `s3_accesskey`: S3 access key with bucket creation permissions, for example value of `AWS_ACCESS_KEY_ID` in secret `noobaa-admin` in project `openshift-storage`.
-    * `s3_secret_key`: corresponding S3 secret key, for example value of `AWS_SECRET_ACCESS_KEY_ID` in secret `noobaa-admin` in project `openshift-storage`.
+Update and deploy `manifests/odh/demo-pipeline-secret.yaml`:
+* `s3_endpoint_url`: your S3 endpoint URL such as `http://s3.openshift-storage.svc.cluster.local`
+* `s3_accesskey`: S3 access key with bucket creation permissions, for example value of `AWS_ACCESS_KEY_ID` in secret `noobaa-admin` in project `openshift-storage`.
+* `s3_secret_key`: corresponding S3 secret key, for example value of `AWS_SECRET_ACCESS_KEY_ID` in secret `noobaa-admin` in project `openshift-storage`.
 
 # Run the pipeline
 

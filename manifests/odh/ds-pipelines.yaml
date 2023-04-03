@@ -2,6 +2,7 @@ kind: Secret
 apiVersion: v1
 metadata:
   name: mysql-secret
+  namespace: redhat-ods-applications
 stringData:
   password: mlpipeline
   username: mlpipeline
@@ -11,6 +12,7 @@ kind: Secret
 apiVersion: v1
 metadata:
   name: mlpipeline-minio-artifact
+  namespace: redhat-ods-applications
 stringData:
   accesskey: minio
   host: minio-service.minio.svc.cluster.local
@@ -23,6 +25,7 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: pipeline-install-config
+  namespace: redhat-ods-applications
 data:
   pipelineDb: mlpipeline
   cacheDb: mlpipeline
@@ -50,6 +53,7 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: ds-pipeline-config
+  namespace: redhat-ods-applications
 data:
   artifact_endpoint: minio-service.minio.svc.cluster.local
   artifact_endpoint_scheme: 'http://'
@@ -85,6 +89,7 @@ apiVersion: kfdef.apps.kubeflow.org/v1
 kind: KfDef
 metadata:
   name: rhods-beta-features
+  namespace: redhat-ods-applications
 spec:
   applications:
     - kustomizeConfig:
@@ -104,6 +109,7 @@ apiVersion: dashboard.opendatahub.io/v1
 kind: OdhApplication
 metadata:
   name: data-science-pipelines
+  namespace: redhat-ods-applications
 spec:
   enable:
     actionLabel: Enable

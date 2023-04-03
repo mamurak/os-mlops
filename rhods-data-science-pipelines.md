@@ -4,7 +4,6 @@ Data Science Pipelines is currently not included in RHODS. This guide details ho
 
 ## Prerequisites
 
-* OpenShift Container Platform version 4.10 or above.
 * Red Hat OpenShift Data Science version 1.21 or above.
 * OpenShift Pipelines operator version 1.7.2 or above.
 * S3 based object storage, e.g. OpenShift Data Foundation or Minio.
