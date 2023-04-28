@@ -103,7 +103,7 @@ spec:
       name: data-science-pipelines
   repos:
     - name: manifests
-      uri: 'https://github.com/red-hat-data-services/odh-manifests/tarball/master'
+      uri: 'https://github.com/red-hat-data-services/odh-manifests/tarball/rhods-1.24'
 ---
 apiVersion: dashboard.opendatahub.io/v1
 kind: OdhApplication
