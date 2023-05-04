@@ -33,7 +33,20 @@ def _get_connection():
 
 
 def _get_query():
-    query = 'SELECT * FROM hive.test.customers limit 40'
+    query = """
+    SELECT 
+        transactions.timestamp,
+        transactions.user_id,
+        transactions.amount,
+        transactions.trans_type,
+        transactions.foreign,
+        transactions.interarrival, 
+        labels.label
+    FROM tpch.sf1.customer transactions 
+    JOIN tpch.sf1.orders labels ON transactions.transaction_id = labels.transaction_id
+    ORDER BY transactions.timestamp ASC
+    limit 40
+    """
     return query
 
 
