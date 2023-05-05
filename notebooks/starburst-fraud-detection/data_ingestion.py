@@ -1,7 +1,7 @@
 from os import environ
 
 from pandas import DataFrame
-from trino import dbapi
+from trino import dbapi, auth
 
 
 TRINO_USERNAME = environ.get('TRINO_USERNAME', 'trino')
@@ -27,25 +27,26 @@ def _get_connection():
         host=TRINO_HOSTNAME,
         port=TRINO_PORT,
         user=TRINO_USERNAME,
-        http_scheme='http',
+        http_scheme='https',
+        auth=auth.BasicAuthentication(TRINO_USERNAME, TRINO_PASSWORD),
     )
     return connection
 
 
 def _get_query():
     query = """
-    SELECT 
+    SELECT
         transactions.timestamp,
         transactions.user_id,
         transactions.amount,
         transactions.trans_type,
         transactions.foreign,
-        transactions.interarrival, 
+        transactions.interarrival,
         labels.label
-    FROM tpch.sf1.customer transactions 
-    JOIN tpch.sf1.orders labels ON transactions.transaction_id = labels.transaction_id
+    FROM fd_data_bucket.fd_data.transactions transactions
+    JOIN TABLE (gsheets.system.sheet(id => '1jW1oEQlYuaC53lCFIPe-qXJHa73E4wl7BliJhI8Vq6o')) labels
+    ON CAST (transactions.transaction_id AS VARCHAR) = labels.transaction_id
     ORDER BY transactions.timestamp ASC
-    limit 40
     """
     return query
 
