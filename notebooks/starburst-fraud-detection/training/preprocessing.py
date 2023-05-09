@@ -7,10 +7,10 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import RobustScaler, OneHotEncoder
 
 
-def preprocess_data():
+def preprocess_data(data_folder='./data'):
     print('preprocessing data')
 
-    df = read_parquet('data.parquet')
+    df = read_parquet(f'{data_folder}/data.parquet')
     train, _ = train_test_split(df, random_state=43)
 
     tt_xform = (
@@ -39,4 +39,4 @@ def preprocess_data():
 
 
 if __name__ == '__main__':
-    preprocess_data()
+    preprocess_data(data_folder='/data')

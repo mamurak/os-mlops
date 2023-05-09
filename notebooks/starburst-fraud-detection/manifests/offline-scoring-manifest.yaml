@@ -1,0 +1,27 @@
+kind: Secret
+apiVersion: v1
+metadata:
+  name: offline-scoring-pipeline-secret
+  namespace: redhat-ods-applications
+stringData:
+  S3_ACCESS_KEY: "minio"
+  S3_DATA_BUCKET_NAME: "data"
+  S3_ENDPOINT_URL: "http://minio-service.minio.svc.cluster.local:9000"
+  S3_MODEL_BUCKET_NAME: "models"
+  S3_SECRET_KEY: "minio123"
+  DATA_FILE_NAME: "raw_data.csv"
+  MODEL_FILE_NAME: "model.bst"
+type: Opaque
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: offline-scoring-pvc
+  namespace: redhat-ods-applications
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  volumeMode: Filesystem

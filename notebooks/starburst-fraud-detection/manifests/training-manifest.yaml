@@ -13,3 +13,16 @@ stringData:
   AWS_S3_ENDPOINT: "http://minio-service.minio.svc.cluster.local:9000"
   AWS_SECRET_ACCESS_KEY: "minio123"
 type: Opaque
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: fraud-detection-training-pvc
+  namespace: redhat-ods-applications
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  volumeMode: Filesystem

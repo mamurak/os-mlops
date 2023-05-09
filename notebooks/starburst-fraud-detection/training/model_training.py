@@ -6,10 +6,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 
 
-def train_model_pipeline():
+def train_model_pipeline(data_folder='./data'):
     print('training model')
 
-    df = read_parquet('data.parquet')
+    df = read_parquet(f'{data_folder}/data.parquet')
     train, test = train_test_split(df, random_state=43)
 
     feature_pipeline = _load_feature_pipeline()
@@ -47,4 +47,4 @@ def _train_model(train, feature_pipeline):
 
 
 if __name__ == '__main__':
-    train_model_pipeline()
+    train_model_pipeline(data_folder='/data')

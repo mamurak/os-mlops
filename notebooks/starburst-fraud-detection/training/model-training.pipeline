@@ -17,13 +17,53 @@
               "dependencies": [],
               "include_subdirectories": false,
               "outputs": [],
-              "env_vars": [],
+              "env_vars": [
+                {
+                  "env_var": "TRINO_USERNAME"
+                },
+                {
+                  "env_var": "TRINO_PASSWORD"
+                },
+                {
+                  "env_var": "TRINO_HOSTNAME"
+                },
+                {
+                  "env_var": "TRINO_PORT"
+                }
+              ],
               "kubernetes_pod_annotations": [],
               "kubernetes_pod_labels": [],
-              "kubernetes_secrets": [],
+              "kubernetes_secrets": [
+                {
+                  "env_var": "TRINO_USERNAME",
+                  "name": "fraud-detection-pipeline-secret",
+                  "key": "TRINO_USERNAME"
+                },
+                {
+                  "env_var": "TRINO_PASSWORD",
+                  "name": "fraud-detection-pipeline-secret",
+                  "key": "TRINO_PASSWORD"
+                },
+                {
+                  "env_var": "TRINO_HOSTNAME",
+                  "name": "fraud-detection-pipeline-secret",
+                  "key": "TRINO_HOSTNAME"
+                },
+                {
+                  "env_var": "TRINO_PORT",
+                  "name": "fraud-detection-pipeline-secret",
+                  "key": "TRINO_PORT"
+                }
+              ],
               "kubernetes_shared_mem_size": {},
               "kubernetes_tolerations": [],
-              "mounted_volumes": [],
+              "mounted_volumes": [
+                {
+                  "path": "/data",
+                  "pvc_name": "training-pipeline-pvc",
+                  "read_only": false
+                }
+              ],
               "filename": "data_ingestion.py"
             },
             "label": "",
@@ -73,14 +113,20 @@
             "component_parameters": {
               "dependencies": [],
               "include_subdirectories": false,
-              "outputs": [],
+              "outputs": ["model.joblib"],
               "env_vars": [],
               "kubernetes_pod_annotations": [],
               "kubernetes_pod_labels": [],
               "kubernetes_secrets": [],
               "kubernetes_shared_mem_size": {},
               "kubernetes_tolerations": [],
-              "mounted_volumes": [],
+              "mounted_volumes": [
+                {
+                  "path": "/data",
+                  "pvc_name": "training-pipeline-pvc",
+                  "read_only": false
+                }
+              ],
               "filename": "model_training.py"
             },
             "ui_data": {
@@ -136,14 +182,20 @@
             "component_parameters": {
               "dependencies": [],
               "include_subdirectories": false,
-              "outputs": [],
+              "outputs": ["feature_pipeline.joblib"],
               "env_vars": [],
               "kubernetes_pod_annotations": [],
               "kubernetes_pod_labels": [],
               "kubernetes_secrets": [],
               "kubernetes_shared_mem_size": {},
               "kubernetes_tolerations": [],
-              "mounted_volumes": [],
+              "mounted_volumes": [
+                {
+                  "path": "/data",
+                  "pvc_name": "training-pipeline-pvc",
+                  "read_only": false
+                }
+              ],
               "filename": "preprocessing.py"
             },
             "ui_data": {
@@ -259,9 +311,7 @@
           "op": "execute-python-node",
           "app_data": {
             "component_parameters": {
-              "dependencies": [
-                "model.onnx"
-              ],
+              "dependencies": [],
               "include_subdirectories": false,
               "outputs": [],
               "env_vars": [
@@ -276,9 +326,6 @@
                 },
                 {
                   "env_var": "AWS_S3_BUCKET"
-                },
-                {
-                  "env_var": "MODEL_OBJECT_NAME"
                 }
               ],
               "kubernetes_pod_annotations": [],
@@ -286,22 +333,22 @@
               "kubernetes_secrets": [
                 {
                   "env_var": "AWS_S3_ENDPOINT",
-                  "name": "aws-connection-models",
+                  "name": "fraud-detection-pipeline-secret",
                   "key": "AWS_S3_ENDPOINT"
                 },
                 {
                   "env_var": "AWS_ACCESS_KEY_ID",
-                  "name": "aws-connection-models",
+                  "name": "fraud-detection-pipeline-secret",
                   "key": "AWS_ACCESS_KEY_ID"
                 },
                 {
                   "env_var": "AWS_SECRET_ACCESS_KEY",
-                  "name": "aws-connection-models",
+                  "name": "fraud-detection-pipeline-secret",
                   "key": "AWS_SECRET_ACCESS_KEY"
                 },
                 {
                   "env_var": "AWS_S3_BUCKET",
-                  "name": "aws-connection-models",
+                  "name": "fraud-detection-pipeline-secret",
                   "key": "AWS_S3_BUCKET"
                 }
               ],
@@ -363,7 +410,7 @@
         "version": 8,
         "runtime_type": "KUBEFLOW_PIPELINES",
         "properties": {
-          "name": "model-training",
+          "name": "fraud-detection-model-training",
           "runtime": "Kubeflow Pipelines",
           "pipeline_defaults": {
             "mounted_volumes": [],
@@ -373,7 +420,7 @@
             "kubernetes_shared_mem_size": {},
             "env_vars": [],
             "kubernetes_secrets": [],
-            "runtime_image": "quay.io/mmurakam/elyra-kfp-runtime-base:elyra-kfp-runtime-base-v0.2.0"
+            "runtime_image": "quay.io/mmurakam/trino-kfp-runtime:trino-kfp-runtime:v0.1.0"
           }
         }
       },

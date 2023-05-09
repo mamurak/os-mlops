@@ -42,10 +42,8 @@ def _get_query():
         transactions.trans_type,
         transactions.foreign,
         transactions.interarrival,
-        labels.label
+        transactions.transaction_id
     FROM fd_data_bucket.fd_data.transactions transactions
-    JOIN TABLE (gsheets.system.sheet(id => '1jW1oEQlYuaC53lCFIPe-qXJHa73E4wl7BliJhI8Vq6o')) labels
-    ON CAST (transactions.transaction_id AS VARCHAR) = labels.transaction_id
     ORDER BY transactions.timestamp ASC
     """
     return query
