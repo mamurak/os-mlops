@@ -10,14 +10,14 @@ TRINO_HOSTNAME = environ.get('TRINO_HOSTNAME', 'trino-service')
 TRINO_PORT = environ.get('TRINO_PORT', '8080')
 
 
-def ingest_data():
+def ingest_data(data_folder='./data'):
     print('ingesting data')
 
     connection = _get_connection()
     query = _get_query()
     data = _request_data(query, connection)
 
-    data.to_parquet('data.parquet')
+    data.to_parquet(f'{data_folder}/data.parquet')
 
     print('data ingestion done')
 
@@ -61,4 +61,4 @@ def _request_data(sql, connector):
 
 
 if __name__ == '__main__':
-    ingest_data()
+    ingest_data(data_folder='/data')

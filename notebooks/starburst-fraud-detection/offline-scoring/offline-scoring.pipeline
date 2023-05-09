@@ -19,48 +19,40 @@
               "outputs": [],
               "env_vars": [
                 {
-                  "env_var": "S3_ENDPOINT_URL"
+                  "env_var": "TRINO_USERNAME"
                 },
                 {
-                  "env_var": "S3_ACCESS_KEY"
+                  "env_var": "TRINO_PASSWORD"
                 },
                 {
-                  "env_var": "S3_SECRET_KEY"
+                  "env_var": "TRINO_HOSTNAME"
                 },
                 {
-                  "env_var": "S3_BUCKET_NAME"
-                },
-                {
-                  "env_var": "DATA_FILE_NAME"
+                  "env_var": "TRINO_PORT"
                 }
               ],
               "kubernetes_pod_annotations": [],
               "kubernetes_pod_labels": [],
               "kubernetes_secrets": [
                 {
-                  "env_var": "S3_ENDPOINT_URL",
-                  "name": "offline-scoring-pipeline-secret",
-                  "key": "S3_ENDPOINT_URL"
+                  "env_var": "TRINO_USERNAME",
+                  "name": "fraud-detection-offline-scoring-pipeline-secret",
+                  "key": "TRINO_USERNAME"
                 },
                 {
-                  "env_var": "S3_ACCESS_KEY",
-                  "name": "offline-scoring-pipeline-secret",
-                  "key": "S3_ACCESS_KEY"
+                  "env_var": "TRINO_PASSWORD",
+                  "name": "fraud-detection-offline-scoring-pipeline-secret",
+                  "key": "TRINO_PASSWORD"
                 },
                 {
-                  "env_var": "S3_SECRET_KEY",
-                  "name": "offline-scoring-pipeline-secret",
-                  "key": "S3_SECRET_KEY"
+                  "env_var": "TRINO_HOSTNAME",
+                  "name": "fraud-detection-offline-scoring-pipeline-secret",
+                  "key": "TRINO_HOSTNAME"
                 },
                 {
-                  "env_var": "S3_BUCKET_NAME",
-                  "name": "offline-scoring-pipeline-secret",
-                  "key": "S3_DATA_BUCKET_NAME"
-                },
-                {
-                  "env_var": "DATA_FILE_NAME",
-                  "name": "offline-scoring-pipeline-secret",
-                  "key": "DATA_FILE_NAME"
+                  "env_var": "TRINO_PORT",
+                  "name": "fraud-detection-offline-scoring-pipeline-secret",
+                  "key": "TRINO_PORT"
                 }
               ],
               "kubernetes_shared_mem_size": {},
@@ -68,7 +60,7 @@
               "mounted_volumes": [
                 {
                   "path": "/data",
-                  "pvc_name": "offline-scoring-pvc",
+                  "pvc_name": "fraud-detection-offline-scoring-pvc",
                   "read_only": false
                 }
               ],
@@ -130,7 +122,7 @@
               "mounted_volumes": [
                 {
                   "path": "/data",
-                  "pvc_name": "offline-scoring-pvc",
+                  "pvc_name": "fraud-detection-offline-scoring-pvc",
                   "read_only": false
                 }
               ],
@@ -190,7 +182,7 @@
               "dependencies": [],
               "include_subdirectories": false,
               "outputs": [
-                "model.bst"
+                "model.joblib"
               ],
               "env_vars": [
                 {
@@ -214,27 +206,27 @@
               "kubernetes_secrets": [
                 {
                   "env_var": "S3_ENDPOINT_URL",
-                  "name": "offline-scoring-pipeline-secret",
+                  "name": "fraud-detection-offline-scoring-pipeline-secret",
                   "key": "S3_ENDPOINT_URL"
                 },
                 {
                   "env_var": "S3_ACCESS_KEY",
-                  "name": "offline-scoring-pipeline-secret",
+                  "name": "fraud-detection-offline-scoring-pipeline-secret",
                   "key": "S3_ACCESS_KEY"
                 },
                 {
                   "env_var": "S3_SECRET_KEY",
-                  "name": "offline-scoring-pipeline-secret",
+                  "name": "fraud-detection-offline-scoring-pipeline-secret",
                   "key": "S3_SECRET_KEY"
                 },
                 {
                   "env_var": "S3_BUCKET_NAME",
-                  "name": "offline-scoring-pipeline-secret",
+                  "name": "fraud-detection-offline-scoring-pipeline-secret",
                   "key": "S3_MODEL_BUCKET_NAME"
                 },
                 {
                   "env_var": "MODEL_FILE_NAME",
-                  "name": "offline-scoring-pipeline-secret",
+                  "name": "fraud-detection-offline-scoring-pipeline-secret",
                   "key": "MODEL_FILE_NAME"
                 }
               ],
@@ -299,7 +291,7 @@
               "mounted_volumes": [
                 {
                   "path": "/data",
-                  "pvc_name": "offline-scoring-pvc",
+                  "pvc_name": "fraud-detection-offline-scoring-pvc",
                   "read_only": false
                 }
               ],
@@ -383,22 +375,22 @@
               "kubernetes_secrets": [
                 {
                   "env_var": "S3_ENDPOINT_URL",
-                  "name": "offline-scoring-pipeline-secret",
+                  "name": "fraud-detection-offline-scoring-pipeline-secret",
                   "key": "S3_ENDPOINT_URL"
                 },
                 {
                   "env_var": "S3_ACCESS_KEY",
-                  "name": "offline-scoring-pipeline-secret",
+                  "name": "fraud-detection-offline-scoring-pipeline-secret",
                   "key": "S3_ACCESS_KEY"
                 },
                 {
                   "env_var": "S3_SECRET_KEY",
-                  "name": "offline-scoring-pipeline-secret",
+                  "name": "fraud-detection-offline-scoring-pipeline-secret",
                   "key": "S3_SECRET_KEY"
                 },
                 {
                   "env_var": "S3_BUCKET_NAME",
-                  "name": "offline-scoring-pipeline-secret",
+                  "name": "fraud-detection-offline-scoring-pipeline-secret",
                   "key": "S3_DATA_BUCKET_NAME"
                 }
               ],
@@ -407,7 +399,7 @@
               "mounted_volumes": [
                 {
                   "path": "/data",
-                  "pvc_name": "offline-scoring-pvc",
+                  "pvc_name": "fraud-detection-offline-scoring-pvc",
                   "read_only": false
                 }
               ],
@@ -466,7 +458,7 @@
         "version": 8,
         "runtime_type": "KUBEFLOW_PIPELINES",
         "properties": {
-          "name": "offline-scoring",
+          "name": "fraud-detection-offline-scoring",
           "runtime": "Kubeflow Pipelines",
           "pipeline_defaults": {
             "kubernetes_tolerations": [],
@@ -476,7 +468,7 @@
             "kubernetes_shared_mem_size": {},
             "kubernetes_secrets": [],
             "env_vars": [],
-            "runtime_image": "quay.io/mmurakam/elyra-kfp-runtime-base:elyra-kfp-runtime-base-v0.3.0"
+            "runtime_image": "quay.io/mmurakam/trino-kfp-runtime:trino-kfp-runtime-v0.1.0"
           },
           "pipeline_parameters": []
         }

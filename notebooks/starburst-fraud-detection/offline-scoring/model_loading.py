@@ -21,7 +21,7 @@ def load_model(bucket_name='', model_file_name=''):
     )
 
     s3_client.download_file(
-        s3_bucket_name, model_file_name, 'model.bst'
+        s3_bucket_name, model_file_name, 'model.joblib'
     )
 
     print('Finished model loading.')

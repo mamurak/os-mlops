@@ -4,19 +4,21 @@ metadata:
   name: fraud-detection-offline-scoring-pipeline-secret
   namespace: redhat-ods-applications
 stringData:
+  TRINO_USERNAME: "trino"
+  TRINO_PASSWORD: "trino"
+  TRINO_HOSTNAME: "trino-service"
+  TRINO_PORT: "8080"
   S3_ACCESS_KEY: "minio"
-  S3_DATA_BUCKET_NAME: "data"
+  S3_BUCKET_NAME: "fraud-detection"
   S3_ENDPOINT_URL: "http://minio-service.minio.svc.cluster.local:9000"
-  S3_MODEL_BUCKET_NAME: "models"
   S3_SECRET_KEY: "minio123"
-  DATA_FILE_NAME: "raw_data.csv"
-  MODEL_FILE_NAME: "model.bst"
+  MODEL_FILE_NAME: "model.joblib"
 type: Opaque
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: offline-scoring-pvc
+  name: fraud-detection-offline-scoring-pvc
   namespace: redhat-ods-applications
 spec:
   accessModes:

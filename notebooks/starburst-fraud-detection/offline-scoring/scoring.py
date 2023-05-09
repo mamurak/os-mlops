@@ -1,22 +1,18 @@
-from pickle import load
-
-from lightgbm import Booster
-from pandas import DataFrame
+from joblib import load
+from pandas import read_parquet
 
 
 def predict(data_folder='./data'):
     print('Commencing offline scoring.')
 
-    model = Booster(model_file='model.bst')
-    features = load(open(f'{data_folder}/features.pickle', 'rb'))
+    model = load(open('model.joblib', 'rb'))
+    features = read_parquet(f'{data_folder}/data.parquet')
 
-    y_prediction_probs = model.predict(features)
-    y_prediction_data = DataFrame(y_prediction_probs)
-    y_prediction_data.reset_index(inplace=True)
+    predictions = model.predict(features)
 
-    print(f'Prediction results: {y_prediction_data}')
+    print(f'Prediction results: {predictions}')
 
-    y_prediction_data.to_csv(f'{data_folder}/predictions.csv')
+    predictions.to_csv(f'{data_folder}/predictions.csv')
 
     print('Offline scoring complete.')
 
