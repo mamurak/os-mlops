@@ -1,7 +1,7 @@
 kind: Secret
 apiVersion: v1
 metadata:
-  name: offline-scoring-pipeline-secret
+  name: fraud-detection-offline-scoring-pipeline-secret
   namespace: redhat-ods-applications
 stringData:
   S3_ACCESS_KEY: "minio"

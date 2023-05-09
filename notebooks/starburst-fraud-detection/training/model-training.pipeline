@@ -36,22 +36,22 @@
               "kubernetes_secrets": [
                 {
                   "env_var": "TRINO_USERNAME",
-                  "name": "fraud-detection-pipeline-secret",
+                  "name": "fraud-detection-training-pipeline-secret",
                   "key": "TRINO_USERNAME"
                 },
                 {
                   "env_var": "TRINO_PASSWORD",
-                  "name": "fraud-detection-pipeline-secret",
+                  "name": "fraud-detection-training-pipeline-secret",
                   "key": "TRINO_PASSWORD"
                 },
                 {
                   "env_var": "TRINO_HOSTNAME",
-                  "name": "fraud-detection-pipeline-secret",
+                  "name": "fraud-detection-training-pipeline-secret",
                   "key": "TRINO_HOSTNAME"
                 },
                 {
                   "env_var": "TRINO_PORT",
-                  "name": "fraud-detection-pipeline-secret",
+                  "name": "fraud-detection-training-pipeline-secret",
                   "key": "TRINO_PORT"
                 }
               ],
@@ -60,7 +60,7 @@
               "mounted_volumes": [
                 {
                   "path": "/data",
-                  "pvc_name": "training-pipeline-pvc",
+                  "pvc_name": "fraud-detection-training-pvc",
                   "read_only": false
                 }
               ],
@@ -69,9 +69,9 @@
             "label": "",
             "ui_data": {
               "label": "data_ingestion.py",
-              "image": "/notebook/face-recognition/development/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
               "x_pos": 199,
-              "y_pos": 267,
+              "y_pos": 268,
               "description": "Run Python script"
             }
           },
@@ -109,11 +109,12 @@
           "type": "execution_node",
           "op": "execute-python-node",
           "app_data": {
-            "label": "",
             "component_parameters": {
               "dependencies": [],
               "include_subdirectories": false,
-              "outputs": ["model.joblib"],
+              "outputs": [
+                "model.joblib"
+              ],
               "env_vars": [],
               "kubernetes_pod_annotations": [],
               "kubernetes_pod_labels": [],
@@ -123,15 +124,16 @@
               "mounted_volumes": [
                 {
                   "path": "/data",
-                  "pvc_name": "training-pipeline-pvc",
+                  "pvc_name": "fraud-detection-training-pvc",
                   "read_only": false
                 }
               ],
               "filename": "model_training.py"
             },
+            "label": "",
             "ui_data": {
               "label": "model_training.py",
-              "image": "/notebook/face-recognition/development/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
               "x_pos": 671,
               "y_pos": 266,
               "description": "Run Python script"
@@ -178,11 +180,12 @@
           "type": "execution_node",
           "op": "execute-python-node",
           "app_data": {
-            "label": "",
             "component_parameters": {
               "dependencies": [],
               "include_subdirectories": false,
-              "outputs": ["feature_pipeline.joblib"],
+              "outputs": [
+                "feature_pipeline.joblib"
+              ],
               "env_vars": [],
               "kubernetes_pod_annotations": [],
               "kubernetes_pod_labels": [],
@@ -192,15 +195,16 @@
               "mounted_volumes": [
                 {
                   "path": "/data",
-                  "pvc_name": "training-pipeline-pvc",
+                  "pvc_name": "fraud-detection-training-pvc",
                   "read_only": false
                 }
               ],
               "filename": "preprocessing.py"
             },
+            "label": "",
             "ui_data": {
               "label": "preprocessing.py",
-              "image": "/notebook/face-recognition/development/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
               "x_pos": 428,
               "y_pos": 260,
               "description": "Run Python script"
@@ -247,7 +251,6 @@
           "type": "execution_node",
           "op": "execute-python-node",
           "app_data": {
-            "label": "",
             "component_parameters": {
               "dependencies": [],
               "include_subdirectories": false,
@@ -261,9 +264,10 @@
               "mounted_volumes": [],
               "filename": "model_validation.py"
             },
+            "label": "",
             "ui_data": {
               "label": "model_validation.py",
-              "image": "/notebook/face-recognition/development/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
               "x_pos": 895,
               "y_pos": 267,
               "description": "Run Python script"
@@ -333,22 +337,22 @@
               "kubernetes_secrets": [
                 {
                   "env_var": "AWS_S3_ENDPOINT",
-                  "name": "fraud-detection-pipeline-secret",
+                  "name": "fraud-detection-training-pipeline-secret",
                   "key": "AWS_S3_ENDPOINT"
                 },
                 {
                   "env_var": "AWS_ACCESS_KEY_ID",
-                  "name": "fraud-detection-pipeline-secret",
+                  "name": "fraud-detection-training-pipeline-secret",
                   "key": "AWS_ACCESS_KEY_ID"
                 },
                 {
                   "env_var": "AWS_SECRET_ACCESS_KEY",
-                  "name": "fraud-detection-pipeline-secret",
+                  "name": "fraud-detection-training-pipeline-secret",
                   "key": "AWS_SECRET_ACCESS_KEY"
                 },
                 {
                   "env_var": "AWS_S3_BUCKET",
-                  "name": "fraud-detection-pipeline-secret",
+                  "name": "fraud-detection-training-pipeline-secret",
                   "key": "AWS_S3_BUCKET"
                 }
               ],
@@ -360,7 +364,7 @@
             "label": "",
             "ui_data": {
               "label": "model_upload.py",
-              "image": "/notebook/face-recognition/development/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
               "x_pos": 1106,
               "y_pos": 269,
               "description": "Run Python script"
@@ -410,17 +414,17 @@
         "version": 8,
         "runtime_type": "KUBEFLOW_PIPELINES",
         "properties": {
-          "name": "fraud-detection-model-training",
+          "name": "model-training",
           "runtime": "Kubeflow Pipelines",
           "pipeline_defaults": {
-            "mounted_volumes": [],
-            "kubernetes_pod_annotations": [],
-            "kubernetes_tolerations": [],
-            "kubernetes_pod_labels": [],
             "kubernetes_shared_mem_size": {},
-            "env_vars": [],
+            "kubernetes_pod_labels": [],
+            "mounted_volumes": [],
+            "kubernetes_tolerations": [],
+            "kubernetes_pod_annotations": [],
             "kubernetes_secrets": [],
-            "runtime_image": "quay.io/mmurakam/trino-kfp-runtime:trino-kfp-runtime:v0.1.0"
+            "env_vars": [],
+            "runtime_image": "quay.io/mmurakam/trino-kfp-runtime:trino-kfp-runtime-v0.1.0"
           }
         }
       },

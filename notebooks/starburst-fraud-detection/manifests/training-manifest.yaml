@@ -1,7 +1,7 @@
 kind: Secret
 apiVersion: v1
 metadata:
-  name: fraud-detection-pipeline-secret
+  name: fraud-detection-training-pipeline-secret
   namespace: redhat-ods-applications
 stringData:
   TRINO_USERNAME: "trino"
