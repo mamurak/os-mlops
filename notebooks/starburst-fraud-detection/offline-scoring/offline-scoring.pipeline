@@ -391,7 +391,7 @@
                 {
                   "env_var": "S3_BUCKET_NAME",
                   "name": "fraud-detection-offline-scoring-pipeline-secret",
-                  "key": "S3_DATA_BUCKET_NAME"
+                  "key": "S3_BUCKET_NAME"
                 }
               ],
               "kubernetes_shared_mem_size": {},
