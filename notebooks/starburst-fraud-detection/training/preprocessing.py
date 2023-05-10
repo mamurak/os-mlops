@@ -32,7 +32,8 @@ def preprocess_data(data_folder='./data'):
     all_xforms = ColumnTransformer(transformers=([ia_scaler, amount_scaler, tt_xform]))
     feature_pipeline = Pipeline([('feature_extraction', all_xforms)])
 
-    feature_pipeline.fit(train)
+    feature_columns = ['user_id', 'amount', 'trans_type', 'foreign', 'interarrival']
+    feature_pipeline.fit(train[feature_columns])
     dump(feature_pipeline, open('feature_pipeline.joblib', 'wb'))
 
     print('data processing done')

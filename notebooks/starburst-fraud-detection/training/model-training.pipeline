@@ -414,7 +414,7 @@
         "version": 8,
         "runtime_type": "KUBEFLOW_PIPELINES",
         "properties": {
-          "name": "fraud-detection-model-training",
+          "name": "model-training",
           "runtime": "Kubeflow Pipelines",
           "pipeline_defaults": {
             "kubernetes_shared_mem_size": {},

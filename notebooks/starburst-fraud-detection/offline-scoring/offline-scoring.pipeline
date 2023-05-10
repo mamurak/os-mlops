@@ -69,7 +69,7 @@
             "label": "",
             "ui_data": {
               "label": "data_ingestion.py",
-              "image": "/notebook/object-detection/dev/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
               "x_pos": 97,
               "y_pos": 233,
               "description": "Run Python script"
@@ -131,7 +131,7 @@
             "label": "",
             "ui_data": {
               "label": "preprocessing.py",
-              "image": "/notebook/object-detection/dev/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
               "x_pos": 295,
               "y_pos": 233,
               "description": "Run Python script"
@@ -222,7 +222,7 @@
                 {
                   "env_var": "S3_BUCKET_NAME",
                   "name": "fraud-detection-offline-scoring-pipeline-secret",
-                  "key": "S3_MODEL_BUCKET_NAME"
+                  "key": "S3_BUCKET_NAME"
                 },
                 {
                   "env_var": "MODEL_FILE_NAME",
@@ -238,7 +238,7 @@
             "label": "",
             "ui_data": {
               "label": "model_loading.py",
-              "image": "/notebook/object-detection/dev/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
               "x_pos": 205,
               "y_pos": 362,
               "description": "Run Python script"
@@ -300,7 +300,7 @@
             "label": "",
             "ui_data": {
               "label": "scoring.py",
-              "image": "/notebook/object-detection/dev/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
               "x_pos": 475,
               "y_pos": 310,
               "description": "Run Python script"
@@ -408,7 +408,7 @@
             "label": "",
             "ui_data": {
               "label": "results_upload.py",
-              "image": "/notebook/object-detection/dev/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
               "x_pos": 666,
               "y_pos": 309,
               "description": "Run Python script"
@@ -458,14 +458,14 @@
         "version": 8,
         "runtime_type": "KUBEFLOW_PIPELINES",
         "properties": {
-          "name": "fraud-detection-offline-scoring",
+          "name": "offline-scoring",
           "runtime": "Kubeflow Pipelines",
           "pipeline_defaults": {
+            "kubernetes_shared_mem_size": {},
+            "kubernetes_pod_labels": [],
+            "mounted_volumes": [],
             "kubernetes_tolerations": [],
             "kubernetes_pod_annotations": [],
-            "mounted_volumes": [],
-            "kubernetes_pod_labels": [],
-            "kubernetes_shared_mem_size": {},
             "kubernetes_secrets": [],
             "env_vars": [],
             "runtime_image": "quay.io/mmurakam/trino-kfp-runtime:trino-kfp-runtime-v0.1.0"

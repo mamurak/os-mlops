@@ -6,7 +6,7 @@ from trino import dbapi, auth
 
 TRINO_USERNAME = environ.get('TRINO_USERNAME', 'trino')
 TRINO_PASSWORD = environ.get('TRINO_PASSWORD', 'trino')
-TRINO_HOSTNAME = environ.get('TRINO_HOSTNAME', 'trino-service')
+TRINO_HOSTNAME = environ.get('TRINO_HOSTNAME', 'trino')
 TRINO_PORT = environ.get('TRINO_PORT', '8080')
 
 

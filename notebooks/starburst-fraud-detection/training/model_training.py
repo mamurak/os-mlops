@@ -6,6 +6,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 
 
+feature_columns = ['user_id', 'amount', 'trans_type', 'foreign', 'interarrival']
+
+
 def train_model_pipeline(data_folder='./data'):
     print('training model')
 
@@ -15,14 +18,17 @@ def train_model_pipeline(data_folder='./data'):
     feature_pipeline = _load_feature_pipeline()
     model = _train_model(train, feature_pipeline)
 
-    predictions = model.predict(feature_pipeline.fit_transform(test))
+    predictions = model.predict(
+        feature_pipeline.fit_transform(test[feature_columns])
+    )
     print(classification_report(test.label.values, predictions))
 
     pipeline = Pipeline([
         ('features', feature_pipeline),
         ('model', model)
     ])
-    pipeline.fit(train, y = train["label"])
+
+    pipeline.fit(train[feature_columns], y=train['label'])
     dump(pipeline, open('model.joblib', 'wb'))
 
     print('model training done')
@@ -41,7 +47,7 @@ def _train_model(train, feature_pipeline):
 
     model = LogisticRegression(max_iter=500)
 
-    svecs = feature_pipeline.fit_transform(train)
+    svecs = feature_pipeline.fit_transform(train[feature_columns])
     model.fit(svecs, train["label"], sample_weight=train["weights"])
     return model
 
