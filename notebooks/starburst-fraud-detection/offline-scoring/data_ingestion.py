@@ -39,8 +39,7 @@ def _get_query():
         transactions.timestamp,
         transactions.user_id,
         transactions.amount,
-        transactions.trans_type,
-        transactions.foreign,
+        transactions.merchant_id,
         transactions.interarrival,
         transactions.transaction_id
     FROM fd_data_bucket.fd_data.transactions transactions

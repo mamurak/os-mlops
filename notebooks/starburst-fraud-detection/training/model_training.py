@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 
 
-feature_columns = ['user_id', 'amount', 'trans_type', 'foreign', 'interarrival']
+feature_columns = ['user_id', 'amount', 'merchant_id', 'interarrival']
 
 
 def train_model_pipeline(data_folder='./data'):
