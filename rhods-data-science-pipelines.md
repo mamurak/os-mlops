@@ -57,8 +57,8 @@ The deployment may take ca. 5-10 minutes. Open the RHODS dashboard and navigate 
 
 ### Prepare backend services
 
-* Deploy `manifests/odh/ds-pipeline-ui-service.yaml`.
-* In project `openshift-storage` deploy `manifests/odh/s3-http-route.yaml` if using OpenShift Data Foundation.
+* Deploy `manifests/odh/kfp/ds-pipeline-ui-service.yaml`.
+* In project `openshift-storage` deploy `manifests/odf/s3-http-route.yaml` if using OpenShift Data Foundation.
 
 ### Set up Elyra runtime
 
@@ -75,10 +75,10 @@ The default runtime assumes you're using the Minio backend as described above. I
 
 ### Configure pipeline
 
-* Update and deploy `manifests/odh/demo-pipeline-secret.yaml`:
-    * `s3_endpoint_url`: your S3 endpoint URL such as `http://s3.openshift-storage.svc.cluster.local`
-    * `s3_accesskey`: S3 access key with bucket creation permissions, for example value of `AWS_ACCESS_KEY_ID` in secret `noobaa-admin` in project `openshift-storage`.
-    * `s3_secret_key`: corresponding S3 secret key, for example value of `AWS_SECRET_ACCESS_KEY_ID` in secret `noobaa-admin` in project `openshift-storage`.
+* Update and deploy `notebooks/elyra-kfp-onnx-example/manifests/pipeline-secret.yaml` (use the default values if you're using the Minio installation outlined above):
+    * `AWS_S3_ENDPOINT`: your S3 endpoint URL such as `http://s3.openshift-storage.svc.cluster.local`
+    * `AWS_ACCESS_KEY_ID`: S3 access key with bucket creation permissions, for example value of `AWS_ACCESS_KEY_ID` in secret `noobaa-admin` in project `openshift-storage`.
+    * `AWS_SECRET_ACCESS_KEY`: corresponding S3 secret key, for example value of `AWS_SECRET_ACCESS_KEY_ID` in secret `noobaa-admin` in project `openshift-storage`.
 
 # Run the pipeline
 
