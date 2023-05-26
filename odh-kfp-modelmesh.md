@@ -18,17 +18,11 @@
 
 ## Prerequisites
 
-<<<<<<< HEAD
-* OpenShift Container Platform version 4.10 or above.
-* OpenShift Pipelines operator version 1.7.2 or above.
-* S3 based object storage, e.g. OpenShift Data Foundation or Minio.
-=======
 - OpenShift Container Platform version 4.10 or above.
 - OpenShift Pipelines operator version 1.7.2 or above.
 - OpenShift GitOps operator.
 - OpenShift Data Foundation storage cluster.
 - A fork of the [ops repository](https://github.com/mamurak/odh-ml-pipelines-seldon-ops-repo) and RW credentials to it.
->>>>>>> 5ae9ae6 (fix path of `odh{-admins}.yaml` in READMEs)
 
 ### Restricted access to Internet
 
@@ -41,11 +35,6 @@ There are multiple artifacts from Github that will need to be downloaded while s
 
 ### Install Red Hat OpenShift Data Science
 
-<<<<<<< HEAD
-* Install the Red Hat OpenShift Data Science operator from the Operator Hub.
-* Deploy `manifests/odh/ds-pipelines.yaml` after updating the S3-related parameters.
-* Deploy `manifests/odh/custom-notebooks.yaml`.
-=======
 - Create a new project `odh-applications`.
 - Install the Open Data Hub operator from the Operator Hub.
 - Select Open Data Hub operator in Installed Operators within project `odh-applications`.
@@ -64,18 +53,10 @@ There are multiple artifacts from Github that will need to be downloaded while s
 
 ### Prepare the model deployment
 
-<<<<<<< HEAD
 - Deploy `manifests/inference/argocd.yaml`.
 - Deploy `manifests/inference/inference-service-app-project.yaml`.
 - Deploy `manifests/inference/inference-server-application.yaml`.
 - Update and deploy `manifests/inference/storage-config-secret.yaml`.
->>>>>>> 5ae9ae6 (fix path of `odh{-admins}.yaml` in READMEs)
-=======
-- Deploy `manifests/argocd/argocd.yaml`.
-- Deploy `manifests/argocd/inference-service-app-project.yaml`, make sure to replace `OPS_REPO_URL`.
-- Deploy `manifests/argocd/inference-server-application.yaml`.
-- Update and deploy `manifests/modelmesh/storage-config-secret.yaml`.
->>>>>>> 2cbfd52 (fix some paths)
 
 ## Configure the Elyra environment
 
@@ -92,8 +73,6 @@ There are multiple artifacts from Github that will need to be downloaded while s
 
 ### Prepare backend services
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 * Deploy `manifests/odh/ds-pipeline-ui-service.yaml`.
 * In project `openshift-storage` deploy `manifests/odh/s3-http-route.yaml` if using OpenShift Data Foundation.
 
@@ -103,13 +82,8 @@ There are multiple artifacts from Github that will need to be downloaded while s
 * Open Runtimes configuration (`Runtime` in left toolbar).
 * Next to `Default`, select `Edit`.
 * Update the `Kubeflow Pipelines` settings as shown below. In case of RHODS, replace `odh-applications` with `redhat-ods-applications`.
-=======
-- Deploy `manifests/odh/ds-pipeline-ui-service.yaml`.
-- In project `openshift-storage` deploy `manifests/odh/s3-http-route.yaml`.
-=======
 - Deploy `manifests/odh/kfp/ds-pipeline-ui-service.yaml`.
 - In project `openshift-storage` deploy `manifests/odh/odf/s3-http-route.yaml`.
->>>>>>> 2cbfd52 (fix some paths)
 
 ### Set up runtime
 
@@ -117,31 +91,11 @@ There are multiple artifacts from Github that will need to be downloaded while s
 - Open Runtimes configuration (`Runtime` in left toolbar).
 - Next to `Default`, select `Edit`.
 - Update the `Kubeflow Pipelines` settings as shown below.
->>>>>>> 5ae9ae6 (fix path of `odh{-admins}.yaml` in READMEs)
 
 ![Elyra runtime](elyra-runtime.png "Eyra runtime")
 
 ### Configure pipeline
 
-<<<<<<< HEAD
-* Update and deploy `manifests/odh/demo-pipeline-secret.yaml`:
-    * `s3_endpoint_url`: your S3 endpoint URL such as `http://s3.openshift-storage.svc.cluster.local`
-    * `s3_accesskey`: S3 access key with bucket creation permissions, for example value of `AWS_ACCESS_KEY_ID` in secret `noobaa-admin` in project `openshift-storage`.
-    * `s3_secret_key`: corresponding S3 secret key, for example value of `AWS_SECRET_ACCESS_KEY_ID` in secret `noobaa-admin` in project `openshift-storage`.
-
-# Run the pipeline
-
-* Enter or launch the Elyra KFNBC notebook in the Jupyter spawner page.
-* Clone this repository.
-    * Open git client (`Git` in left toolbar).
-    * Select `Clone a Repository`.
-    * Enter the repository URL `https://github.com/mamurak/os-mlops.git` and select `Clone`.
-    * Authenticate if necessary.
-* Open `notebooks/elyra-kfp-onnx-example/model-training.pipeline` in the Kubeflow Pipeline Editor.
-* Select `Run Pipeline` in the top toolbar.
-* Select `OK`.
-* Monitor pipeline execution in the Kubeflow Pipelines user interface (`ds-pipelines-ui` route URL) under `Runs`.
-=======
 - Update and deploy `manifests/odh/demo-pipeline-secret.yaml`:
   - `s3_endpoint_url`: your S3 endpoint URL such as `http://s3.openshift-storage.svc.cluster.local`
   - `s3_accesskey`: S3 access key with bucket creation permissions, for example value of `AWS_ACCESS_KEY_ID` in secret `noobaa-admin` in project `openshift-storage`.
@@ -162,7 +116,7 @@ There are multiple artifacts from Github that will need to be downloaded while s
 - Select `Run Pipeline` in the top toolbar.
 - Select `OK`.
 - Monitor pipeline execution in the Kubeflow Pipelines user interface (`ds-pipelines-ui` route URL) under `Runs`.
->>>>>>> 5ae9ae6 (fix path of `odh{-admins}.yaml` in READMEs)
+
 
 # How-To
 

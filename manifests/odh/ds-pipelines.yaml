@@ -158,11 +158,11 @@ spec:
     Pipelines. It's recommended to go over at least one of the methods in the
     user guide before heading into the KFP Tekton Samples.
 
-    ## Prerequisites 
+    ## Prerequisites
 
     - Install [OpenShift Pipelines
     Operator](https://docs.openshift.com/container-platform/4.7/cicd/pipelines/installing-pipelines.html).
-    Then connect the cluster to the current shell with `oc` 
+    Then connect the cluster to the current shell with `oc`
 
 
     - Install
