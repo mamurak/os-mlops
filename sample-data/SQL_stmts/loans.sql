@@ -1,5 +1,5 @@
 CREATE TABLE loans(
-   customer_id  INTEGER  NOT NULL PRIMARY KEY 
+   customer_id  INTEGER  NOT NULL PRIMARY KEY
   ,snapshotdate DATE  NOT NULL
   ,Feature_0    VARCHAR(21) NOT NULL
   ,Feature_1    VARCHAR(21) NOT NULL

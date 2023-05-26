@@ -3,4 +3,4 @@ kind: Group
 metadata:
   name: odh-admins
 users:
-  - user1
+  - "b64:kube:admin"

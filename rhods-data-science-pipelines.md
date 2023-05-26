@@ -138,4 +138,4 @@ The default runtime assumes you're using the Minio backend as described above. I
     * Open an existing pipeline within the Elyra pipeline editor.
     * Select `Run Pipeline` (top toolbar).
     * Select the runtime configuration you have prepared before and click `OK`.
-    * You can now monitor the pipeline execution within the Kubeflow Pipelines GUI under `Runs`. 
+    * You can now monitor the pipeline execution within the Kubeflow Pipelines GUI under `Runs`.

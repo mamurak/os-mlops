@@ -9,8 +9,8 @@ metadata:
   namespace: redhat-ods-applications
   labels:
     component.opendatahub.io/name: jupyterhub
-    opendatahub.io/component: 'true'
-    opendatahub.io/notebook-image: 'true'
+    opendatahub.io/component: "true"
+    opendatahub.io/notebook-image: "true"
 spec:
   lookupPolicy:
     local: true
@@ -38,8 +38,8 @@ metadata:
   namespace: redhat-ods-applications
   labels:
     component.opendatahub.io/name: jupyterhub
-    opendatahub.io/component: 'true'
-    opendatahub.io/notebook-image: 'true'
+    opendatahub.io/component: "true"
+    opendatahub.io/notebook-image: "true"
 spec:
   lookupPolicy:
     local: true
@@ -67,8 +67,8 @@ metadata:
   namespace: redhat-ods-applications
   labels:
     component.opendatahub.io/name: jupyterhub
-    opendatahub.io/component: 'true'
-    opendatahub.io/notebook-image: 'true'
+    opendatahub.io/component: "true"
+    opendatahub.io/notebook-image: "true"
 spec:
   lookupPolicy:
     local: true
@@ -96,8 +96,8 @@ metadata:
   namespace: redhat-ods-applications
   labels:
     component.opendatahub.io/name: jupyterhub
-    opendatahub.io/component: 'true'
-    opendatahub.io/notebook-image: 'true'
+    opendatahub.io/component: "true"
+    opendatahub.io/notebook-image: "true"
 spec:
   lookupPolicy:
     local: true
@@ -125,8 +125,8 @@ metadata:
   namespace: redhat-ods-applications
   labels:
     component.opendatahub.io/name: jupyterhub
-    opendatahub.io/component: 'true'
-    opendatahub.io/notebook-image: 'true'
+    opendatahub.io/component: "true"
+    opendatahub.io/notebook-image: "true"
 spec:
   lookupPolicy:
     local: true
@@ -154,8 +154,8 @@ metadata:
   namespace: redhat-ods-applications
   labels:
     component.opendatahub.io/name: jupyterhub
-    opendatahub.io/component: 'true'
-    opendatahub.io/notebook-image: 'true'
+    opendatahub.io/component: "true"
+    opendatahub.io/notebook-image: "true"
 spec:
   lookupPolicy:
     local: true
@@ -183,8 +183,8 @@ metadata:
   namespace: redhat-ods-applications
   labels:
     component.opendatahub.io/name: jupyterhub
-    opendatahub.io/component: 'true'
-    opendatahub.io/notebook-image: 'true'
+    opendatahub.io/component: "true"
+    opendatahub.io/notebook-image: "true"
 spec:
   lookupPolicy:
     local: true
@@ -212,8 +212,8 @@ metadata:
   namespace: redhat-ods-applications
   labels:
     component.opendatahub.io/name: jupyterhub
-    opendatahub.io/component: 'true'
-    opendatahub.io/notebook-image: 'true'
+    opendatahub.io/component: "true"
+    opendatahub.io/notebook-image: "true"
 spec:
   lookupPolicy:
     local: true
@@ -241,8 +241,8 @@ metadata:
   namespace: redhat-ods-applications
   labels:
     component.opendatahub.io/name: jupyterhub
-    opendatahub.io/component: 'true'
-    opendatahub.io/notebook-image: 'true'
+    opendatahub.io/component: "true"
+    opendatahub.io/notebook-image: "true"
 spec:
   lookupPolicy:
     local: true

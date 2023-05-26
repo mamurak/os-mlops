@@ -23,6 +23,13 @@ spec:
       name: odh-notebook-controller
     - kustomizeConfig:
         overlays:
+          - odh-model-controller
+        repoRef:
+          name: manifests
+          path: model-mesh
+      name: model-mesh
+    - kustomizeConfig:
+        overlays:
           - metadata-store-mariadb
           - ds-pipeline-ui
           - object-store-minio
@@ -41,4 +48,4 @@ spec:
       name: notebook-images
   repos:
     - name: manifests
-      uri: 'https://github.com/opendatahub-io/odh-manifests/tarball/v1.4'
+      uri: "https://github.com/opendatahub-io/odh-manifests/tarball/v1.4.1"

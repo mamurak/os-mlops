@@ -7,7 +7,7 @@ spec:
   output:
     to:
       kind: ImageStreamTag
-      name: 'batching-runtime:latest'
+      name: "batching-runtime:latest"
   resources: {}
   successfulBuildsHistoryLimit: 5
   failedBuildsHistoryLimit: 5
@@ -16,15 +16,15 @@ spec:
     dockerStrategy:
       dockerfilePath: Containerfile
       # uncomment the following lines if working in a proxied environment
-      #env:
-      #  - name: NO_PROXY
-      #    value: {list of domains}
+      # env:
+      #   - name: NO_PROXY
+      #     value: {list of domains}
   postCommit: {}
   source:
     type: Git
     git:
-      uri: 'https://github.com/mamurak/os-mlops.git'
-    contextDir: '/odh-kfp-seldon/container-images/batching-runtime'
+      uri: "https://github.com/mamurak/os-mlops.git"
+    contextDir: "/odh-kfp-seldon/container-images/batching-runtime"
     sourceSecret:
       name: bitbucket-access
   runPolicy: Serial

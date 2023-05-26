@@ -20,7 +20,7 @@ Follow this guide to prepare the guided version of the [Object Detection with RH
 
 Follow the workshop guide as one of the provisioned users to validate the correct setup.
 
-## Clean up 
+## Clean up
 
 After running the workshop, clean up the environment as follows:
 - Run `manifests/object-detection-workshop/generate_environment_reset.py`:

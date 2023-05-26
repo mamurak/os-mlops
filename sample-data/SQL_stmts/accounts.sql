@@ -1,5 +1,5 @@
 CREATE TABLE accounts(
-   customer_id  INTEGER  NOT NULL PRIMARY KEY 
+   customer_id  INTEGER  NOT NULL PRIMARY KEY
   ,snapshotdate DATE  NOT NULL
   ,Feature_9    VARCHAR(21) NOT NULL
 );

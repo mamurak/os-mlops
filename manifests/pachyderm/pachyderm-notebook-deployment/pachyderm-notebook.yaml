@@ -8,10 +8,10 @@ spec:
       containers:
         - resources:
             limits:
-              cpu: '2'
+              cpu: "2"
               memory: 8Gi
             requests:
-              cpu: '1'
+              cpu: "1"
               memory: 8Gi
           name: pachyderm-notebook
           env:
@@ -36,8 +36,8 @@ spec:
             quay.io/mmurakam/pachyderm-notebook:pachyderm-notebook-v0.1.7
           workingDir: /opt/app-root/src
           securityContext:
-              privileged: true
-              runAsUser: 0
+            privileged: true
+            runAsUser: 0
           volumeMounts:
             - mountPath: /opt/app-root/src
               name: pachyderm-notebook
@@ -52,22 +52,22 @@ spec:
               name: oauth-config
             - mountPath: /etc/tls/private
               name: tls-certificates
-          image: 'registry.redhat.io/openshift4/ose-oauth-proxy:v4.10'
+          image: "registry.redhat.io/openshift4/ose-oauth-proxy:v4.10"
           args:
-            - '--provider=openshift'
-            - '--https-address=:8443'
-            - '--http-address='
-            - '--openshift-service-account=jupyter-nb-opentlc-2dmgr'
-            - '--cookie-secret-file=/etc/oauth/config/cookie_secret'
-            - '--cookie-expire=24h0m0s'
-            - '--tls-cert=/etc/tls/private/tls.crt'
-            - '--tls-key=/etc/tls/private/tls.key'
-            - '--upstream=http://localhost:8888'
-            - '--upstream-ca=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt'
+            - "--provider=openshift"
+            - "--https-address=:8443"
+            - "--http-address="
+            - "--openshift-service-account=jupyter-nb-opentlc-2dmgr"
+            - "--cookie-secret-file=/etc/oauth/config/cookie_secret"
+            - "--cookie-expire=24h0m0s"
+            - "--tls-cert=/etc/tls/private/tls.crt"
+            - "--tls-key=/etc/tls/private/tls.key"
+            - "--upstream=http://localhost:8888"
+            - "--upstream-ca=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
             - >-
               --skip-auth-regex=^(?:/notebook/$(NAMESPACE)/pachyderm-notebook)?/api$
-            - '--email-domain=*'
-            - '--skip-provider-button'
+            - "--email-domain=*"
+            - "--skip-provider-button"
             - >-
               --openshift-sar={"verb":"get","resource":"notebooks","resourceAPIGroup":"kubeflow.org","resourceName":"pachyderm-notebook","namespace":"$(NAMESPACE)"}
             - >-

@@ -6,7 +6,7 @@ df_epis = pd.read_csv('sensor-training-data.csv')
 feature_cols = list(df_epis.columns[:-1])
 
 # Extract target column 'label'
-target_col = df_epis.columns[-1] 
+target_col = df_epis.columns[-1]
 
 # Show the list of columns
 print("Feature columns:\n{}".format(feature_cols))
