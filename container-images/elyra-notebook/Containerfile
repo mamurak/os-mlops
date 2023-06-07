@@ -5,7 +5,7 @@ ENV CRIO_RUNTIME=true
 
 WORKDIR /opt/app-root/bin
 
-RUN pip install pip==22.3.1 setuptools==65.3.0
+RUN pip install pip==23.1.2 setuptools==67.8.0
 
 # uncomment following line if working in an air-gapped environment
 # RUN pip uninstall -y jupyterlab-tabnine
