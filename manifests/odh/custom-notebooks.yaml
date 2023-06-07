@@ -18,7 +18,7 @@ spec:
     - name: "1.1.0"
       from:
         kind: DockerImage
-        name: quay.io/mmurakam/face-recognition-notebook:face-recognition-notebook-v1.1.0
+        name: quay.io/mmurakam/face-recognition-notebook:face-recognition-notebook-v2.0.3
       importPolicy: {}
       referencePolicy:
         type: Local
@@ -192,7 +192,7 @@ spec:
     - name: "0.4.0"
       from:
         kind: DockerImage
-        name: quay.io/mmurakam/elyra-notebook:elyra-notebook-v0.4.0
+        name: quay.io/mmurakam/elyra-notebook:elyra-notebook-v1.0.3
       importPolicy: {}
       referencePolicy:
         type: Local
@@ -221,7 +221,7 @@ spec:
     - name: "1.0.2"
       from:
         kind: DockerImage
-        name: quay.io/mmurakam/object-detection-notebook:object-detection-notebook-v1.0.2
+        name: quay.io/mmurakam/object-detection-notebook:object-detection-notebook-v1.0.3
       importPolicy: {}
       referencePolicy:
         type: Local
@@ -250,7 +250,7 @@ spec:
     - name: "0.1.0"
       from:
         kind: DockerImage
-        name: quay.io/mmurakam/trino-notebook:trino-notebook-v0.1.0
+        name: quay.io/mmurakam/trino-notebook:trino-notebook-v0.1.2
       importPolicy: {}
       referencePolicy:
         type: Local
