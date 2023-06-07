@@ -13,7 +13,7 @@ if [[ ! -f "$DEFAULT_RUNTIME_FILE" ]]; then
                                   --name=my_kfp \
                                   --display_name=Default \
                                   --auth_type=NO_AUTHENTICATION \
-                                  --api_endpoint=http://ds-pipeline-ui."$KF_DEPLOYMENT_NAMESPACE".svc.cluster.local:3000/pipeline \
+                                  --api_endpoint=http://ds-pipeline-pipelines-definition:8888 \
                                   --cos_endpoint="$S3_ENDPOINT_URL" \
                                   --cos_auth_type=USER_CREDENTIALS \
                                   --cos_username="$AWS_ACCESS_KEY_ID" \
