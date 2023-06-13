@@ -334,11 +334,12 @@
           "name": "model-training",
           "runtime": "Kubeflow Pipelines",
           "pipeline_defaults": {
-            "mounted_volumes": [],
-            "kubernetes_pod_labels": [],
-            "kubernetes_tolerations": [],
             "kubernetes_shared_mem_size": {},
+            "kubernetes_tolerations": [],
+            "mounted_volumes": [],
             "kubernetes_pod_annotations": [],
+            "kubernetes_pod_labels": [],
+            "env_vars": [],
             "kubernetes_secrets": [
               {
                 "env_var": "AWS_SECRET_ACCESS_KEY",
@@ -361,7 +362,6 @@
                 "key": "AWS_S3_ENDPOINT"
               }
             ],
-            "env_vars": [],
             "runtime_image": "quay.io/mmurakam/object-detection-kfp-runtime:object-detection-kfp-runtime-v0.1.0"
           }
         }
