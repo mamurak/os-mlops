@@ -10,7 +10,7 @@ from sklearn.preprocessing import RobustScaler, OneHotEncoder
 def preprocess_data(data_folder='./data'):
     print('preprocessing data')
 
-    df = read_parquet(f'{data_folder}/training-data.parquet')
+    df = read_parquet(f'{data_folder}/data.parquet')
     train, _ = train_test_split(df, random_state=43)
 
     tt_xform = (
@@ -31,10 +31,14 @@ def preprocess_data(data_folder='./data'):
     ia_scaler = ('interarrival_scaler', impute_and_scale, ['interarrival'])
     amount_scaler = ('amount_scaler', RobustScaler(), ['amount'])
 
-    all_xforms = ColumnTransformer(transformers=([ia_scaler, amount_scaler, tt_xform]))
+    all_xforms = ColumnTransformer(
+        transformers=([ia_scaler, amount_scaler, tt_xform])
+    )
     feature_pipeline = Pipeline([('feature_extraction', all_xforms)])
 
-    feature_columns = ['user_id', 'amount', 'trans_type', 'foreign', 'interarrival']
+    feature_columns = [
+        'user_id', 'amount', 'trans_type', 'foreign', 'interarrival'
+    ]
     feature_pipeline.fit(train[feature_columns])
     dump(feature_pipeline, open('feature_pipeline.joblib', 'wb'))
 

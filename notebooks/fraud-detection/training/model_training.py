@@ -17,7 +17,7 @@ max_regression_iterations = int(environ.get('max_regression_iterations', 500))
 def train_model_pipeline(data_folder='./data'):
     print('training model')
 
-    df = read_parquet(f'{data_folder}/training-data.parquet')
+    df = read_parquet(f'{data_folder}/data.parquet')
     train, test = train_test_split(df, random_state=43)
 
     feature_pipeline = _load_feature_pipeline()
