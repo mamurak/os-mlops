@@ -69,8 +69,11 @@
           "type": "execution_node",
           "op": "execute-python-node",
           "app_data": {
-            "label": "",
             "component_parameters": {
+              "pipeline_parameters": [
+                "training_parameter_1",
+                "training_parameter_2"
+              ],
               "dependencies": [],
               "include_subdirectories": false,
               "outputs": [],
@@ -83,6 +86,7 @@
               "mounted_volumes": [],
               "filename": "model_training.py"
             },
+            "label": "",
             "ui_data": {
               "label": "model_training.py",
               "image": "/notebook/object-detection/development/static/elyra/python.svg",
@@ -335,11 +339,10 @@
           "runtime": "Kubeflow Pipelines",
           "pipeline_defaults": {
             "kubernetes_shared_mem_size": {},
-            "kubernetes_tolerations": [],
             "mounted_volumes": [],
+            "kubernetes_tolerations": [],
             "kubernetes_pod_annotations": [],
             "kubernetes_pod_labels": [],
-            "env_vars": [],
             "kubernetes_secrets": [
               {
                 "env_var": "AWS_SECRET_ACCESS_KEY",
@@ -362,8 +365,29 @@
                 "key": "AWS_S3_ENDPOINT"
               }
             ],
+            "env_vars": [],
             "runtime_image": "quay.io/mmurakam/object-detection-kfp-runtime:object-detection-kfp-runtime-v0.1.0"
-          }
+          },
+          "pipeline_parameters": [
+            {
+              "name": "training_parameter_1",
+              "description": "",
+              "default_value": {
+                "type": "String",
+                "value": "default_value"
+              },
+              "required": false
+            },
+            {
+              "name": "training_parameter_2",
+              "description": "",
+              "default_value": {
+                "type": "Float",
+                "value": 4.2
+              },
+              "required": false
+            }
+          ]
         }
       },
       "runtime_ref": ""

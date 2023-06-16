@@ -3,7 +3,7 @@ from os import environ
 from boto3 import client
 
 
-def load_model(bucket_name='', model_object_name=''):
+def load_model(model_object_name=''):
     print('Commencing model loading.')
 
     s3_endpoint_url = environ.get('AWS_S3_ENDPOINT')
