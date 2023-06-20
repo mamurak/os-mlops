@@ -1,3 +1,10 @@
+### Pipeline server stays in pending state
+
+- If you're using an HTTP-based S3 storage endpoint, verify that the Pipelines CR is configured properly.
+    - Within your Data Science Project namespace, look up the `DataSciencePipelinesApplication` CR named `pipelines-definition`.
+    - Ensure that `spec.objectStorage.externalStorage.secure` is `false`. If it's not, set it to `false` and save the CR. The pipeline server should now initialize properly.
+    - Refer to `manifests/odh/pipelines-definition.yaml` for reference.
+
 ### Pipeline Run request in Elyra fails
 
 - Verify that OpenShift Pipelines operator is installed (versions 1.7.x or 1.8.x).
@@ -8,10 +15,6 @@
         - e.g. if using Minio in namespace `minio`: `http://minio-service.minio.svc.cluster.local:9000`
     - Verify Cloud Object Storage Bucket Name maps to an existing bucket in S3 storage.
     - Verify Cloud Object Storage credentials are valid and grant RW permissions.
-
-### Data Science Pipelines aka. Kubeflow Pipelines UI can't be accessed (403 Permission Denied)
-
-- Grant RHODS users view access for ODH/RHODS applications project.
 
 ### Elyra unable to submit pipeline jobs to Kubeflow Pipelines
 
