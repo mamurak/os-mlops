@@ -1,0 +1,6 @@
+resources:
+- minio/minio.yaml
+- odh/codeflare-stack-kfdef.yaml
+- odh/custom-notebooks.yaml
+- demo-manifests/fraud-detection.yaml
+- demo-manifests/object-detection.yaml
