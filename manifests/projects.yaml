@@ -1,0 +1,37 @@
+kind: Project
+apiVersion: project.openshift.io/v1
+metadata:
+  name: fraud-detection
+  labels:
+    kubernetes.io/metadata.name: fraud-detection
+    modelmesh-enabled: 'true'
+    opendatahub.io/dashboard: 'true'
+  annotations:
+    openshift.io/description: ''
+    openshift.io/display-name: fraud-detection
+spec:
+  finalizers:
+    - kubernetes
+---
+kind: Project
+apiVersion: project.openshift.io/v1
+metadata:
+  name: object-detection
+  labels:
+    kubernetes.io/metadata.name: object-detection
+    modelmesh-enabled: 'true'
+    opendatahub.io/dashboard: 'true'
+  annotations:
+    openshift.io/description: ''
+    openshift.io/display-name: object-detection
+spec:
+  finalizers:
+    - kubernetes
+---
+apiVersion: project.openshift.io/v1
+kind: Project
+metadata:
+  name: minio
+spec:
+  finalizers:
+  - kubernetes

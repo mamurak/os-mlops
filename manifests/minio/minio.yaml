@@ -1,11 +1,3 @@
-apiVersion: project.openshift.io/v1
-kind: Project
-metadata:
-  name: minio
-spec:
-  finalizers:
-  - kubernetes
----
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
