@@ -2,7 +2,7 @@ apiVersion: kfdef.apps.kubeflow.org/v1
 kind: KfDef
 metadata:
   name: codeflare-stack
-  namespace: opendatahub
+  namespace: redhat-ods-applications
 spec:
   applications:
   # CodeFlare
