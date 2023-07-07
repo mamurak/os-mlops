@@ -1,6 +1,6 @@
 # OS MLOps
 
-This repository contains a number of open source MLOps tool chains that can be deployed on OpenShift Container Platform.
+This repository contains a number of assets for implementing an open source MLOps approach using OpenShift Container Platform and Red Hat OpenShift Data Science (RHODS).
 
 ### [RHODS Pipelines and Serving](odh-kfp-modelmesh.md)
 
@@ -24,7 +24,7 @@ Once the manifests have been deployed, your environment contains:
 - A Data Science Project `object-detection` for running the [object detection demo](notebooks/object-detection-example). The pipeline server is instantiated and cluster storage and data connections are configured. The OVMS model server is instantiatend for model deployment.
 - A Data Science Project `huggingface-demo` for running the [Huggingface demo](notebooks/codeflare-examples/guided-demos). Cluster storage is configured.
 - A number of [community workbench images](manifests/odh/custom-notebooks.yaml).
-- A number of [custom serving runtimes](manifests/odh/modelmesh/custom-runtimes.yaml).
+- A number of [custom serving runtimes](manifests/odh/modelmesh/custom-serving-runtimes.yaml).
 
 To get started with your demo, instantiate the respective workbenches.
 
@@ -53,3 +53,8 @@ To get started with your demo, instantiate the respective workbenches.
     - image: `CodeFlare Notebook`
     - existing cluster storage: `development`
 3. In the workbench, clone this repository, navigate to `notebooks/codeflare-examples/guided-demos` and follow the notebooks.
+
+### References
+
+- [AI on OpenShift](https://ai-on-openshift.io/)
+- [RHODS Documentation](https://access.redhat.com/documentation/en-us/red_hat_openshift_data_science_self-managed)
