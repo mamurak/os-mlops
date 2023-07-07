@@ -29,7 +29,6 @@ To get started with your demo, instantiate the respective workbenches.
 
 #### Fraud detection
 
-1. 
 1. In the RHODS dashboard, enter the `fraud-detection` project.
 2. Create a new workbench with an arbitrary name and these parameters:
     - image: `Trino Elyra`
