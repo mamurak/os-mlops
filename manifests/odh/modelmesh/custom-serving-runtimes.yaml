@@ -158,13 +158,13 @@ objects:
 kind: Template
 apiVersion: template.openshift.io/v1
 metadata:
-  name: triton
+  name: torchserve
   namespace: redhat-ods-applications
   labels:
     opendatahub.io/dashboard: 'true'
   annotations:
     opendatahub.io/template-enabled: 'true'
-    tags: 'triton,servingruntime'
+    tags: 'torchserve,servingruntime'
 objects:
   - apiVersion: serving.kserve.io/v1alpha1
     kind: ServingRuntime
