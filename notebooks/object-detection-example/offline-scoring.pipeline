@@ -384,7 +384,7 @@
                 "key": "AWS_S3_ENDPOINT"
               }
             ],
-            "runtime_image": "quay.io/mmurakam/object-detection-kfp-runtime:object-detection-kfp-runtime-v0.1.0"
+            "runtime_image": "quay.io/mmurakam/runtimes:object-detection-v1.0.0"
           },
           "pipeline_parameters": [
             {

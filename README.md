@@ -32,7 +32,7 @@ To get started with your demo, instantiate the respective workbenches.
 
 1. In the RHODS dashboard, enter the `fraud-detection` project.
 2. Create a new workbench with an arbitrary name and these parameters:
-    - image: `Trino Elyra`
+    - image: `Trino`
     - existing cluster storage: `development`
     - existing data connection: `fraud-detection`
 3. In the workbench, clone this repository, navigate to `notebooks/fraud-detection` and follow the [instructions](notebooks/fraud-detection/instructions.md).
@@ -41,7 +41,7 @@ To get started with your demo, instantiate the respective workbenches.
 
 1. In the RHODS dashboard, enter the `object-detection` project.
 2. Create a new workbench with an arbitrary name and these parameters:
-    - image: `Object detection Elyra`
+    - image: `Object detection`
     - existing cluster storage: `development`
     - existing data connection: `object-detection`
 3. In the workbench, clone this repository, navigate to `notebooks/fraud-detection` and follow the notebooks.

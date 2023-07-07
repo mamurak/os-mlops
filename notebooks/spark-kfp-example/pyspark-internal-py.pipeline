@@ -50,7 +50,7 @@
               "kubernetes_tolerations": [],
               "mounted_volumes": [],
               "filename": "pyspark-internal.py",
-              "runtime_image": "quay.io/mmurakam/spark-kfp-runtime:spark-kfp-runtime-v0.1.0"
+              "runtime_image": "quay.io/mmurakam/runtimes:spark-v1.0.0"
             },
             "label": "",
             "ui_data": {
