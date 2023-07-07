@@ -22,7 +22,7 @@ The content in this folder has been developed on Red Hat OpenShift Data Science 
 
 ### Persistent Volume Claims
 
-- Deploy the `manifests/pvcs.yaml` manifest into the current Data Science Project namespace.
+- Deploy the `manifests/pvcs.yaml` manifest into the current Data Science Project namespace (skip this step if you deployed the RHODS Demo Pack).
 
 ## Running the demo
 
