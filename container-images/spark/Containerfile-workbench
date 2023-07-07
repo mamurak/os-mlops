@@ -1,5 +1,12 @@
-ARG BASE_IMAGE=registry.access.redhat.com/ubi8/python-38
+ARG BASE_IMAGE=quay.io/opendatahub/workbench-images:cuda-jupyter-datascience-ubi9-python-3.9-20230706
 FROM ${BASE_IMAGE} as builder
+
+ARG UBI_VERSION
+ARG PYTHON_VERSION
+ARG PYTHON_VERSION_LONG
+ARG RELEASE
+ARG DATE
+ARG CUDA
 
 # Build options
 ARG SPARK_VERSION=3.3.1
@@ -7,6 +14,16 @@ ARG HADOOP_VERSION=3.3.4
 ARG JMX_PROMETHEUS_JAVAAGENT_VERSION=0.17.0
 # Spark's Guava version to match with Hadoop's
 ARG GUAVA_VERSION=27.0-jre
+
+LABEL name="workbench-images:${CUDA}jupyter-spark-${UBI_VERSION}-${PYTHON_VERSION}_${RELEASE}_${DATE}" \
+    summary="Datascience + Spark JupyterLab notebook with ${PYTHON_VERSION_LONG} based on ${UBI_VERSION}" \
+    description="Datascience + Spark JupyterLab notebook with ${PYTHON_VERSION_LONG} based on ${UBI_VERSION}" \
+    io.k8s.description="Datascience + Spark JupyterLab notebook with ${PYTHON_VERSION_LONG} based on ${UBI_VERSION} for ODH or RHODS" \
+    io.k8s.display-name="Datascience + Spark JupyterLab notebook with ${PYTHON_VERSION_LONG} based on ${UBI_VERSION}" \
+    authoritative-source-url="https://github.com/opendatahub-io-contrib/workbench-images" \
+    io.openshift.build.commit.ref="${RELEASE}" \
+    io.openshift.build.source-location="https://github.com/opendatahub-io-contrib/workbench-images/jupyter/spark" \
+    io.openshift.build.image="https://quay.io/opendatahub-contrib/workbench-images:${CUDA}jupyter-spark-${UBI_VERSION}-${PYTHON_VERSION}_${RELEASE}_${DATE}"
 
 USER 0
 
@@ -54,15 +71,15 @@ ARG SPARK_VERSION=3.3.1
 ARG HADOOP_VERSION=3.3.4
 ARG JMX_PROMETHEUS_JAVAAGENT_VERSION=0.17.0
 
-LABEL name="s2i-aprk-${UBI_VERSION}-${PYTHON_VERSION}:latest" \
-    summary="S2I Spark with ${PYTHON_VERSION_LONG} image based on ${UBI_VERSION}" \
-    description="Spark notebook with ${PYTHON_VERSION_LONG}, Source-to-Image from ${UBI_VERSION}" \
-    io.k8s.description="Spark notebook with ${PYTHON_VERSION_LONG}, Source-to-Image from ${UBI_VERSION}" \
-    io.k8s.display-name="S2I Spark notebook with ${PYTHON_VERSION_LONG} ${UBI_VERSION} image" \
-    authoritative-source-url="https://github.com/guimou/custom-notebooks" \
-    io.openshift.s2i.build.commit.ref="main" \
-    io.openshift.s2i.build.source-location="https://github.com/guimou/custom-notebooks/notebook-controller-images/s2i-spark" \
-    io.openshift.s2i.build.image="https://quay.io/guimou/s2i-spark-${UBI_VERSION}-${PYTHON_VERSION}"
+LABEL name="workbench-images:${CUDA}jupyter-spark-${UBI_VERSION}-${PYTHON_VERSION}_${RELEASE}_${DATE}" \
+    summary="Datascience + Spark JupyterLab notebook with ${PYTHON_VERSION_LONG} based on ${UBI_VERSION}" \
+    description="Datascience + Spark JupyterLab notebook with ${PYTHON_VERSION_LONG} based on ${UBI_VERSION}" \
+    io.k8s.description="Datascience + Spark JupyterLab notebook with ${PYTHON_VERSION_LONG} based on ${UBI_VERSION} for ODH or RHODS" \
+    io.k8s.display-name="Datascience + Spark JupyterLab notebook with ${PYTHON_VERSION_LONG} based on ${UBI_VERSION}" \
+    authoritative-source-url="https://github.com/opendatahub-io-contrib/workbench-images" \
+    io.openshift.build.commit.ref="${RELEASE}" \
+    io.openshift.build.source-location="https://github.com/opendatahub-io-contrib/workbench-images/jupyter/spark" \
+    io.openshift.build.image="https://quay.io/opendatahub-contrib/workbench-images:${CUDA}jupyter-spark-${UBI_VERSION}-${PYTHON_VERSION}_${RELEASE}_${DATE}"
 
 USER 0
 
@@ -72,10 +89,6 @@ WORKDIR ${PKG_ROOT}/${SPARK_VERSION}
 # OpenJDK          #
 ####################
 
-# Fix for https://issues.redhat.com/browse/OPENJDK-335
-ENV NSS_WRAPPER_PASSWD=
-ENV NSS_WRAPPER_GROUP=
-
 RUN yum -y install java-$JAVA_VERSION-openjdk maven &&\
     yum clean all
 
@@ -84,16 +97,14 @@ RUN yum -y install java-$JAVA_VERSION-openjdk maven &&\
 ####################
 
 # Copy Spark from builder stage
-COPY --from=builder /spark ${PKG_ROOT}/spark-${SPARK_VERSION}
-COPY --from=builder /spark/kubernetes/dockerfiles/spark/entrypoint.sh /opt/app-root/bin
+COPY --from=builder --chown=default:root /spark ${PKG_ROOT}/spark-${SPARK_VERSION}
+COPY --from=builder --chown=default:root /spark/kubernetes/dockerfiles/spark/entrypoint.sh /opt/app-root/bin
 
 # Copy Hadoop from builder stage
-COPY --from=builder /hadoop ${PKG_ROOT}/hadoop-${HADOOP_VERSION}
+COPY --from=builder --chown=default:root /hadoop ${PKG_ROOT}/hadoop-${HADOOP_VERSION}
 
 # Copy Prometheus jars from builder stage
-COPY --from=builder /prometheus ${PKG_ROOT}/prometheus
-
-RUN chown -R 1001:0 ${PKG_ROOT}
+COPY --from=builder --chown=default:root /prometheus ${PKG_ROOT}/prometheus
 
 # Setup required env vars for spark and hadoop
 ENV JAVA_HOME=/usr/lib/jvm/jre
@@ -108,15 +119,13 @@ ENV LD_LIBRARY_PATH /lib64
 
 ENV PATH="${PATH}:${PKG_ROOT}/spark-${SPARK_VERSION}/bin"
 
-# Setup Python package management
-RUN dnf -y update \
- && dnf -y install python3-pip \
- && dnf -y clean all \
- && rm -rf /var/cache/dnf \
- && pip install pip==22.2.2 setuptools==65.3.0
-
 WORKDIR /opt/app-root/src
+
 USER 1001
 
-COPY requirements.txt ./
-RUN pip3 install --no-cache-dir -r requirements.txt
+# Install PySpark and cleanup
+RUN pip install --no-cache-dir pyspark~=3.3.1 && \
+    chmod -R g+w /opt/app-root/lib/python3.9/site-packages && \
+    fix-permissions /opt/app-root -P
+
+ENTRYPOINT ["start-notebook.sh"] 
