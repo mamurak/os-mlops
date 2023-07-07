@@ -4,4 +4,5 @@ resources:
 - odh/custom-notebooks.yaml
 - demo-manifests/fraud-detection.yaml
 - demo-manifests/object-detection.yaml
+- demo-manifests/huggingface-demo.yaml
 - odh/modelmesh/custom-runtimes.yaml

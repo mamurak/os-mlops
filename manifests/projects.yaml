@@ -28,6 +28,21 @@ spec:
   finalizers:
     - kubernetes
 ---
+kind: Project
+apiVersion: project.openshift.io/v1
+metadata:
+  name: huggingface-demo
+  labels:
+    kubernetes.io/metadata.name: huggingface-demo
+    modelmesh-enabled: 'true'
+    opendatahub.io/dashboard: 'true'
+  annotations:
+    openshift.io/description: ''
+    openshift.io/display-name: huggingface-demo
+spec:
+  finalizers:
+    - kubernetes
+---
 apiVersion: project.openshift.io/v1
 kind: Project
 metadata:
