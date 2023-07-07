@@ -1,5 +1,5 @@
-onnxruntime
-openimages
-opencv-python-headless
-ultralytics>=8.0.111
-seaborn>=0.11.0
+onnxruntime==1.15.1
+openimages==0.0.1
+opencv-python-headless==4.8.0.74
+ultralytics==8.0.130
+seaborn==0.12.2
