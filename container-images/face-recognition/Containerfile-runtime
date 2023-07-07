@@ -1,4 +1,4 @@
-FROM quay.io/mmurakam/elyra-kfp-runtime-base:elyra-kfp-runtime-base-v0.2.0
+FROM quay.io/opendatahub/workbench-images:runtime-datascience-ubi9-python-3.9
 
 RUN pip install pip==22.3.1 setuptools==65.3.0
 
