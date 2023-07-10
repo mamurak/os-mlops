@@ -14,7 +14,7 @@ data:
   AWS_DEFAULT_REGION: dXMtZWFzdC0x
   AWS_S3_BUCKET: ZnJhdWQtZGV0ZWN0aW9uLXBpcGVsaW5lcw==
   AWS_S3_ENDPOINT: >-
-    aHR0cHM6Ly9taW5pby1hcGktbWluaW8uYXBwcy5jbHVzdGVyLWR3MnRzLmR3MnRzLnNhbmRib3gxMTE4Lm9wZW50bGMuY29t
+    aHR0cDovL21pbmlvLXNlcnZpY2UubWluaW8uc3ZjOjkwMDA=
   AWS_SECRET_ACCESS_KEY: bWluaW8xMjM=
 type: Opaque
 ---
