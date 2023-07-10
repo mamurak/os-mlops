@@ -32,7 +32,7 @@ metadata:
 data:
   AWS_ACCESS_KEY_ID: bWluaW8=
   AWS_DEFAULT_REGION: dXMtZWFzdC0x
-  AWS_S3_BUCKET: b2JqZWN0LWRldGVjdGlvbg==
+  AWS_S3_BUCKET: b2JqZWN0LWRldGVjdGlvbi1waXBlbGluZXM=
   AWS_S3_ENDPOINT: aHR0cDovL21pbmlvLXNlcnZpY2UubWluaW8uc3ZjOjkwMDA=
   AWS_SECRET_ACCESS_KEY: bWluaW8xMjM=
 type: Opaque

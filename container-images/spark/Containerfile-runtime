@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=quay.io/opendatahub/workbench-images:runtime-datascience-ubi9-python-3.9
+ARG BASE_IMAGE=quay.io/opendatahub/workbench-images:runtime-datascience-ubi9-python-3.9-f93694f
 FROM ${BASE_IMAGE} as builder
 
 ARG UBI_VERSION
