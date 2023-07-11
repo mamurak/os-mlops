@@ -189,10 +189,10 @@ spec:
   lookupPolicy:
     local: true
   tags:
-    - name: "1.0.3"
+    - name: "1.0.4"
       from:
         kind: DockerImage
-        name: quay.io/mmurakam/workbenches:object-detection-v1.0.3
+        name: quay.io/mmurakam/workbenches:object-detection-v1.0.4
       importPolicy: {}
       referencePolicy:
         type: Local
