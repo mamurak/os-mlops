@@ -384,7 +384,7 @@
                 "key": "AWS_S3_ENDPOINT"
               }
             ],
-            "runtime_image": "quay.io/mmurakam/runtimes:object-detection-v1.0.1"
+            "runtime_image": "quay.io/mmurakam/runtimes:object-detection-v1.0.2"
           },
           "pipeline_parameters": [
             {
