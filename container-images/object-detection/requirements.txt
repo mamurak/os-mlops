@@ -3,3 +3,4 @@ openimages==0.0.1
 opencv-python-headless==4.8.0.74
 ultralytics==8.0.130
 seaborn==0.12.2
+boto3==1.28.2
