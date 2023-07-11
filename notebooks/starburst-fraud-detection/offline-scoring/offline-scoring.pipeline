@@ -468,7 +468,7 @@
             "kubernetes_pod_annotations": [],
             "kubernetes_secrets": [],
             "env_vars": [],
-            "runtime_image": "quay.io/mmurakam/runtimes:trino-v1.0.0"
+            "runtime_image": "quay.io/mmurakam/runtimes:trino-v1.0.1"
           },
           "pipeline_parameters": []
         }
