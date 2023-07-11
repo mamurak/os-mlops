@@ -373,7 +373,7 @@
             "kubernetes_shared_mem_size": {},
             "env_vars": [],
             "kubernetes_secrets": [],
-            "runtime_image": "quay.io/mmurakam/runtimes:face-recognition-v1.0.2"
+            "runtime_image": "quay.io/mmurakam/runtimes:face-recognition-v1.0.3"
           }
         }
       },
