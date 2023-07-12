@@ -198,3 +198,16 @@ spec:
     requests:
       storage: 10Gi
   volumeMode: Filesystem
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: object-detection-training-pvc
+  namespace: object-detection
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  volumeMode: Filesystem
