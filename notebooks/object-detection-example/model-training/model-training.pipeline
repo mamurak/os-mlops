@@ -32,7 +32,7 @@
             "label": "",
             "ui_data": {
               "label": "data_ingestion.py",
-              "image": "/notebook/object-detection/development/static/elyra/python.svg",
+              "image": "/notebook/object-detection/object-detection-105/static/elyra/python.svg",
               "x_pos": 199,
               "y_pos": 267,
               "description": "Run Python script"
@@ -77,7 +77,8 @@
                 "training_parameter_1"
               ],
               "dependencies": [
-                "yolov5/*"
+                "yolov5/*",
+                "configuration.yaml"
               ],
               "include_subdirectories": true,
               "outputs": [],
@@ -93,7 +94,7 @@
             "label": "",
             "ui_data": {
               "label": "model_training.py",
-              "image": "/notebook/object-detection/development/static/elyra/python.svg",
+              "image": "/notebook/object-detection/object-detection-105/static/elyra/python.svg",
               "x_pos": 671,
               "y_pos": 266,
               "description": "Run Python script"
@@ -156,7 +157,7 @@
             },
             "ui_data": {
               "label": "preprocessing.py",
-              "image": "/notebook/object-detection/development/static/elyra/python.svg",
+              "image": "/notebook/object-detection/object-detection-105/static/elyra/python.svg",
               "x_pos": 428,
               "y_pos": 260,
               "description": "Run Python script"
@@ -219,7 +220,7 @@
             },
             "ui_data": {
               "label": "model_validation.py",
-              "image": "/notebook/object-detection/development/static/elyra/python.svg",
+              "image": "/notebook/object-detection/object-detection-105/static/elyra/python.svg",
               "x_pos": 895,
               "y_pos": 267,
               "description": "Run Python script"
@@ -287,7 +288,7 @@
             "label": "",
             "ui_data": {
               "label": "model_upload.py",
-              "image": "/notebook/object-detection/development/static/elyra/python.svg",
+              "image": "/notebook/object-detection/object-detection-105/static/elyra/python.svg",
               "x_pos": 1106,
               "y_pos": 269,
               "description": "Run Python script"
@@ -338,7 +339,7 @@
         "runtime_type": "KUBEFLOW_PIPELINES",
         "properties": {
           "name": "model-training",
-          "runtime": "Kubeflow Pipelines",
+          "runtime": "Data Science Pipelines",
           "pipeline_defaults": {
             "kubernetes_pod_annotations": [],
             "kubernetes_pod_labels": [],
