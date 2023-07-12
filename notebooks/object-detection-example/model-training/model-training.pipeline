@@ -14,6 +14,9 @@
           "op": "execute-python-node",
           "app_data": {
             "component_parameters": {
+              "pipeline_parameters": [
+                "sample_count"
+              ],
               "dependencies": [],
               "include_subdirectories": false,
               "outputs": [],
@@ -71,11 +74,12 @@
           "app_data": {
             "component_parameters": {
               "pipeline_parameters": [
-                "training_parameter_1",
-                "training_parameter_2"
+                "training_parameter_1"
               ],
-              "dependencies": [],
-              "include_subdirectories": false,
+              "dependencies": [
+                "yolov5/*"
+              ],
+              "include_subdirectories": true,
               "outputs": [],
               "env_vars": [],
               "kubernetes_pod_annotations": [],
@@ -263,9 +267,7 @@
           "op": "execute-python-node",
           "app_data": {
             "component_parameters": {
-              "dependencies": [
-                "model.onnx"
-              ],
+              "dependencies": [],
               "include_subdirectories": false,
               "outputs": [],
               "env_vars": [
@@ -338,11 +340,20 @@
           "name": "model-training",
           "runtime": "Kubeflow Pipelines",
           "pipeline_defaults": {
-            "kubernetes_shared_mem_size": {},
-            "mounted_volumes": [],
-            "kubernetes_tolerations": [],
             "kubernetes_pod_annotations": [],
             "kubernetes_pod_labels": [],
+            "kubernetes_tolerations": [],
+            "mounted_volumes": [
+              {
+                "path": "/data",
+                "pvc_name": "object-detection-training-pvc",
+                "read_only": false
+              }
+            ],
+            "kubernetes_shared_mem_size": {
+              "size": 1
+            },
+            "env_vars": [],
             "kubernetes_secrets": [
               {
                 "env_var": "AWS_SECRET_ACCESS_KEY",
@@ -365,7 +376,6 @@
                 "key": "AWS_S3_ENDPOINT"
               }
             ],
-            "env_vars": [],
             "runtime_image": "quay.io/mmurakam/runtimes:object-detection-v1.0.4"
           },
           "pipeline_parameters": [
@@ -379,11 +389,11 @@
               "required": false
             },
             {
-              "name": "training_parameter_2",
+              "name": "sample_count",
               "description": "",
               "default_value": {
-                "type": "Float",
-                "value": 4.2
+                "type": "Integer",
+                "value": 100
               },
               "required": false
             }
