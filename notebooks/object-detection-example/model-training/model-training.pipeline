@@ -78,14 +78,17 @@
           "app_data": {
             "component_parameters": {
               "pipeline_parameters": [
-                "training_parameter_1"
+                "batch_size",
+                "epochs"
               ],
               "dependencies": [
                 "yolov5/*",
                 "configuration.yaml"
               ],
               "include_subdirectories": true,
-              "outputs": [],
+              "outputs": [
+                "yolov5/runs/train/exp/weights/best.pt"
+              ],
               "env_vars": [],
               "kubernetes_pod_annotations": [],
               "kubernetes_pod_labels": [],
@@ -212,9 +215,10 @@
           "type": "execution_node",
           "op": "execute-python-node",
           "app_data": {
-            "label": "",
             "component_parameters": {
-              "dependencies": [],
+              "dependencies": [
+                "yolov5/*"
+              ],
               "include_subdirectories": false,
               "outputs": [],
               "env_vars": [],
@@ -224,10 +228,11 @@
               "kubernetes_shared_mem_size": {},
               "kubernetes_tolerations": [],
               "mounted_volumes": [],
-              "filename": "model_validation.py"
+              "filename": "model_conversion.py"
             },
+            "label": "",
             "ui_data": {
-              "label": "model_validation.py",
+              "label": "model_conversion.py",
               "image": "/notebook/object-detection/object-detection-105/static/elyra/python.svg",
               "x_pos": 895,
               "y_pos": 267,
@@ -389,20 +394,29 @@
           },
           "pipeline_parameters": [
             {
-              "name": "training_parameter_1",
-              "description": "",
-              "default_value": {
-                "type": "String",
-                "value": "default_value"
-              },
-              "required": false
-            },
-            {
               "name": "sample_count",
               "description": "",
               "default_value": {
                 "type": "Integer",
                 "value": 100
+              },
+              "required": false
+            },
+            {
+              "name": "batch_size",
+              "description": "",
+              "default_value": {
+                "type": "Integer",
+                "value": 4
+              },
+              "required": false
+            },
+            {
+              "name": "epochs",
+              "description": "",
+              "default_value": {
+                "type": "Integer",
+                "value": 2
               },
               "required": false
             }

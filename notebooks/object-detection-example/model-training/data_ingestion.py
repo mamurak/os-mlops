@@ -1,12 +1,13 @@
 from os import environ
+from pprint import pprint
 
 from openimages.download import download_dataset
 
 
-def ingest_data(data_folder='./data', limit=100):
+def ingest_data(data_folder='./data', limit=0):
     print('ingesting data')
 
-    limit = limit or int(environ.get('sample_count', 5))
+    limit = limit or int(environ.get('sample_count', 100))
     download_folder = f'{data_folder}/download'
 
     download_dataset(
