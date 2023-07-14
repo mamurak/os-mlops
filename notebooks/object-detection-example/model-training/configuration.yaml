@@ -1,7 +1,7 @@
 # Dataset paths relative to the yolov5 folder
-train: ../data/images/train
-val:   ../data/images/val
-test:  ../data/images/test
+train: /data/images/train
+val:   /data/images/val
+test:  /data/images/test
 
 # Number of classes
 nc: 3

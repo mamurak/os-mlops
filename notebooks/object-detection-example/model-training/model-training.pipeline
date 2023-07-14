@@ -20,7 +20,11 @@
               "dependencies": [],
               "include_subdirectories": false,
               "outputs": [],
-              "env_vars": [],
+              "env_vars": [
+                {
+                  "env_var": "sample_count"
+                }
+              ],
               "kubernetes_pod_annotations": [],
               "kubernetes_pod_labels": [],
               "kubernetes_secrets": [],
@@ -86,10 +90,14 @@
               "kubernetes_pod_annotations": [],
               "kubernetes_pod_labels": [],
               "kubernetes_secrets": [],
-              "kubernetes_shared_mem_size": {},
+              "kubernetes_shared_mem_size": {
+                "size": 10
+              },
               "kubernetes_tolerations": [],
               "mounted_volumes": [],
-              "filename": "model_training.py"
+              "filename": "model_training.py",
+              "gpu": 1,
+              "memory": 8
             },
             "label": "",
             "ui_data": {
@@ -341,9 +349,9 @@
           "name": "model-training",
           "runtime": "Data Science Pipelines",
           "pipeline_defaults": {
+            "kubernetes_tolerations": [],
             "kubernetes_pod_annotations": [],
             "kubernetes_pod_labels": [],
-            "kubernetes_tolerations": [],
             "mounted_volumes": [
               {
                 "path": "/data",
@@ -352,7 +360,7 @@
               }
             ],
             "kubernetes_shared_mem_size": {
-              "size": 1
+              "size": 10
             },
             "env_vars": [],
             "kubernetes_secrets": [
