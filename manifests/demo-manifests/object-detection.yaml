@@ -9,13 +9,12 @@ metadata:
   annotations:
     opendatahub.io/connection-type: s3
     openshift.io/display-name: pipelines
-data:
-  AWS_ACCESS_KEY_ID: bWluaW8=
-  AWS_DEFAULT_REGION: dXMtZWFzdC0x
-  AWS_S3_BUCKET: b2JqZWN0LWRldGVjdGlvbi1waXBlbGluZXM=
-  AWS_S3_ENDPOINT: >-
-    aHR0cDovL21pbmlvLXNlcnZpY2UubWluaW8uc3ZjOjkwMDA=
-  AWS_SECRET_ACCESS_KEY: bWluaW8xMjM=
+stringData:
+  AWS_ACCESS_KEY_ID: minio
+  AWS_DEFAULT_REGION: us-east-1
+  AWS_S3_BUCKET: object-detection-pipelines
+  AWS_S3_ENDPOINT: http://minio-service.minio.svc:9000
+  AWS_SECRET_ACCESS_KEY: minio123
 type: Opaque
 ---
 kind: Secret
@@ -29,12 +28,12 @@ metadata:
   annotations:
     opendatahub.io/connection-type: s3
     openshift.io/display-name: object-detection
-data:
-  AWS_ACCESS_KEY_ID: bWluaW8=
-  AWS_DEFAULT_REGION: dXMtZWFzdC0x
-  AWS_S3_BUCKET: b2JqZWN0LWRldGVjdGlvbi1waXBlbGluZXM=
-  AWS_S3_ENDPOINT: aHR0cDovL21pbmlvLXNlcnZpY2UubWluaW8uc3ZjOjkwMDA=
-  AWS_SECRET_ACCESS_KEY: bWluaW8xMjM=
+stringData:
+  AWS_ACCESS_KEY_ID: minio
+  AWS_DEFAULT_REGION: us-east-1
+  AWS_S3_BUCKET: object-detection
+  AWS_S3_ENDPOINT: http://minio-service.minio.svc:9000
+  AWS_SECRET_ACCESS_KEY: minio123
 type: Opaque
 ---
 kind: NetworkPolicy
