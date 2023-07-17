@@ -36,7 +36,7 @@
             "label": "",
             "ui_data": {
               "label": "data_ingestion.py",
-              "image": "/notebook/object-detection/object-detection-105/static/elyra/python.svg",
+              "image": "/notebook/object-detection/development/static/elyra/python.svg",
               "x_pos": 199,
               "y_pos": 267,
               "description": "Run Python script"
@@ -87,7 +87,7 @@
               ],
               "include_subdirectories": true,
               "outputs": [
-                "yolov5/runs/train/exp/weights/best.pt"
+                "model.pt"
               ],
               "env_vars": [],
               "kubernetes_pod_annotations": [],
@@ -105,7 +105,7 @@
             "label": "",
             "ui_data": {
               "label": "model_training.py",
-              "image": "/notebook/object-detection/object-detection-105/static/elyra/python.svg",
+              "image": "/notebook/object-detection/development/static/elyra/python.svg",
               "x_pos": 671,
               "y_pos": 266,
               "description": "Run Python script"
@@ -168,7 +168,7 @@
             },
             "ui_data": {
               "label": "preprocessing.py",
-              "image": "/notebook/object-detection/object-detection-105/static/elyra/python.svg",
+              "image": "/notebook/object-detection/development/static/elyra/python.svg",
               "x_pos": 428,
               "y_pos": 260,
               "description": "Run Python script"
@@ -220,7 +220,9 @@
                 "yolov5/*"
               ],
               "include_subdirectories": false,
-              "outputs": [],
+              "outputs": [
+                "model.onnx"
+              ],
               "env_vars": [],
               "kubernetes_pod_annotations": [],
               "kubernetes_pod_labels": [],
@@ -233,7 +235,7 @@
             "label": "",
             "ui_data": {
               "label": "model_conversion.py",
-              "image": "/notebook/object-detection/object-detection-105/static/elyra/python.svg",
+              "image": "/notebook/object-detection/development/static/elyra/python.svg",
               "x_pos": 895,
               "y_pos": 267,
               "description": "Run Python script"
@@ -281,12 +283,15 @@
           "op": "execute-python-node",
           "app_data": {
             "component_parameters": {
+              "pipeline_parameters": [
+                "model_object_prefix"
+              ],
               "dependencies": [],
               "include_subdirectories": false,
               "outputs": [],
               "env_vars": [
                 {
-                  "env_var": "MODEL_OBJECT_PREFIX",
+                  "env_var": "model_object_prefix",
                   "value": "model"
                 }
               ],
@@ -301,7 +306,7 @@
             "label": "",
             "ui_data": {
               "label": "model_upload.py",
-              "image": "/notebook/object-detection/object-detection-105/static/elyra/python.svg",
+              "image": "/notebook/object-detection/development/static/elyra/python.svg",
               "x_pos": 1106,
               "y_pos": 269,
               "description": "Run Python script"
@@ -390,7 +395,7 @@
                 "key": "AWS_S3_ENDPOINT"
               }
             ],
-            "runtime_image": "quay.io/mmurakam/runtimes:object-detection-v1.0.5"
+            "runtime_image": "quay.io/mmurakam/runtimes:object-detection-v1.1.0"
           },
           "pipeline_parameters": [
             {
@@ -417,6 +422,15 @@
               "default_value": {
                 "type": "Integer",
                 "value": 2
+              },
+              "required": false
+            },
+            {
+              "name": "model_object_prefix",
+              "description": "",
+              "default_value": {
+                "type": "String",
+                "value": "model"
               },
               "required": false
             }

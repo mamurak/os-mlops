@@ -1,4 +1,5 @@
 from os import environ
+from shutil import move
 
 from yolov5.train import run
 
@@ -17,6 +18,8 @@ def train_model(data_folder='./data', batch_size=0, epochs=0):
         freeze=[10],
         cache='disk',
     )
+
+    move('yolov5/runs/train/exp/weights/best.pt', 'model.pt')
 
     print('model training done')
 

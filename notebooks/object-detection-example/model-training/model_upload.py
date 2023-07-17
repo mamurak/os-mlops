@@ -4,7 +4,7 @@ from datetime import datetime
 from boto3 import client
 
 
-model_object_prefix = environ.get('MODEL_OBJECT_PREFIX', 'model')
+model_object_prefix = environ.get('model_object_prefix', 'model')
 s3_endpoint_url = environ.get('AWS_S3_ENDPOINT')
 s3_access_key = environ.get('AWS_ACCESS_KEY_ID')
 s3_secret_key = environ.get('AWS_SECRET_ACCESS_KEY')

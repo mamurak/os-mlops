@@ -1,5 +1,4 @@
 from os import environ
-from pprint import pprint
 
 from openimages.download import download_dataset
 

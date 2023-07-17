@@ -1,18 +1,18 @@
 from yolov5.export import run
 
 
-def validate_model():
-    print('validating model')
+def convert_model():
+    print('converting model')
 
     run(
-        weights='yolov5/runs/train/exp/weights/best.pt',
-        include='onnx',
+        weights='model.pt',
+        include=['onnx'],
         imgsz=(640, 640),
         opset=16,
     )
 
-    print('model validated')
+    print('model converted')
 
 
 if __name__ == '__main__':
-    validate_model()
+    convert_model()
