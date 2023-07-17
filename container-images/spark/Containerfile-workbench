@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=quay.io/opendatahub/workbench-images:cuda-jupyter-datascience-ubi9-python-3.9-20230505-f93694f
+ARG BASE_IMAGE=quay.io/modh/odh-generic-data-science-notebook:v1-073bb4a
 FROM ${BASE_IMAGE} as builder
 
 ARG UBI_VERSION
