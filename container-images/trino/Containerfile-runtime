@@ -1,4 +1,4 @@
-FROM quay.io/opendatahub/workbench-images:runtime-datascience-ubi9-python-3.9-f93694f
+FROM quay.io/modh/runtime-images:runtime-datascience-ubi9-python-3.9-2023a-20230509-869b370
 
 RUN pip install pip==22.3.1 setuptools==65.3.0
 
