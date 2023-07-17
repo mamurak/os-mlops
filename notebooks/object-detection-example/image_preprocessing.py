@@ -4,7 +4,7 @@ from PIL import Image
 
 def preprocess(image_path):
     image = Image.open(image_path)
-    model_image_size = (416, 416)
+    model_image_size = (640, 640)
     boxed_image = _letterbox_image(image, tuple(reversed(model_image_size)))
     image_data = np.array(boxed_image, dtype='float32')
     image_data /= 255.
