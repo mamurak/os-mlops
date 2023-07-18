@@ -7,12 +7,13 @@ import numpy as np
 from classes import classes
 
 
-def draw_boxes(image_path, model_output, ratio, dwdh):
+def draw_boxes(image_path, model_output, ratio, dwdh, class_labels_type):
     image = cv2.imread(image_path)  # Read image
+    class_labels = classes[class_labels_type]
     colors = {
         name: [
             random.randint(0, 255) for _ in range(3)
-        ] for i, name in enumerate(classes)
+        ] for i, name in enumerate(class_labels)
     }
     for i, (x0, y0, x1, y1, score, cls_id) in enumerate(model_output):
         box = np.array([x0, y0, x1, y1])
@@ -21,7 +22,7 @@ def draw_boxes(image_path, model_output, ratio, dwdh):
         box = box.round().astype(np.int32).tolist()
         cls_id = int(cls_id)
         score = round(float(score), 3)
-        name = classes[cls_id]
+        name = class_labels[cls_id]
         color = colors[name]
         name += ' '+str(score)
         cv2.rectangle(image, box[:2], box[2:], color,2)
