@@ -218,10 +218,10 @@ spec:
   lookupPolicy:
     local: true
   tags:
-    - name: "1.0.3"
+    - name: "1.0.0"
       from:
         kind: DockerImage
-        name: quay.io/mmurakam/workbenches:trino-v1.0.3
+        name: quay.io/mmurakam/workbenches:trino-v1.0.0
       importPolicy: {}
       referencePolicy:
         type: Local
