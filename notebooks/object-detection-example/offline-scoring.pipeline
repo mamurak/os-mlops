@@ -145,6 +145,11 @@
           "op": "execute-python-node",
           "app_data": {
             "component_parameters": {
+              "pipeline_parameters": [
+                "class_labels_type",
+                "confidence_threshold",
+                "iou_threshold"
+              ],
               "dependencies": [
                 "classes.py"
               ],
@@ -354,13 +359,13 @@
         "runtime_type": "KUBEFLOW_PIPELINES",
         "properties": {
           "name": "offline-scoring",
-          "runtime": "Kubeflow Pipelines",
+          "runtime": "Data Science Pipelines",
           "pipeline_defaults": {
-            "mounted_volumes": [],
-            "kubernetes_pod_labels": [],
-            "kubernetes_tolerations": [],
-            "kubernetes_shared_mem_size": {},
             "kubernetes_pod_annotations": [],
+            "kubernetes_tolerations": [],
+            "kubernetes_pod_labels": [],
+            "mounted_volumes": [],
+            "kubernetes_shared_mem_size": {},
             "env_vars": [],
             "kubernetes_secrets": [
               {
@@ -393,6 +398,33 @@
               "default_value": {
                 "type": "String",
                 "value": "model-latest.onnx"
+              },
+              "required": false
+            },
+            {
+              "name": "class_labels_type",
+              "description": "",
+              "default_value": {
+                "type": "String",
+                "value": "coco"
+              },
+              "required": false
+            },
+            {
+              "name": "confidence_threshold",
+              "description": "",
+              "default_value": {
+                "type": "Float",
+                "value": 0.2
+              },
+              "required": false
+            },
+            {
+              "name": "iou_threshold",
+              "description": "",
+              "default_value": {
+                "type": "Float",
+                "value": 0.6
               },
               "required": false
             }
