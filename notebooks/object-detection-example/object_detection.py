@@ -135,7 +135,7 @@ def _postprocess(
         x[:, 5:] *= x[:, 4:5]  # conf = obj_conf * cls_conf
 
         # Box/Mask
-        box = xywh2xyxy(x[:, :4])
+        box = _xywh2xyxy(x[:, :4])
         # center_x, center_y, width, height) to (x1, y1, x2, y2)
 
         mask = x[:, mi:]  # zero columns if no masks
@@ -177,7 +177,7 @@ def _postprocess(
         if merge and (1 < n < 3E3):
             # Merge NMS (boxes merged using weighted mean)
             # update boxes as boxes(i,4) = weights(i,n) * boxes(n,4)
-            iou = box_iou(boxes[i], boxes) > iou_thres  # iou matrix
+            iou = _box_iou(boxes[i], boxes) > iou_thres  # iou matrix
             weights = iou * scores[None]  # box weights
             x[i, :4] = torch.mm(weights, x[:, :4]).float() / weights.sum(
                 1, keepdim=True
@@ -192,7 +192,7 @@ def _postprocess(
     return output[0]
 
 
-def xywh2xyxy(x):
+def _xywh2xyxy(x):
     # Convert nx4 boxes from [x, y, w, h] to [x1, y1, x2, y2]
     # where xy1=top-left, xy2=bottom-right
 
@@ -204,7 +204,7 @@ def xywh2xyxy(x):
     return y
 
 
-def box_iou(box1, box2, eps=1e-7):
+def _box_iou(box1, box2, eps=1e-7):
     # https://github.com/pytorch/vision/blob/master/torchvision/ops/boxes.py
     """
     Return intersection-over-union (Jaccard index) of boxes.
