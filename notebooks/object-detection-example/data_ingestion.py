@@ -25,10 +25,13 @@ def ingest_data(bucket_name='', data_folder='./data'):
     for page in pages:
         for obj in page.get('Contents', []):
             key = obj['Key']
-            local_file_path = path.join(data_folder, key)
+            if key.endswith('.jpg'):
+                local_file_path = path.join(data_folder, key)
 
-            print(f'Downloading {key} to {local_file_path}')
-            s3_client.download_file(s3_bucket_name, key, local_file_path)
+                print(f'Downloading {key} to {local_file_path}')
+                s3_client.download_file(
+                    s3_bucket_name, key, local_file_path
+                )
 
     print('Finished data ingestion.')
 
