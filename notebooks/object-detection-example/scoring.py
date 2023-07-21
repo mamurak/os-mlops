@@ -10,7 +10,7 @@ import torchvision
 from classes import classes
 
 
-def predict(data_folder='./data'):
+def predict(data_folder='./data', gpu_mode=True):
     print('Commencing offline scoring.')
 
     class_labels_type = environ.get('class_labels_type', 'coco')
@@ -20,7 +20,11 @@ def predict(data_folder='./data'):
     with open(f'{data_folder}/images.pickle', 'rb') as inputfile:
         image_names, images = load(inputfile)
 
-    session = InferenceSession('model.onnx')
+    providers = (
+        ['CUDAExecutionProvider', 'CPUExecutionProvider'] if gpu_mode
+        else ['CPUExecutionProvider']
+    )
+    session = InferenceSession('model.onnx', providers=providers)
 
     raw_results = np.array([
         session.run([], {'images': image_data})[0]
