@@ -359,9 +359,12 @@
           "name": "model-training-gpu",
           "runtime": "Data Science Pipelines",
           "pipeline_defaults": {
-            "kubernetes_tolerations": [],
             "kubernetes_pod_annotations": [],
             "kubernetes_pod_labels": [],
+            "kubernetes_tolerations": [],
+            "kubernetes_shared_mem_size": {
+              "size": 10
+            },
             "mounted_volumes": [
               {
                 "path": "/data",
@@ -369,10 +372,6 @@
                 "read_only": false
               }
             ],
-            "kubernetes_shared_mem_size": {
-              "size": 10
-            },
-            "env_vars": [],
             "kubernetes_secrets": [
               {
                 "env_var": "AWS_SECRET_ACCESS_KEY",
@@ -395,6 +394,7 @@
                 "key": "AWS_S3_ENDPOINT"
               }
             ],
+            "env_vars": [],
             "runtime_image": "quay.io/mmurakam/runtimes:object-detection-v1.1.0"
           },
           "pipeline_parameters": [
@@ -412,7 +412,7 @@
               "description": "",
               "default_value": {
                 "type": "Integer",
-                "value": 4
+                "value": 32
               },
               "required": false
             },

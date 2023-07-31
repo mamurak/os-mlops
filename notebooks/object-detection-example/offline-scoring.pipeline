@@ -362,11 +362,10 @@
           "runtime": "Data Science Pipelines",
           "pipeline_defaults": {
             "kubernetes_pod_annotations": [],
-            "kubernetes_tolerations": [],
             "kubernetes_pod_labels": [],
-            "mounted_volumes": [],
+            "kubernetes_tolerations": [],
             "kubernetes_shared_mem_size": {},
-            "env_vars": [],
+            "mounted_volumes": [],
             "kubernetes_secrets": [
               {
                 "env_var": "AWS_SECRET_ACCESS_KEY",
@@ -389,6 +388,7 @@
                 "key": "AWS_S3_ENDPOINT"
               }
             ],
+            "env_vars": [],
             "runtime_image": "quay.io/mmurakam/runtimes:object-detection-v1.0.5"
           },
           "pipeline_parameters": [
@@ -406,7 +406,7 @@
               "description": "",
               "default_value": {
                 "type": "String",
-                "value": "coco"
+                "value": "traffic"
               },
               "required": false
             },
