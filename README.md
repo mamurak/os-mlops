@@ -11,12 +11,13 @@ This repository contains a number of assets for implementing an open source MLOp
 ### RHODS Demo Pack
 
 To quickly set up a RHODS environment for fraud detection and object detection demos, follow these steps:
-1. Deploy the RHODS operator on your OpenShift cluster. The demo pack has been tested with RHODS 1.28.1.
-2. Deploy the OpenShift Pipelines operator. The demo pack has been tested with Pipelines versions 1.8 to 1.10.
-3. Deploy the Codeflare operator. The demo pack has been tested with Codeflare versions 0.0.4 to 0.0.6.
-4. Clone this repository and navigate to `manifests`.
-5. Run `oc apply -f projects.yaml`
-6. Run `oc apply -k .`
+1. (optional) [Set up GPU enablement](gpu-enablement.md) if GPUs are present in your cluster.
+2. Deploy the RHODS operator on your OpenShift cluster. The demo pack has been tested with RHODS 1.28.1.
+3. Deploy the OpenShift Pipelines operator. The demo pack has been tested with Pipelines versions 1.8 to 1.10.
+4. Deploy the Codeflare operator. The demo pack has been tested with Codeflare versions 0.0.4 to 0.0.6.
+5. Clone this repository and navigate to `manifests`.
+6. Run `oc apply -f projects.yaml`
+7. Run `oc apply -k .`
 
 Once the manifests have been deployed, your environment contains:
 - A Minio instance as a lightweight S3 storage provider. You can manage the S3 buckets through the Minio UI through the `minio-ui` route URL in project `minio`. Use `minio` and `minio123` for logging in.
