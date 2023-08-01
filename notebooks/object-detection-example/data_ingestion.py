@@ -42,8 +42,8 @@ def ingest_data(bucket_name='', data_folder='./data'):
 def _clean_folder(folder):
     print(f'Cleaning folder {folder}')
 
-    for filename in listdir(path):
-        file_path = path.join(path, filename)
+    for filename in listdir(folder):
+        file_path = path.join(folder, filename)
         try:
             if path.isfile(file_path) or path.islink(file_path):
                 unlink(file_path)
