@@ -45,7 +45,7 @@ To get started with your demo, instantiate the respective workbenches.
     - image: `Object detection`
     - existing cluster storage: `development`
     - existing data connection: `object-detection`
-3. In the workbench, clone this repository, navigate to `notebooks/fraud-detection` and follow the notebooks.
+3. In the workbench, clone this repository, navigate to `notebooks/fraud-detection` and follow the [instructions](notebooks/object-detection-example/demo-setup.ipynb).
 
 #### Huggingface demo
 
