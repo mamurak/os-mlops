@@ -1,0 +1,10 @@
+FROM quay.io/modh/runtime-images:runtime-cuda-tensorflow-ubi9-python-3.9-2023a-20230714-933b52f
+
+RUN pip install pip==22.3.1 setuptools==65.3.0
+
+COPY requirements-elyra.txt ./
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt && \
+    pip install --no-cache-dir -r requirements-elyra.txt && \
+    chmod -R g+w /opt/app-root/lib/python3.9/site-packages && \
+    fix-permissions /opt/app-root -P

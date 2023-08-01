@@ -1,0 +1,6 @@
+trino==0.323.0
+boto3==1.28.2
+seaborn==0.12.2
+imblearn==0.0
+onnx==1.12.0
+tf2onnx==1.13.0
