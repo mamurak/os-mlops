@@ -1,9 +1,12 @@
-from os import environ, path
+from os import environ, listdir, path, unlink
+from shutil import rmtree
 
 from boto3 import client
 
 
 def ingest_data(bucket_name='', data_folder='./data'):
+    _clean_folder(data_folder)
+
     print('Commencing data ingestion.')
 
     s3_endpoint_url = environ.get('AWS_S3_ENDPOINT')
@@ -34,6 +37,20 @@ def ingest_data(bucket_name='', data_folder='./data'):
                 )
 
     print('Finished data ingestion.')
+
+
+def _clean_folder(folder):
+    print(f'Cleaning folder {folder}')
+
+    for filename in listdir(path):
+        file_path = path.join(path, filename)
+        try:
+            if path.isfile(file_path) or path.islink(file_path):
+                unlink(file_path)
+            elif path.isdir(file_path):
+                rmtree(file_path)
+        except Exception as e:
+            print(f'Failed to delete {file_path}. Reason: {e}')
 
 
 if __name__ == '__main__':
