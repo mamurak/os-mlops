@@ -1,25 +1,27 @@
-from joblib import load
-from pandas import read_parquet
+from numpy import argmax, array, load
+from onnxruntime import InferenceSession
+from pandas import DataFrame
 
 
 def predict(data_folder='./data'):
     print('Commencing offline scoring.')
 
-    model = load(open('model.joblib', 'rb'))
-    data = read_parquet(f'{data_folder}/data.parquet')
+    X = load(f'{data_folder}/samples.npy').astype('float32')
 
-    feature_columns = [
-        'user_id', 'amount', 'trans_type', 'foreign', 'interarrival'
-    ]
-    predictions = model.predict(data[feature_columns])
+    session = InferenceSession('model.onnx')
+    raw_results = session.run([], {'dense_input': X})[0]
 
-    data['labels'] = predictions
+    results = argmax(raw_results, axis=1)
+    class_map_array = array(['no fraud', 'fraud'])
+    mapped_results = class_map_array[results]
 
-    print(f'Prediction results: {predictions}')
+    print(f'Prediction results: {mapped_results}')
 
-    data[['timestamp', 'transaction_id', 'labels']].to_csv(
-        f'{data_folder}/predictions.csv', index=False
-    )
+    column_names = [f'V{i}' for i in range(1, 31)]
+    report = DataFrame(X, columns=column_names)
+    report.insert(0, 'Prediction', mapped_results)
+
+    report.to_csv(f'{data_folder}/predictions.csv')
 
     print('Offline scoring complete.')
 

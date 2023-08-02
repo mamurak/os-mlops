@@ -355,13 +355,13 @@
         "runtime_type": "KUBEFLOW_PIPELINES",
         "properties": {
           "name": "offline-scoring",
-          "runtime": "Kubeflow Pipelines",
+          "runtime": "Data Science Pipelines",
           "pipeline_defaults": {
             "mounted_volumes": [],
+            "kubernetes_pod_annotations": [],
+            "kubernetes_shared_mem_size": {},
             "kubernetes_pod_labels": [],
             "kubernetes_tolerations": [],
-            "kubernetes_shared_mem_size": {},
-            "kubernetes_pod_annotations": [],
             "env_vars": [],
             "kubernetes_secrets": [
               {
@@ -385,7 +385,7 @@
                 "key": "AWS_S3_BUCKET"
               }
             ],
-            "runtime_image": "quay.io/mmurakam/runtimes:trino-v1.0.3"
+            "runtime_image": "quay.io/mmurakam/runtimes:fraud-detection-v0.2.0"
           },
           "pipeline_parameters": [
             {
@@ -393,7 +393,7 @@
               "description": "",
               "default_value": {
                 "type": "String",
-                "value": "live-data.parquet"
+                "value": "live-data.csv"
               },
               "required": false
             },
@@ -402,7 +402,7 @@
               "description": "",
               "default_value": {
                 "type": "String",
-                "value": "model-latest.joblib"
+                "value": "model-latest.onnx"
               },
               "required": false
             }

@@ -339,9 +339,6 @@
           "name": "model-training",
           "runtime": "Data Science Pipelines",
           "pipeline_defaults": {
-            "kubernetes_pod_annotations": [],
-            "kubernetes_tolerations": [],
-            "kubernetes_shared_mem_size": {},
             "mounted_volumes": [
               {
                 "path": "/data",
@@ -349,7 +346,10 @@
                 "read_only": false
               }
             ],
+            "kubernetes_pod_annotations": [],
+            "kubernetes_shared_mem_size": {},
             "kubernetes_pod_labels": [],
+            "kubernetes_tolerations": [],
             "env_vars": [],
             "kubernetes_secrets": [
               {
@@ -381,7 +381,7 @@
               "description": "",
               "default_value": {
                 "type": "String",
-                "value": "creditcard.csv"
+                "value": "training-data.csv"
               },
               "required": false
             },

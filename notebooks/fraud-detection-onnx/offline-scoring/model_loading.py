@@ -22,7 +22,7 @@ def load_model(model_file_name=''):
     )
 
     s3_client.download_file(
-        s3_bucket_name, model_object_name, 'model.joblib'
+        s3_bucket_name, model_object_name, 'model.onnx'
     )
 
     print('Finished model loading.')
