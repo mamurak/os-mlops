@@ -154,7 +154,7 @@
               "dependencies": [],
               "include_subdirectories": false,
               "outputs": [
-                "model.joblib"
+                "model.onnx"
               ],
               "env_vars": [],
               "kubernetes_pod_annotations": [],
@@ -385,7 +385,8 @@
                 "key": "AWS_S3_BUCKET"
               }
             ],
-            "runtime_image": "quay.io/mmurakam/runtimes:fraud-detection-v0.2.0"
+            "runtime_image": "quay.io/mmurakam/runtimes:fraud-detection-v0.2.0",
+            "disable_node_caching": "False"
           },
           "pipeline_parameters": [
             {

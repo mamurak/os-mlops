@@ -6,7 +6,7 @@ from sklearn.preprocessing import RobustScaler
 def preprocess(data_folder='./data'):
     print('preprocessing data')
 
-    df = read_csv(f'{data_folder}/data.csv')
+    df = read_csv(f'{data_folder}/data.csv', index_col=0)
 
     rob_scaler = RobustScaler()
 
@@ -24,12 +24,10 @@ def preprocess(data_folder='./data'):
     df.insert(0, 'scaled_amount', scaled_amount)
     df.insert(1, 'scaled_time', scaled_time)
 
-    X = df.drop('Class', axis=1)
-
-    save(f'{data_folder}/samples.npy', X)
+    save(f'{data_folder}/samples.npy', df.values)
 
     print('data processing done')
 
 
 if __name__ == '__main__':
-    preprocess_data(data_folder='/data')
+    preprocess(data_folder='/data')
