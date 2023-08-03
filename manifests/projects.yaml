@@ -43,6 +43,21 @@ spec:
   finalizers:
     - kubernetes
 ---
+kind: Project
+apiVersion: project.openshift.io/v1
+metadata:
+  name: spark-demo
+  labels:
+    kubernetes.io/metadata.name: spark-demo
+    modelmesh-enabled: 'true'
+    opendatahub.io/dashboard: 'true'
+  annotations:
+    openshift.io/description: ''
+    openshift.io/display-name: spark-demo
+spec:
+  finalizers:
+    - kubernetes
+---
 apiVersion: project.openshift.io/v1
 kind: Project
 metadata:

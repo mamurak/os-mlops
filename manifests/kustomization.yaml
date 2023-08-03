@@ -5,4 +5,5 @@ resources:
 - demo-manifests/fraud-detection.yaml
 - demo-manifests/object-detection.yaml
 - demo-manifests/huggingface-demo.yaml
+- demo-manifests/spark.yaml
 - odh/modelmesh/custom-serving-runtimes.yaml
