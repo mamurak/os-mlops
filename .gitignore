@@ -2,6 +2,7 @@
 *-checkpoint.py
 *-checkpoint.ipynb
 *-checkpoint.pipeline
+*-checkpoint.md
 notebooks/object-detection-example/data
 notebooks/object-detection-example/model-training/data
 notebooks/object-detection-example/model.onnx
