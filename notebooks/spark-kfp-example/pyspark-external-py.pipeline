@@ -29,7 +29,7 @@
             "label": "",
             "ui_data": {
               "label": "pyspark-external.py",
-              "image": "/notebook/my-project/elyra-spark/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/pyspark/static/elyra/python.svg",
               "x_pos": 318,
               "y_pos": 261,
               "description": "Run Python script"

@@ -10,7 +10,8 @@ from pyspark.sql import SparkSession
 hostname = gethostname()
 ip_address = gethostbyname(hostname)
 kubernetes_service_host = getenv('KUBERNETES_SERVICE_HOST')
-pyspark_runtime_image = 'quay.io/mmurakam/pyspark-runtime:pyspark-runtime-v0.1.1'
+pyspark_runtime_image =\
+    'quay.io/opendatahub-contrib/pyspark:s3.3.1-h3.3.4_v0.1.1'
 
 with open('/var/run/secrets/kubernetes.io/serviceaccount/namespace', 'r') as f:
     current_namespace = f.readline()
@@ -28,6 +29,7 @@ sparkConf.set('spark.kubernetes.pyspark.pythonVersion', '3')
 
 spark = SparkSession.builder.config(conf=sparkConf).getOrCreate()
 sc = spark.sparkContext
+
 
 def f(_):
     x = random() * 2 - 1
