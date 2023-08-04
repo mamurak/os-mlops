@@ -1,0 +1,57 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  annotations:
+    openshift.io/installed-from: tektonhub
+    tekton.dev/categories: CLI
+    tekton.dev/displayName: powershell
+    tekton.dev/pipelines.minVersion: 0.12.1
+    tekton.dev/platforms: linux/amd64
+    tekton.dev/tags: 'powershell, pwsh'
+  name: powershell
+  namespace: fraud-detection
+  labels:
+    app.kubernetes.io/version: '0.1'
+spec:
+  description: This task will run powershell commands
+  params:
+    - default: latest
+      description: The tag for the Powershell image
+      name: tag
+      type: string
+    - default: Write-Output 'Please use command parameter to enter'
+      description: The Powershell command
+      name: command
+      type: string
+    - default: SilentlyContinue
+      description: Verbosity level for command
+      name: verbose
+      type: string
+  steps:
+    - image: 'mcr.microsoft.com/powershell:$(params.tag)'
+      name: invoke-script
+      resources: {}
+      script: |
+        #!/usr/bin/env pwsh
+        $VerbosePreference = "$(params.verbose)"
+        $command = "$(params.command)"
+        Write-Verbose -Message "Received command:`n$command"
+        Invoke-Expression -Command $command
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: hello-world
+spec:
+  tasks:
+    - name: powershell
+      params:
+        - name: tag
+          value: latest
+        - name: command
+          value: Write-Output 'hello world'
+        - name: verbose
+          value: SilentlyContinue
+      taskRef:
+        kind: Task
+        name: powershell
