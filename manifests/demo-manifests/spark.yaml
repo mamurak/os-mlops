@@ -42,7 +42,7 @@ kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
   name: allow-from-all-namespaces
-  namespace: object-detection
+  namespace: spark-demo
 spec:
   podSelector: {}
   ingress:
@@ -55,7 +55,7 @@ kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
   name: allow-from-ingress-namespace
-  namespace: object-detection
+  namespace: spark-demo
 spec:
   podSelector: {}
   ingress:
@@ -73,7 +73,7 @@ metadata:
     openshift.io/description: ''
     openshift.io/display-name: development
   name: development
-  namespace: object-detection
+  namespace: spark-demo
   finalizers:
     - kubernetes.io/pvc-protection
   labels:
@@ -92,7 +92,7 @@ metadata:
   finalizers:
     - datasciencepipelinesapplications.opendatahub.io/finalizer
   name: pipelines-definition
-  namespace: object-detection
+  namespace: spark-demo
 spec:
   apiServer:
     stripEOF: true
@@ -115,7 +115,7 @@ spec:
       username: mlpipeline
   objectStorage:
     externalStorage:
-      bucket: object-detection-pipelines
+      bucket: spark-pipelines
       host: minio-service.minio.svc:9000
       port: ''
       s3CredentialsSecret:
