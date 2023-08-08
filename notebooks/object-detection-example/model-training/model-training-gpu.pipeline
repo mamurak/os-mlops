@@ -17,7 +17,9 @@
               "pipeline_parameters": [
                 "sample_count"
               ],
-              "dependencies": [],
+              "dependencies": [
+                "classes.py"
+              ],
               "include_subdirectories": false,
               "outputs": [],
               "env_vars": [
@@ -36,7 +38,7 @@
             "label": "",
             "ui_data": {
               "label": "data_ingestion.py",
-              "image": "/notebook/object-detection/development/static/elyra/python.svg",
+              "image": "/notebook/object-detection/dev/static/elyra/python.svg",
               "x_pos": 199,
               "y_pos": 267,
               "description": "Run Python script"
@@ -106,7 +108,7 @@
             "label": "",
             "ui_data": {
               "label": "model_training.py",
-              "image": "/notebook/object-detection/development/static/elyra/python.svg",
+              "image": "/notebook/object-detection/dev/static/elyra/python.svg",
               "x_pos": 671,
               "y_pos": 266,
               "description": "Run Python script"
@@ -153,9 +155,10 @@
           "type": "execution_node",
           "op": "execute-python-node",
           "app_data": {
-            "label": "",
             "component_parameters": {
-              "dependencies": [],
+              "dependencies": [
+                "classes.py"
+              ],
               "include_subdirectories": false,
               "outputs": [],
               "env_vars": [],
@@ -167,9 +170,10 @@
               "mounted_volumes": [],
               "filename": "preprocessing.py"
             },
+            "label": "",
             "ui_data": {
               "label": "preprocessing.py",
-              "image": "/notebook/object-detection/development/static/elyra/python.svg",
+              "image": "/notebook/object-detection/dev/static/elyra/python.svg",
               "x_pos": 428,
               "y_pos": 260,
               "description": "Run Python script"
@@ -236,7 +240,7 @@
             "label": "",
             "ui_data": {
               "label": "model_conversion.py",
-              "image": "/notebook/object-detection/development/static/elyra/python.svg",
+              "image": "/notebook/object-detection/dev/static/elyra/python.svg",
               "x_pos": 895,
               "y_pos": 267,
               "description": "Run Python script"
@@ -307,7 +311,7 @@
             "label": "",
             "ui_data": {
               "label": "model_upload.py",
-              "image": "/notebook/object-detection/development/static/elyra/python.svg",
+              "image": "/notebook/object-detection/dev/static/elyra/python.svg",
               "x_pos": 1106,
               "y_pos": 269,
               "description": "Run Python script"

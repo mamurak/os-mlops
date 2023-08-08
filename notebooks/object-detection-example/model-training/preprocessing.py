@@ -3,7 +3,9 @@ from math import floor
 from os import makedirs, path
 from shutil import copy
 
-from numpy import array, random
+from numpy import random
+
+from classes import training_classes
 
 
 def preprocess_data(data_folder='./data'):
@@ -16,76 +18,39 @@ def preprocess_data(data_folder='./data'):
                 makedirs(local_folder)
 
     download_folder = f'{data_folder}/download'
-    bicycle_images = _get_filenames(f'{download_folder}/bicycle/images')
-    car_images = _get_filenames(f'{download_folder}/car/images')
-    traffic_sign_images = _get_filenames(
-        f'{download_folder}/traffic sign/images'
-    )
 
-    duplicates1 = bicycle_images & car_images
-    duplicates2 = car_images & traffic_sign_images
-    duplicates3 = traffic_sign_images & bicycle_images
-    duplicate_sum = len(duplicates1) + len(duplicates2) + len(duplicates3)
-    print(f'Found {duplicate_sum} duplicates')
+    folder_names = [class_name.lower() for class_name in training_classes]
+    images = [
+        _get_filenames(f'{download_folder}/{folder_name}/images')
+        for folder_name in folder_names
+    ]
 
-    bicycle_images -= duplicates1
-    car_images -= duplicates2
-    traffic_sign_images -= duplicates3
-    print(
-        f'Deduplicated data set contains '
-        f'{len(bicycle_images)} bicycle images, '
-        f'{len(car_images)} car images, and '
-        f'{len(traffic_sign_images)} traffic sign images.'
-    )
+    seen_images = set()
+    deduplicated_images = []
 
-    bicycle_images = array(list(bicycle_images))
-    car_images = array(list(car_images))
-    traffic_sign_images = array(list(traffic_sign_images))
+    for image_list in images:
+        deduplicated_image_list = []
+        for image in image_list:
+            if image not in seen_images:
+                seen_images.add(image)
+                deduplicated_image_list.append(image)
+        deduplicated_images.append(deduplicated_image_list)
 
-    # Use the same random seed for reproducability
     random.seed(42)
-    random.shuffle(bicycle_images)
-    random.shuffle(car_images)
-    random.shuffle(traffic_sign_images)
-
     train_ratio = 0.75
     val_ratio = 0.125
-
-    # Bicycle data
-    bicycle_train_size = floor(train_ratio * len(bicycle_images))
-    bicycle_val_size = floor(val_ratio * len(bicycle_images))
-    _split_dataset(
-        download_folder,
-        data_folder,
-        'bicycle',
-        bicycle_images,
-        train_size=bicycle_train_size,
-        val_size=bicycle_val_size
-    )
-
-    # Car data
-    car_train_size = floor(train_ratio * len(car_images))
-    car_val_size = floor(val_ratio * len(car_images))
-    _split_dataset(
-        download_folder,
-        data_folder,
-        'car',
-        car_images,
-        train_size=car_train_size,
-        val_size=car_val_size
-    )
-
-    # Traffic sign data
-    traffic_sign_train_size = floor(train_ratio * len(traffic_sign_images))
-    traffic_sign_val_size = floor(val_ratio * len(traffic_sign_images))
-    _split_dataset(
-        download_folder,
-        data_folder,
-        'traffic sign',
-        traffic_sign_images,
-        train_size=traffic_sign_train_size,
-        val_size=traffic_sign_val_size
-    )
+    for i, image_list in enumerate(deduplicated_images):
+        random.shuffle(image_list)
+        train_size = floor(train_ratio * len(image_list))
+        val_size = floor(val_ratio * len(image_list))
+        _split_dataset(
+            download_folder,
+            data_folder,
+            folder_names[i],
+            image_list,
+            train_size=train_size,
+            val_size=val_size,
+        )
 
     print('data processing done')
 

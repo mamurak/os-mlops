@@ -3,6 +3,8 @@ from shutil import rmtree
 
 from openimages.download import download_dataset
 
+from classes import training_classes
+
 
 def ingest_data(data_folder='./data', limit=0):
     _clean_folder(data_folder)
@@ -14,7 +16,7 @@ def ingest_data(data_folder='./data', limit=0):
 
     download_dataset(
         download_folder,
-        class_labels=['Bicycle', 'Car', 'Traffic sign'],
+        class_labels=training_classes,
         annotation_format='darknet',
         limit=limit
     )
