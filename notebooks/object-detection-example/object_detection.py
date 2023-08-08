@@ -3,22 +3,21 @@ from requests import post
 import torch
 import torchvision
 
-from classes import classes
-
 
 def detect_objects(
         image,
         prediction_url,
         token,
+        classes_count,
         confidence_threshold=0.2,
         iou_threshold=0.6,
-        class_labels_type='coco'):
+        ):
 
     payload = _serialize(image)
     model_response = _get_model_response(
-        payload, prediction_url, token, class_labels_type
+        payload, prediction_url, token, classes_count
     )
-    processed_output = _postprocess(
+    processed_output = postprocess(
         model_response, confidence_threshold, iou_threshold
     )
     return processed_output
@@ -38,7 +37,7 @@ def _serialize(image):
     return payload
 
 
-def _get_model_response(payload, prediction_url, token, class_labels_type):
+def _get_model_response(payload, prediction_url, token, classes_count):
     headers = {'Authorization': f'Bearer {token}'}
     raw_response = post(prediction_url, json=payload, headers=headers)
     try:
@@ -52,16 +51,16 @@ def _get_model_response(payload, prediction_url, token, class_labels_type):
     except:
         print(f'Failed to extract model output from service response.\n'
               f'Service response: {response}')
-    unpacked_output = _unpack(model_output, class_labels_type)
+    unpacked_output = _unpack(model_output, classes_count)
     return unpacked_output
 
 
-def _unpack(model_output, class_labels_type):
+def _unpack(model_output, classes_count):
     arr = np.array(model_output[0]['data'])
     # Get the response data as a NumPy Array
 
     output = torch.tensor(arr)  # Create a tensor from array
-    prediction_columns_number = 5 + len(classes[class_labels_type])
+    prediction_columns_number = 5 + classes_count
     # Model returns model returns [xywh, conf, class0, class1, ...]
 
     output = output.reshape(
@@ -73,10 +72,10 @@ def _unpack(model_output, class_labels_type):
     return output
 
 
-def _postprocess(
+def postprocess(
         prediction,
-        conf_thres,
-        iou_thres,
+        conf_thres=0.5,
+        iou_thres=0.6,
         classes=None,
         agnostic=False,
         multi_label=False,

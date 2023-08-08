@@ -1,4 +1,6 @@
+import base64
 from glob import glob
+from io import BytesIO
 from os import path
 from pickle import dump
 
@@ -6,13 +8,24 @@ import cv2
 import numpy as np
 
 
-def preprocess(data_folder='./data'):
+def preprocess_image_file(image_path):
+    image = cv2.imread(image_path)
+    return _transform(image)
+
+
+def preprocess_encoded_image(base64encoded_image):
+    img_bytes = base64.decodebytes(base64encoded_image.encode())
+    image = cv2.imread(BytesIO(img_bytes))
+    return _transform(image)
+
+
+def preprocess_image_folder(data_folder='./data'):
     print('Commencing data preprocessing.')
 
     image_names, image_file_paths = _scan_images_folder(data_folder)
 
     image_data = [
-        _transform(image_path) for image_path in image_file_paths
+        preprocess_image_file(image_path)[0] for image_path in image_file_paths
     ]
     with open(f'{data_folder}/images.pickle', 'wb') as outputfile:
         dump([image_names, image_data], outputfile)
@@ -33,9 +46,8 @@ def _scan_images_folder(images_folder):
     return image_names, image_file_paths
 
 
-def _transform(image_path, image_size=640):
-    image = cv2.imread(image_path)
-    image = _letterbox_image(image, image_size, auto=False)
+def _transform(image, image_size=640):
+    image, ratio, dwdh = _letterbox_image(image, image_size, auto=False)
     image = image.transpose((2, 0, 1))  # HWC->CHW for PyTorch model
     image = np.expand_dims(image, 0)  # Model expects an array of images
     image = np.ascontiguousarray(image)
@@ -43,7 +55,7 @@ def _transform(image_path, image_size=640):
 
     im = image.astype(np.float32)  # Model expects float32 data type
     im /= 255  # Convert RGB values [0-255] to [0-1]
-    return im
+    return im, ratio, dwdh
 
 
 def _letterbox_image(
@@ -78,8 +90,8 @@ def _letterbox_image(
         im, top, bottom, left, right, cv2.BORDER_CONSTANT, value=color
     )  # add border
 
-    return im
+    return im, r, (dw, dh)
 
 
 if __name__ == '__main__':
-    preprocess(data_folder='/data')
+    preprocess_image_folder(data_folder='/data')

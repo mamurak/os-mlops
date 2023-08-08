@@ -79,7 +79,8 @@
             "component_parameters": {
               "pipeline_parameters": [
                 "batch_size",
-                "epochs"
+                "epochs",
+                "base_model"
               ],
               "dependencies": [
                 "yolov5/*",
@@ -362,6 +363,8 @@
             "kubernetes_shared_mem_size": {
               "size": 10
             },
+            "kubernetes_pod_labels": [],
+            "kubernetes_tolerations": [],
             "mounted_volumes": [
               {
                 "path": "/data",
@@ -370,8 +373,6 @@
               }
             ],
             "kubernetes_pod_annotations": [],
-            "kubernetes_pod_labels": [],
-            "kubernetes_tolerations": [],
             "env_vars": [],
             "kubernetes_secrets": [
               {
@@ -431,6 +432,15 @@
               "default_value": {
                 "type": "String",
                 "value": "model"
+              },
+              "required": false
+            },
+            {
+              "name": "base_model",
+              "description": "",
+              "default_value": {
+                "type": "String",
+                "value": "yolov5m"
               },
               "required": false
             }

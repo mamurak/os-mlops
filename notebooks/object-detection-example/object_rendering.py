@@ -4,12 +4,9 @@ import cv2
 from matplotlib import pyplot as plt
 import numpy as np
 
-from classes import classes
 
-
-def draw_boxes(image_path, model_output, ratio, dwdh, class_labels_type):
+def draw_boxes(image_path, model_output, scaling, padding, class_labels):
     image = cv2.imread(image_path)  # Read image
-    class_labels = classes[class_labels_type]
     colors = {
         name: [
             random.randint(0, 255) for _ in range(3)
@@ -17,8 +14,8 @@ def draw_boxes(image_path, model_output, ratio, dwdh, class_labels_type):
     }
     for i, (x0, y0, x1, y1, score, cls_id) in enumerate(model_output):
         box = np.array([x0, y0, x1, y1])
-        box -= np.array(dwdh*2)
-        box /= ratio
+        box -= np.array(padding*2)
+        box /= scaling
         box = box.round().astype(np.int32).tolist()
         cls_id = int(cls_id)
         score = round(float(score), 3)
