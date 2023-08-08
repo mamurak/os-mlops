@@ -7,8 +7,8 @@ import torchvision
 def detect_objects(
         image,
         prediction_url,
-        token,
         classes_count,
+        token='',
         confidence_threshold=0.2,
         iou_threshold=0.6,
         ):

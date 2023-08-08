@@ -86,4 +86,10 @@ classes = {
         'Car',
         'Traffic sign',
     ],
+    'computer': [
+        'Computer mouse',
+        'Computer monitor',
+        'Computer keyboard',
+        'Laptop',
+    ],
 }
