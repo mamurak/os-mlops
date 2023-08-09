@@ -1,13 +1,13 @@
 from os import environ, listdir, path, unlink
 from shutil import rmtree
+import yaml
 
 from openimages.download import download_dataset
-
-from classes import training_classes
 
 
 def ingest_data(data_folder='./data', limit=0):
     _clean_folder(data_folder)
+    class_labels = _read_class_labels('configuration.yaml')
 
     print('Commencing data ingestion.')
 
@@ -16,7 +16,7 @@ def ingest_data(data_folder='./data', limit=0):
 
     download_dataset(
         download_folder,
-        class_labels=training_classes,
+        class_labels=class_labels,
         annotation_format='darknet',
         limit=limit
     )
@@ -36,6 +36,14 @@ def _clean_folder(folder):
                 rmtree(file_path)
         except Exception as e:
             print(f'Failed to delete {file_path}. Reason: {e}')
+
+
+def _read_class_labels(configuration_file_path):
+    with open(configuration_file_path, 'r') as config_file:
+        config = yaml.load(config_file.read(), Loader=yaml.SafeLoader)
+
+    class_labels = config['names']
+    return class_labels
 
 
 if __name__ == '__main__':

@@ -7,4 +7,4 @@ test:  /data/images/test
 nc: 3
 
 # Class names 0 - bicycle, 1 - car, 3 - traffic sign
-names: ['bicycle', 'car', 'traffic sign']
+names: ['Laptop', 'Computer keyboard', 'Table']

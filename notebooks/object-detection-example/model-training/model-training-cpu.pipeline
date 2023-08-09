@@ -18,7 +18,8 @@
                 "sample_count"
               ],
               "dependencies": [
-                "classes.py"
+                "classes.py",
+                "configuration.yaml"
               ],
               "include_subdirectories": false,
               "outputs": [],
@@ -157,7 +158,8 @@
           "app_data": {
             "component_parameters": {
               "dependencies": [
-                "classes.py"
+                "classes.py",
+                "configuration.yaml"
               ],
               "include_subdirectories": false,
               "outputs": [],

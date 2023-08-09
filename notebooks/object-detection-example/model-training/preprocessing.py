@@ -2,10 +2,9 @@ from glob import glob
 from math import floor
 from os import makedirs, path
 from shutil import copy
+import yaml
 
 from numpy import random
-
-from classes import training_classes
 
 
 def preprocess_data(data_folder='./data'):
@@ -18,28 +17,27 @@ def preprocess_data(data_folder='./data'):
                 makedirs(local_folder)
 
     download_folder = f'{data_folder}/download'
+    class_labels = _read_class_labels('configuration.yaml')
 
-    folder_names = [class_name.lower() for class_name in training_classes]
+    folder_names = [class_name.lower() for class_name in class_labels]
     images = [
         _get_filenames(f'{download_folder}/{folder_name}/images')
         for folder_name in folder_names
     ]
 
-    seen_images = set()
-    deduplicated_images = []
+    duplicates_0_1 = images[0] & images[1]
+    duplicates_1_2 = images[1] & images[2]
+    duplicates_2_0 = images[2] & images[0]
 
-    for image_list in images:
-        deduplicated_image_list = []
-        for image in image_list:
-            if image not in seen_images:
-                seen_images.add(image)
-                deduplicated_image_list.append(image)
-        deduplicated_images.append(deduplicated_image_list)
+    images[0] -= duplicates_0_1
+    images[1] -= duplicates_1_2
+    images[2] -= duplicates_2_0
 
     random.seed(42)
     train_ratio = 0.75
     val_ratio = 0.125
-    for i, image_list in enumerate(deduplicated_images):
+    for i, image_set in enumerate(images):
+        image_list = list(image_set)
         random.shuffle(image_list)
         train_size = floor(train_ratio * len(image_list))
         val_size = floor(val_ratio * len(image_list))
@@ -55,11 +53,18 @@ def preprocess_data(data_folder='./data'):
     print('data processing done')
 
 
+def _read_class_labels(configuration_file_path):
+    with open(configuration_file_path, 'r') as config_file:
+        config = yaml.load(config_file.read(), Loader=yaml.SafeLoader)
+
+    class_labels = config['names']
+    return class_labels
+
+
 def _get_filenames(folder):
     filenames = set()
 
     for local_path in glob(path.join(folder, '*.jpg')):
-        # Extract the filename
         filename = path.split(local_path)[-1]
         filenames.add(filename)
 

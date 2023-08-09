@@ -82,14 +82,13 @@ classes = {
         'toothbrush',
     ],
     'traffic': [
-        'Bicycle',
-        'Car',
-        'Traffic sign',
+        'bicycle',
+        'car',
+        'traffic sign',
     ],
     'computer': [
-        'Computer mouse',
-        'Computer monitor',
-        'Computer keyboard',
-        'Laptop',
+        'computer mouse',
+        'computer monitor',
+        'computer keyboard',
     ],
 }
