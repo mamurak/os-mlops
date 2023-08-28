@@ -25,7 +25,7 @@ def generate_overall_manifest(user_count, output_file_path='generated_manifest.y
 def _get_overall_resources(user_count):
     overall_resources = []
     for index in range(1, user_count+1):
-        overall_resources += _get_user_resources(f'user-{index}')
+        overall_resources += _get_user_resources(f'user{index}')
     return overall_resources
 
 
@@ -45,10 +45,10 @@ def _generate_manifest(resources, output_file_path):
 def _get_user_resources(user_id):
     user_resources = [
         _get_project_resource(user_id),
-        _get_single_obc_resource(user_id),
-        _get_namespace_store_resource(user_id),
-        _get_combined_obc_resource(user_id),
-        _get_bucket_class_resource(user_id),
+        # _get_single_obc_resource(user_id),
+        # _get_namespace_store_resource(user_id),
+        # _get_combined_obc_resource(user_id),
+        # _get_bucket_class_resource(user_id),
         _get_role_binding_resource(user_id),
         _get_pvc_resource(user_id),
     ]
