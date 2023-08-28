@@ -1,0 +1,840 @@
+apiVersion: project.openshift.io/v1
+kind: Project
+metadata:
+  annotations:
+    openshift.io/description: ''
+    openshift.io/display-name: user1
+  labels:
+    kubernetes.io/metadata.name: user1
+    modelmesh-enabled: 'true'
+    opendatahub.io/dashboard: 'true'
+  name: user1
+spec:
+  finalizers:
+  - kubernetes
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: admin
+  namespace: user1
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: user1
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: user1
+  namespace: redhat-ods-applications
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  volumeMode: Filesystem
+---
+apiVersion: project.openshift.io/v1
+kind: Project
+metadata:
+  annotations:
+    openshift.io/description: ''
+    openshift.io/display-name: user2
+  labels:
+    kubernetes.io/metadata.name: user2
+    modelmesh-enabled: 'true'
+    opendatahub.io/dashboard: 'true'
+  name: user2
+spec:
+  finalizers:
+  - kubernetes
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: admin
+  namespace: user2
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: user2
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: user2
+  namespace: redhat-ods-applications
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  volumeMode: Filesystem
+---
+apiVersion: project.openshift.io/v1
+kind: Project
+metadata:
+  annotations:
+    openshift.io/description: ''
+    openshift.io/display-name: user3
+  labels:
+    kubernetes.io/metadata.name: user3
+    modelmesh-enabled: 'true'
+    opendatahub.io/dashboard: 'true'
+  name: user3
+spec:
+  finalizers:
+  - kubernetes
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: admin
+  namespace: user3
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: user3
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: user3
+  namespace: redhat-ods-applications
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  volumeMode: Filesystem
+---
+apiVersion: project.openshift.io/v1
+kind: Project
+metadata:
+  annotations:
+    openshift.io/description: ''
+    openshift.io/display-name: user4
+  labels:
+    kubernetes.io/metadata.name: user4
+    modelmesh-enabled: 'true'
+    opendatahub.io/dashboard: 'true'
+  name: user4
+spec:
+  finalizers:
+  - kubernetes
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: admin
+  namespace: user4
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: user4
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: user4
+  namespace: redhat-ods-applications
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  volumeMode: Filesystem
+---
+apiVersion: project.openshift.io/v1
+kind: Project
+metadata:
+  annotations:
+    openshift.io/description: ''
+    openshift.io/display-name: user5
+  labels:
+    kubernetes.io/metadata.name: user5
+    modelmesh-enabled: 'true'
+    opendatahub.io/dashboard: 'true'
+  name: user5
+spec:
+  finalizers:
+  - kubernetes
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: admin
+  namespace: user5
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: user5
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: user5
+  namespace: redhat-ods-applications
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  volumeMode: Filesystem
+---
+apiVersion: project.openshift.io/v1
+kind: Project
+metadata:
+  annotations:
+    openshift.io/description: ''
+    openshift.io/display-name: user6
+  labels:
+    kubernetes.io/metadata.name: user6
+    modelmesh-enabled: 'true'
+    opendatahub.io/dashboard: 'true'
+  name: user6
+spec:
+  finalizers:
+  - kubernetes
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: admin
+  namespace: user6
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: user6
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: user6
+  namespace: redhat-ods-applications
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  volumeMode: Filesystem
+---
+apiVersion: project.openshift.io/v1
+kind: Project
+metadata:
+  annotations:
+    openshift.io/description: ''
+    openshift.io/display-name: user7
+  labels:
+    kubernetes.io/metadata.name: user7
+    modelmesh-enabled: 'true'
+    opendatahub.io/dashboard: 'true'
+  name: user7
+spec:
+  finalizers:
+  - kubernetes
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: admin
+  namespace: user7
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: user7
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: user7
+  namespace: redhat-ods-applications
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  volumeMode: Filesystem
+---
+apiVersion: project.openshift.io/v1
+kind: Project
+metadata:
+  annotations:
+    openshift.io/description: ''
+    openshift.io/display-name: user8
+  labels:
+    kubernetes.io/metadata.name: user8
+    modelmesh-enabled: 'true'
+    opendatahub.io/dashboard: 'true'
+  name: user8
+spec:
+  finalizers:
+  - kubernetes
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: admin
+  namespace: user8
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: user8
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: user8
+  namespace: redhat-ods-applications
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  volumeMode: Filesystem
+---
+apiVersion: project.openshift.io/v1
+kind: Project
+metadata:
+  annotations:
+    openshift.io/description: ''
+    openshift.io/display-name: user9
+  labels:
+    kubernetes.io/metadata.name: user9
+    modelmesh-enabled: 'true'
+    opendatahub.io/dashboard: 'true'
+  name: user9
+spec:
+  finalizers:
+  - kubernetes
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: admin
+  namespace: user9
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: user9
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: user9
+  namespace: redhat-ods-applications
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  volumeMode: Filesystem
+---
+apiVersion: project.openshift.io/v1
+kind: Project
+metadata:
+  annotations:
+    openshift.io/description: ''
+    openshift.io/display-name: user10
+  labels:
+    kubernetes.io/metadata.name: user10
+    modelmesh-enabled: 'true'
+    opendatahub.io/dashboard: 'true'
+  name: user10
+spec:
+  finalizers:
+  - kubernetes
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: admin
+  namespace: user10
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: user10
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: user10
+  namespace: redhat-ods-applications
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  volumeMode: Filesystem
+---
+apiVersion: project.openshift.io/v1
+kind: Project
+metadata:
+  annotations:
+    openshift.io/description: ''
+    openshift.io/display-name: user11
+  labels:
+    kubernetes.io/metadata.name: user11
+    modelmesh-enabled: 'true'
+    opendatahub.io/dashboard: 'true'
+  name: user11
+spec:
+  finalizers:
+  - kubernetes
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: admin
+  namespace: user11
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: user11
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: user11
+  namespace: redhat-ods-applications
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  volumeMode: Filesystem
+---
+apiVersion: project.openshift.io/v1
+kind: Project
+metadata:
+  annotations:
+    openshift.io/description: ''
+    openshift.io/display-name: user12
+  labels:
+    kubernetes.io/metadata.name: user12
+    modelmesh-enabled: 'true'
+    opendatahub.io/dashboard: 'true'
+  name: user12
+spec:
+  finalizers:
+  - kubernetes
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: admin
+  namespace: user12
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: user12
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: user12
+  namespace: redhat-ods-applications
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  volumeMode: Filesystem
+---
+apiVersion: project.openshift.io/v1
+kind: Project
+metadata:
+  annotations:
+    openshift.io/description: ''
+    openshift.io/display-name: user13
+  labels:
+    kubernetes.io/metadata.name: user13
+    modelmesh-enabled: 'true'
+    opendatahub.io/dashboard: 'true'
+  name: user13
+spec:
+  finalizers:
+  - kubernetes
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: admin
+  namespace: user13
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: user13
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: user13
+  namespace: redhat-ods-applications
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  volumeMode: Filesystem
+---
+apiVersion: project.openshift.io/v1
+kind: Project
+metadata:
+  annotations:
+    openshift.io/description: ''
+    openshift.io/display-name: user14
+  labels:
+    kubernetes.io/metadata.name: user14
+    modelmesh-enabled: 'true'
+    opendatahub.io/dashboard: 'true'
+  name: user14
+spec:
+  finalizers:
+  - kubernetes
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: admin
+  namespace: user14
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: user14
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: user14
+  namespace: redhat-ods-applications
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  volumeMode: Filesystem
+---
+apiVersion: project.openshift.io/v1
+kind: Project
+metadata:
+  annotations:
+    openshift.io/description: ''
+    openshift.io/display-name: user15
+  labels:
+    kubernetes.io/metadata.name: user15
+    modelmesh-enabled: 'true'
+    opendatahub.io/dashboard: 'true'
+  name: user15
+spec:
+  finalizers:
+  - kubernetes
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: admin
+  namespace: user15
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: user15
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: user15
+  namespace: redhat-ods-applications
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  volumeMode: Filesystem
+---
+apiVersion: project.openshift.io/v1
+kind: Project
+metadata:
+  annotations:
+    openshift.io/description: ''
+    openshift.io/display-name: user16
+  labels:
+    kubernetes.io/metadata.name: user16
+    modelmesh-enabled: 'true'
+    opendatahub.io/dashboard: 'true'
+  name: user16
+spec:
+  finalizers:
+  - kubernetes
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: admin
+  namespace: user16
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: user16
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: user16
+  namespace: redhat-ods-applications
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  volumeMode: Filesystem
+---
+apiVersion: project.openshift.io/v1
+kind: Project
+metadata:
+  annotations:
+    openshift.io/description: ''
+    openshift.io/display-name: user17
+  labels:
+    kubernetes.io/metadata.name: user17
+    modelmesh-enabled: 'true'
+    opendatahub.io/dashboard: 'true'
+  name: user17
+spec:
+  finalizers:
+  - kubernetes
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: admin
+  namespace: user17
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: user17
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: user17
+  namespace: redhat-ods-applications
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  volumeMode: Filesystem
+---
+apiVersion: project.openshift.io/v1
+kind: Project
+metadata:
+  annotations:
+    openshift.io/description: ''
+    openshift.io/display-name: user18
+  labels:
+    kubernetes.io/metadata.name: user18
+    modelmesh-enabled: 'true'
+    opendatahub.io/dashboard: 'true'
+  name: user18
+spec:
+  finalizers:
+  - kubernetes
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: admin
+  namespace: user18
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: user18
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: user18
+  namespace: redhat-ods-applications
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  volumeMode: Filesystem
+---
+apiVersion: project.openshift.io/v1
+kind: Project
+metadata:
+  annotations:
+    openshift.io/description: ''
+    openshift.io/display-name: user19
+  labels:
+    kubernetes.io/metadata.name: user19
+    modelmesh-enabled: 'true'
+    opendatahub.io/dashboard: 'true'
+  name: user19
+spec:
+  finalizers:
+  - kubernetes
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: admin
+  namespace: user19
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: user19
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: user19
+  namespace: redhat-ods-applications
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  volumeMode: Filesystem
+---
+apiVersion: project.openshift.io/v1
+kind: Project
+metadata:
+  annotations:
+    openshift.io/description: ''
+    openshift.io/display-name: user20
+  labels:
+    kubernetes.io/metadata.name: user20
+    modelmesh-enabled: 'true'
+    opendatahub.io/dashboard: 'true'
+  name: user20
+spec:
+  finalizers:
+  - kubernetes
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: admin
+  namespace: user20
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: user20
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: user20
+  namespace: redhat-ods-applications
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  volumeMode: Filesystem
+---
