@@ -49,7 +49,7 @@ def _get_user_resources(user_id):
         # # _get_namespace_store_resource(user_id),
         # # _get_combined_obc_resource(user_id),
         # # _get_bucket_class_resource(user_id),
-        # _get_role_binding_resource(user_id),
+        _get_role_binding_resource(user_id),
         _get_pvc_resource(user_id),
 
         #### New ones ####
