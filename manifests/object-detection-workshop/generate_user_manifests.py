@@ -294,7 +294,7 @@ def _get_allow_from_all_namespaces_resource(user_id):
         },
         "spec":{
             "podSelector": {},
-            "ingress": [{"from": [{"namespaceSelector":None}]}]
+            "ingress": [{"from": [{"namespaceSelector":{}}]}]
         },
         "policyTypes": ["Ingress"]
     }
@@ -396,11 +396,11 @@ def _get_pipelines_definition_resource(user_id):
                         "secretName": "aws-connection-pipelines",
                     },
                     "scheme": "http",
-                    "secure": "false",
+                    "secure": False,
                 }
             },
             "persistenceAgent":{
-                "deploy": "true",
+                "deploy": True,
                 "numWorkers": 2
             },
             "scheduledWorkflow":{
