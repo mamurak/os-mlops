@@ -44,13 +44,13 @@ def _generate_manifest(resources, output_file_path):
 
 def _get_user_resources(user_id):
     user_resources = [
-        # _get_project_resource(user_id),
+        _get_project_resource(user_id),
         # # _get_single_obc_resource(user_id),
         # # _get_namespace_store_resource(user_id),
         # # _get_combined_obc_resource(user_id),
         # # _get_bucket_class_resource(user_id),
         # _get_role_binding_resource(user_id),
-        # _get_pvc_resource(user_id),
+        _get_pvc_resource(user_id),
 
         #### New ones ####
         _get_aws_connection_pipelines_resource(user_id),
@@ -465,7 +465,7 @@ def _get_ovms_resource(user_id):
             "multiModel": True,
             "protocolVersions": ["grpc-v1"],
             "replicas": 1,
-            "supportedModelFormats":{
+            "supportedModelFormats":
                 [{
                     "autoSelect": True,
                     "name": "openvino_ir",
@@ -479,7 +479,6 @@ def _get_ovms_resource(user_id):
                     "name": "tensorflow",
                     "version": '2',
                 }]
-            }
         }
     }
     return ovms_resource
