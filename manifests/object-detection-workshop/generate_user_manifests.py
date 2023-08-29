@@ -247,11 +247,11 @@ def _get_aws_connection_pipelines_resource(user_id):
             },
         },
         "stringData":{
-            "AWS_ACCESS_KEY_ID": "user1",
+            "AWS_ACCESS_KEY_ID": "minio",
             "AWS_DEFAULT_REGION": "us-east-1",
             "AWS_S3_BUCKET": user_id+"-pipelines",
             "AWS_S3_ENDPOINT": "http://minio-service.minio.svc:9000",
-            "AWS_SECRET_ACCESS_KEY": "slIoRGXKm7Zja1VH",
+            "AWS_SECRET_ACCESS_KEY": "minio123",
             "type": "Opaque",
         }
     }
@@ -274,11 +274,11 @@ def _get_aws_connection_object_detection_resource(user_id):
             },
         },
         "stringData":{
-            "AWS_ACCESS_KEY_ID": "user1",
+            "AWS_ACCESS_KEY_ID": "minio",
             "AWS_DEFAULT_REGION": "us-east-1",
             "AWS_S3_BUCKET": user_id,
             "AWS_S3_ENDPOINT": "http://minio-service.minio.svc:9000",
-            "AWS_SECRET_ACCESS_KEY": "slIoRGXKm7Zja1VH",
+            "AWS_SECRET_ACCESS_KEY": "minio123",
             "type": "Opaque",
         }
     }
