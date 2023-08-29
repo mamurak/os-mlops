@@ -237,14 +237,14 @@ def _get_aws_connection_pipelines_resource(user_id):
         "metadata": {
             "name": "aws-connection-pipelines",
             "namespace": user_id,
-        },
-        "labels":{
-            "opendatahub.io/dashboard": 'true',
-            "opendatahub.io/managed": 'true',
-        },
-        "annotations": {
-            "opendatahub.io/connection-type": "s3",
-            "openshift.io/display-name": "pipelines",
+            "labels":{
+                "opendatahub.io/dashboard": 'true',
+                "opendatahub.io/managed": 'true',
+            },
+            "annotations": {
+                "opendatahub.io/connection-type": "s3",
+                "openshift.io/display-name": "pipelines",
+            },
         },
         "stringData":{
             "AWS_ACCESS_KEY_ID": "user1",
@@ -264,14 +264,14 @@ def _get_aws_connection_object_detection_resource(user_id):
         "metadata":{
             "name": "aws-connection-object-detection",
             "namespace": user_id,
-        },
-        "labels":{
-            "opendatahub.io/dashboard": 'true',
-            "opendatahub.io/managed": 'true',
-        },
-        "annotations":{
-            "opendatahub.io/connection-type": "s3",
-            "openshift.io/display-name": "object-detection",
+            "labels":{
+                "opendatahub.io/dashboard": 'true',
+                "opendatahub.io/managed": 'true',
+            },
+            "annotations":{
+                "opendatahub.io/connection-type": "s3",
+                "openshift.io/display-name": "object-detection",
+            },
         },
         "stringData":{
             "AWS_ACCESS_KEY_ID": "user1",
