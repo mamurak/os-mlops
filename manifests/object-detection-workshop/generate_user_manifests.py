@@ -25,7 +25,8 @@ def generate_overall_manifest(user_count, output_file_path='generated_manifest.y
 def _get_overall_resources(user_count):
     overall_resources = []
     for index in range(1, user_count+1):
-        overall_resources += _get_user_resources(f'user{index}')
+        if not (index == 10 or index == 11): 
+            overall_resources += _get_user_resources(f'user{index}')
     return overall_resources
 
 
