@@ -20,4 +20,4 @@ spec:
   repos:
     # ODH Core component manifests
   - name: manifests
-    uri: https://github.com/opendatahub-io/distributed-workloads/tarball/main
+    uri: https://github.com/mamurak/distributed-workloads/tarball/main
