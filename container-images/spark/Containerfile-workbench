@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=quay.io/modh/odh-generic-data-science-notebook:v1-073bb4a
+ARG BASE_IMAGE=quay.io/modh/odh-generic-data-science-notebook:v2-2023a-20230817-5873c3d
 FROM ${BASE_IMAGE} as builder
 
 ARG UBI_VERSION
@@ -36,16 +36,16 @@ RUN dnf install -y gzip && \
 # Download Spark
 ADD https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-without-hadoop.tgz .
 # Unzip Spark
-RUN tar -xvzf spark-${SPARK_VERSION}-bin-without-hadoop.tgz --no-same-owner
-RUN mv spark-${SPARK_VERSION}-bin-without-hadoop spark
+RUN tar -xvzf spark-${SPARK_VERSION}-bin-without-hadoop.tgz --no-same-owner && \
+    mv spark-${SPARK_VERSION}-bin-without-hadoop spark
 
 # Download Hadoop
 ADD https://archive.apache.org/dist/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz .
 # Unzip Hadoop
-RUN tar -xvzf hadoop-${HADOOP_VERSION}.tar.gz --no-same-owner
-RUN mv hadoop-${HADOOP_VERSION} hadoop
+RUN tar -xvzf hadoop-${HADOOP_VERSION}.tar.gz --no-same-owner && \
+    mv hadoop-${HADOOP_VERSION} hadoop && \
 # Delete unnecessary hadoop documentation
-RUN rm -rf hadoop/share/doc
+    rm -rf hadoop/share/doc
 
 # Download JMX Prometheus javaagent jar
 ADD https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/${JMX_PROMETHEUS_JAVAAGENT_VERSION}/jmx_prometheus_javaagent-${JMX_PROMETHEUS_JAVAAGENT_VERSION}.jar /prometheus/
