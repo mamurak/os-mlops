@@ -125,7 +125,6 @@ USER 1001
 
 # Install PySpark and cleanup
 RUN pip install --no-cache-dir pyspark~=3.3.1 && \
-    chmod -R g+w /opt/app-root/lib/python3.9/site-packages && \
     fix-permissions /opt/app-root -P
 
 ENTRYPOINT ["start-notebook.sh"] 
