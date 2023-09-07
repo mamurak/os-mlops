@@ -1,40 +1,48 @@
-from joblib import dump
 from pandas import read_parquet
-from sklearn.compose import ColumnTransformer
-from sklearn.impute import SimpleImputer
-from sklearn.model_selection import train_test_split
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import RobustScaler, OneHotEncoder
+from imblearn.over_sampling import SMOTE
+from numpy import save
+from sklearn.model_selection import StratifiedKFold
+from sklearn.preprocessing import RobustScaler
 
 
 def preprocess_data(data_folder='./data'):
     print('preprocessing data')
 
     df = read_parquet(f'{data_folder}/data.parquet')
-    train, _ = train_test_split(df, random_state=43)
 
-    tt_xform = (
-        'onehot',
-        OneHotEncoder(
-            handle_unknown='ignore',
-            categories=[['online', 'contactless', 'chip_and_pin', 'manual', 'swipe']]
-        ),
-        ['trans_type']
+    rob_scaler = RobustScaler()
+
+    df['scaled_amount'] = rob_scaler.fit_transform(
+        df['amount'].values.reshape(-1, 1)
     )
+    df['scaled_time'] = rob_scaler.fit_transform(
+        df['time'].values.reshape(-1, 1)
+    )
+    df.drop(['time', 'amount'], axis=1, inplace=True)
+    scaled_amount = df['scaled_amount']
+    scaled_time = df['scaled_time']
 
-    impute_and_scale = Pipeline([
-        ('median_imputer', SimpleImputer(strategy="median")),
-        ('interarrival_scaler', RobustScaler())
-    ])
-    ia_scaler = ('interarrival_scaler', impute_and_scale, ['interarrival'])
-    amount_scaler = ('amount_scaler', RobustScaler(), ['amount'])
+    df.drop(['scaled_amount', 'scaled_time'], axis=1, inplace=True)
+    df.insert(0, 'scaled_amount', scaled_amount)
+    df.insert(1, 'scaled_time', scaled_time)
 
-    all_xforms = ColumnTransformer(transformers=([ia_scaler, amount_scaler, tt_xform]))
-    feature_pipeline = Pipeline([('feature_extraction', all_xforms)])
+    X = df.drop('label', axis=1)
+    y = df['label']
+    sss = StratifiedKFold(n_splits=5, random_state=None, shuffle=False)
 
-    feature_columns = ['user_id', 'amount', 'trans_type', 'foreign', 'interarrival']
-    feature_pipeline.fit(train[feature_columns])
-    dump(feature_pipeline, open('feature_pipeline.joblib', 'wb'))
+    for train_index, test_index in sss.split(X, y):
+        print("Train:", train_index, "Test:", test_index)
+        original_Xtrain = X.iloc[train_index]
+        original_ytrain = y.iloc[train_index]
+
+    original_Xtrain = original_Xtrain.values
+    original_ytrain = original_ytrain.values
+
+    sm = SMOTE(sampling_strategy='minority', random_state=42)
+    Xsm_train, ysm_train = sm.fit_resample(original_Xtrain, original_ytrain)
+
+    save(f'{data_folder}/training_samples.npy', Xsm_train)
+    save(f'{data_folder}/training_labels.npy', ysm_train.astype(int))
 
     print('data processing done')
 

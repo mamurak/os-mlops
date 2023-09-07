@@ -1,56 +1,47 @@
-from joblib import dump, load
-from pandas import read_parquet
-from sklearn.metrics import classification_report
-from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import train_test_split
-from sklearn.pipeline import Pipeline
+from os import environ
+
+environ['CUDA_VISIBLE_DEVICES'] = '-1'
+
+from keras.models import Sequential
+from keras.layers.core import Dense
+from keras.optimizers import Adam
+from numpy import load
+from onnx import save
+from tf2onnx import convert
 
 
-feature_columns = ['user_id', 'amount', 'trans_type', 'foreign', 'interarrival']
-
-
-def train_model_pipeline(data_folder='./data'):
+def train_model(data_folder='./data'):
     print('training model')
 
-    df = read_parquet(f'{data_folder}/data.parquet')
-    train, test = train_test_split(df, random_state=43)
+    epoch_count = int(environ.get('epoch_count', '20'))
+    learning_rate = float(environ.get('learning_rate', '0.001'))
 
-    feature_pipeline = _load_feature_pipeline()
-    model = _train_model(train, feature_pipeline)
+    Xsm_train = load(f'{data_folder}/training_samples.npy')
+    ysm_train = load(f'{data_folder}/training_labels.npy')
+    n_inputs = Xsm_train.shape[1]
 
-    predictions = model.predict(
-        feature_pipeline.fit_transform(test[feature_columns])
-    )
-    print(classification_report(test.label.values, predictions))
-
-    pipeline = Pipeline([
-        ('features', feature_pipeline),
-        ('model', model)
+    oversample_model = Sequential([
+        Dense(n_inputs, input_shape=(n_inputs, ), activation='relu'),
+        Dense(32, activation='relu'),
+        Dense(2, activation='softmax'),
     ])
-
-    pipeline.fit(train[feature_columns], y=train['label'])
-    dump(pipeline, open('model.joblib', 'wb'))
-
-    print('model training done')
-
-
-def _load_feature_pipeline():
-    with open('feature_pipeline.joblib', 'rb') as inputfile:
-        feature_pipeline = load(inputfile)
-    return feature_pipeline
-
-
-def _train_model(train, feature_pipeline):
-    fraud_frequency = train[train["label"] == "fraud"]["timestamp"].count() / train["timestamp"].count()
-    train.loc[train["label"] == "legitimate", "weights"] = fraud_frequency
-    train.loc[train["label"] == "fraud", "weights"] = (1 - fraud_frequency)
-
-    model = LogisticRegression(max_iter=500)
-
-    svecs = feature_pipeline.fit_transform(train[feature_columns])
-    model.fit(svecs, train["label"], sample_weight=train["weights"])
-    return model
+    oversample_model.compile(
+        Adam(learning_rate=learning_rate),
+        loss='sparse_categorical_crossentropy',
+        metrics=['accuracy'],
+    )
+    oversample_model.fit(
+        Xsm_train,
+        ysm_train,
+        validation_split=0.2,
+        batch_size=300,
+        epochs=epoch_count,
+        shuffle=True,
+        verbose=2,
+    )
+    onnx_model, _ = convert.from_keras(oversample_model)
+    save(onnx_model, 'model.onnx')
 
 
 if __name__ == '__main__':
-    train_model_pipeline(data_folder='/data')
+    train_model(data_folder='/data')

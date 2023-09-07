@@ -69,7 +69,7 @@
             "label": "",
             "ui_data": {
               "label": "data_ingestion.py",
-              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/fraud-workbench/static/elyra/python.svg",
               "x_pos": 199,
               "y_pos": 268,
               "description": "Run Python script"
@@ -110,10 +110,14 @@
           "op": "execute-python-node",
           "app_data": {
             "component_parameters": {
+              "pipeline_parameters": [
+                "epoch_count",
+                "learning_rate"
+              ],
               "dependencies": [],
               "include_subdirectories": false,
               "outputs": [
-                "model.joblib"
+                "model.onnx"
               ],
               "env_vars": [],
               "kubernetes_pod_annotations": [],
@@ -128,12 +132,13 @@
                   "read_only": false
                 }
               ],
-              "filename": "model_training.py"
+              "filename": "model_training.py",
+              "runtime_image": "quay.io/mmurakam/runtimes:fraud-detection-v0.1.0"
             },
             "label": "",
             "ui_data": {
               "label": "model_training.py",
-              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/fraud-workbench/static/elyra/python.svg",
               "x_pos": 671,
               "y_pos": 266,
               "description": "Run Python script"
@@ -183,9 +188,7 @@
             "component_parameters": {
               "dependencies": [],
               "include_subdirectories": false,
-              "outputs": [
-                "feature_pipeline.joblib"
-              ],
+              "outputs": [],
               "env_vars": [],
               "kubernetes_pod_annotations": [],
               "kubernetes_pod_labels": [],
@@ -204,7 +207,7 @@
             "label": "",
             "ui_data": {
               "label": "preprocessing.py",
-              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/fraud-workbench/static/elyra/python.svg",
               "x_pos": 428,
               "y_pos": 260,
               "description": "Run Python script"
@@ -267,7 +270,7 @@
             "label": "",
             "ui_data": {
               "label": "model_validation.py",
-              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/fraud-workbench/static/elyra/python.svg",
               "x_pos": 895,
               "y_pos": 267,
               "description": "Run Python script"
@@ -315,6 +318,9 @@
           "op": "execute-python-node",
           "app_data": {
             "component_parameters": {
+              "pipeline_parameters": [
+                "model_object_prefix"
+              ],
               "dependencies": [],
               "include_subdirectories": false,
               "outputs": [],
@@ -364,9 +370,9 @@
             "label": "",
             "ui_data": {
               "label": "model_upload.py",
-              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/fraud-workbench/static/elyra/python.svg",
               "x_pos": 1106,
-              "y_pos": 269,
+              "y_pos": 268,
               "description": "Run Python script"
             }
           },
@@ -415,17 +421,46 @@
         "runtime_type": "KUBEFLOW_PIPELINES",
         "properties": {
           "name": "model-training",
-          "runtime": "Kubeflow Pipelines",
+          "runtime": "Data Science Pipelines",
           "pipeline_defaults": {
-            "kubernetes_shared_mem_size": {},
             "kubernetes_pod_labels": [],
+            "kubernetes_pod_annotations": [],
             "mounted_volumes": [],
             "kubernetes_tolerations": [],
-            "kubernetes_pod_annotations": [],
-            "kubernetes_secrets": [],
+            "kubernetes_shared_mem_size": {},
             "env_vars": [],
+            "kubernetes_secrets": [],
             "runtime_image": "quay.io/mmurakam/runtimes:trino-v1.0.3"
-          }
+          },
+          "pipeline_parameters": [
+            {
+              "name": "epoch_count",
+              "description": "",
+              "default_value": {
+                "type": "Integer",
+                "value": 20
+              },
+              "required": false
+            },
+            {
+              "name": "learning_rate",
+              "description": "",
+              "default_value": {
+                "type": "Float",
+                "value": 0.001
+              },
+              "required": false
+            },
+            {
+              "name": "model_object_prefix",
+              "description": "",
+              "default_value": {
+                "type": "String",
+                "value": "model"
+              },
+              "required": false
+            }
+          ]
         }
       },
       "runtime_ref": ""

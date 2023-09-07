@@ -2,23 +2,17 @@ kind: Secret
 apiVersion: v1
 metadata:
   name: fraud-detection-training-pipeline-secret
-  namespace: redhat-ods-applications
 stringData:
   TRINO_USERNAME: "trino"
   TRINO_PASSWORD: "trino"
   TRINO_HOSTNAME: "trino-service"
   TRINO_PORT: "8080"
-  AWS_ACCESS_KEY_ID: "minio"
-  AWS_S3_BUCKET: "models"
-  AWS_S3_ENDPOINT: "http://minio-service.minio.svc.cluster.local:9000"
-  AWS_SECRET_ACCESS_KEY: "minio123"
 type: Opaque
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: fraud-detection-training-pvc
-  namespace: redhat-ods-applications
 spec:
   accessModes:
     - ReadWriteOnce

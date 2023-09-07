@@ -14,6 +14,7 @@
           "op": "execute-python-node",
           "app_data": {
             "component_parameters": {
+              "pipeline_parameters": [],
               "dependencies": [],
               "include_subdirectories": false,
               "outputs": [],
@@ -64,13 +65,14 @@
                   "read_only": false
                 }
               ],
-              "filename": "data_ingestion.py"
+              "filename": "data_ingestion.py",
+              "runtime_image": "quay.io/mmurakam/runtimes:trino-v1.0.3"
             },
             "label": "",
             "ui_data": {
               "label": "data_ingestion.py",
-              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
-              "x_pos": 97,
+              "image": "/notebook/fraud-detection/fraud-workbench/static/elyra/python.svg",
+              "x_pos": 96,
               "y_pos": 233,
               "description": "Run Python script"
             }
@@ -126,12 +128,13 @@
                   "read_only": false
                 }
               ],
-              "filename": "preprocessing.py"
+              "filename": "preprocessing.py",
+              "runtime_image": "quay.io/mmurakam/runtimes:trino-v1.0.3"
             },
             "label": "",
             "ui_data": {
               "label": "preprocessing.py",
-              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/fraud-workbench/static/elyra/python.svg",
               "x_pos": 295,
               "y_pos": 233,
               "description": "Run Python script"
@@ -179,57 +182,18 @@
           "op": "execute-python-node",
           "app_data": {
             "component_parameters": {
+              "pipeline_parameters": [
+                "model_object_name"
+              ],
               "dependencies": [],
               "include_subdirectories": false,
               "outputs": [
-                "model.joblib"
+                "model.onnx"
               ],
-              "env_vars": [
-                {
-                  "env_var": "S3_ENDPOINT_URL"
-                },
-                {
-                  "env_var": "S3_ACCESS_KEY"
-                },
-                {
-                  "env_var": "S3_SECRET_KEY"
-                },
-                {
-                  "env_var": "S3_BUCKET_NAME"
-                },
-                {
-                  "env_var": "MODEL_FILE_NAME"
-                }
-              ],
+              "env_vars": [],
               "kubernetes_pod_annotations": [],
               "kubernetes_pod_labels": [],
-              "kubernetes_secrets": [
-                {
-                  "env_var": "S3_ENDPOINT_URL",
-                  "name": "fraud-detection-offline-scoring-pipeline-secret",
-                  "key": "S3_ENDPOINT_URL"
-                },
-                {
-                  "env_var": "S3_ACCESS_KEY",
-                  "name": "fraud-detection-offline-scoring-pipeline-secret",
-                  "key": "S3_ACCESS_KEY"
-                },
-                {
-                  "env_var": "S3_SECRET_KEY",
-                  "name": "fraud-detection-offline-scoring-pipeline-secret",
-                  "key": "S3_SECRET_KEY"
-                },
-                {
-                  "env_var": "S3_BUCKET_NAME",
-                  "name": "fraud-detection-offline-scoring-pipeline-secret",
-                  "key": "S3_BUCKET_NAME"
-                },
-                {
-                  "env_var": "MODEL_FILE_NAME",
-                  "name": "fraud-detection-offline-scoring-pipeline-secret",
-                  "key": "MODEL_FILE_NAME"
-                }
-              ],
+              "kubernetes_secrets": [],
               "kubernetes_shared_mem_size": {},
               "kubernetes_tolerations": [],
               "mounted_volumes": [],
@@ -238,7 +202,7 @@
             "label": "",
             "ui_data": {
               "label": "model_loading.py",
-              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/fraud-workbench/static/elyra/python.svg",
               "x_pos": 205,
               "y_pos": 362,
               "description": "Run Python script"
@@ -300,7 +264,7 @@
             "label": "",
             "ui_data": {
               "label": "scoring.py",
-              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/fraud-workbench/static/elyra/python.svg",
               "x_pos": 475,
               "y_pos": 310,
               "description": "Run Python script"
@@ -356,44 +320,10 @@
               "dependencies": [],
               "include_subdirectories": false,
               "outputs": [],
-              "env_vars": [
-                {
-                  "env_var": "S3_ENDPOINT_URL"
-                },
-                {
-                  "env_var": "S3_ACCESS_KEY"
-                },
-                {
-                  "env_var": "S3_SECRET_KEY"
-                },
-                {
-                  "env_var": "S3_BUCKET_NAME"
-                }
-              ],
+              "env_vars": [],
               "kubernetes_pod_annotations": [],
               "kubernetes_pod_labels": [],
-              "kubernetes_secrets": [
-                {
-                  "env_var": "S3_ENDPOINT_URL",
-                  "name": "fraud-detection-offline-scoring-pipeline-secret",
-                  "key": "S3_ENDPOINT_URL"
-                },
-                {
-                  "env_var": "S3_ACCESS_KEY",
-                  "name": "fraud-detection-offline-scoring-pipeline-secret",
-                  "key": "S3_ACCESS_KEY"
-                },
-                {
-                  "env_var": "S3_SECRET_KEY",
-                  "name": "fraud-detection-offline-scoring-pipeline-secret",
-                  "key": "S3_SECRET_KEY"
-                },
-                {
-                  "env_var": "S3_BUCKET_NAME",
-                  "name": "fraud-detection-offline-scoring-pipeline-secret",
-                  "key": "S3_BUCKET_NAME"
-                }
-              ],
+              "kubernetes_secrets": [],
               "kubernetes_shared_mem_size": {},
               "kubernetes_tolerations": [],
               "mounted_volumes": [
@@ -408,7 +338,7 @@
             "label": "",
             "ui_data": {
               "label": "results_upload.py",
-              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/fraud-workbench/static/elyra/python.svg",
               "x_pos": 666,
               "y_pos": 309,
               "description": "Run Python script"
@@ -459,18 +389,49 @@
         "runtime_type": "KUBEFLOW_PIPELINES",
         "properties": {
           "name": "offline-scoring",
-          "runtime": "Kubeflow Pipelines",
+          "runtime": "Data Science Pipelines",
           "pipeline_defaults": {
-            "kubernetes_shared_mem_size": {},
             "kubernetes_pod_labels": [],
+            "kubernetes_pod_annotations": [],
             "mounted_volumes": [],
             "kubernetes_tolerations": [],
-            "kubernetes_pod_annotations": [],
-            "kubernetes_secrets": [],
+            "kubernetes_shared_mem_size": {},
             "env_vars": [],
-            "runtime_image": "quay.io/mmurakam/runtimes:trino-v1.0.3"
+            "kubernetes_secrets": [
+              {
+                "env_var": "AWS_S3_ENDPOINT",
+                "name": "aws-connection-fraud-detection",
+                "key": "AWS_S3_ENDPOINT"
+              },
+              {
+                "env_var": "AWS_ACCESS_KEY_ID",
+                "name": "aws-connection-fraud-detection",
+                "key": "AWS_ACCESS_KEY_ID"
+              },
+              {
+                "env_var": "AWS_SECRET_ACCESS_KEY",
+                "name": "aws-connection-fraud-detection",
+                "key": "AWS_SECRET_ACCESS_KEY"
+              },
+              {
+                "env_var": "AWS_S3_BUCKET",
+                "name": "aws-connection-fraud-detection",
+                "key": "AWS_S3_BUCKET"
+              }
+            ],
+            "runtime_image": "quay.io/mmurakam/runtimes:fraud-detection-v0.1.0"
           },
-          "pipeline_parameters": []
+          "pipeline_parameters": [
+            {
+              "name": "model_object_name",
+              "description": "",
+              "default_value": {
+                "type": "String",
+                "value": "model-latest.onnx"
+              },
+              "required": false
+            }
+          ]
         }
       },
       "runtime_ref": ""

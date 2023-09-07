@@ -4,16 +4,14 @@ from pandas import DataFrame
 from trino import dbapi, auth
 
 
-TRINO_USERNAME = environ.get('TRINO_USERNAME', 'trino')
-TRINO_PASSWORD = environ.get('TRINO_PASSWORD', 'trino')
-TRINO_HOSTNAME = environ.get('TRINO_HOSTNAME', 'trino')
-TRINO_PORT = environ.get('TRINO_PORT', '8080')
-
-
-def ingest_data(data_folder='./data'):
+def ingest_data(
+        data_folder='./data', trino_host='', trino_port='',
+        trino_user='', trino_password=''):
     print('ingesting data')
 
-    connection = _get_connection()
+    connection = _get_connection(
+        trino_host, trino_port, trino_user, trino_password
+    )
     query = _get_query()
     data = _request_data(query, connection)
 
@@ -22,7 +20,13 @@ def ingest_data(data_folder='./data'):
     print('data ingestion done')
 
 
-def _get_connection():
+def _get_connection(trino_host, trino_port, trino_user, trino_password):
+
+    TRINO_USERNAME = environ.get('TRINO_USERNAME', trino_user)
+    TRINO_PASSWORD = environ.get('TRINO_PASSWORD', trino_password)
+    TRINO_HOSTNAME = environ.get('TRINO_HOSTNAME', trino_host)
+    TRINO_PORT = environ.get('TRINO_PORT', trino_port)
+
     connection = dbapi.connect(
         host=TRINO_HOSTNAME,
         port=TRINO_PORT,
@@ -36,15 +40,38 @@ def _get_connection():
 def _get_query():
     query = """
     SELECT
-        transactions.timestamp,
-        transactions.user_id,
-        transactions.amount,
-        transactions.trans_type,
-        transactions.foreign,
-        transactions.interarrival,
-        transactions.transaction_id
-    FROM fd_data_bucket.fd_data.transactions transactions
-    ORDER BY transactions.timestamp ASC
+      transactions.time,
+      transactions.v1,
+      transactions.v2,
+      transactions.v3,
+      transactions.v4,
+      transactions.v5,
+      transactions.v6,
+      transactions.v7,
+      transactions.v8,
+      transactions.v9,
+      transactions.v10,
+      transactions.v11,
+      transactions.v12,
+      transactions.v13,
+      transactions.v14,
+      transactions.v15,
+      transactions.v16,
+      transactions.v17,
+      transactions.v18,
+      transactions.v19,
+      transactions.v20,
+      transactions.v21,
+      transactions.v22,
+      transactions.v23,
+      transactions.v24,
+      transactions.v25,
+      transactions.v26,
+      transactions.v27,
+      transactions.v28,
+      transactions.amount
+    FROM "fd_data_bucket"."transaction-live-data"."transaction-live-data" transactions
+    ORDER BY transactions.time ASC
     """
     return query
 

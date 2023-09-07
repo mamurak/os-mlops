@@ -1,26 +1,29 @@
-from joblib import load
-from pandas import concat, DataFrame, read_parquet
+from numpy import argmax, array, load
+from onnxruntime import InferenceSession
+from pandas import DataFrame
 
 
 def predict(data_folder='./data'):
     print('Commencing offline scoring.')
 
-    model = load(open('model.joblib', 'rb'))
-    data = read_parquet(f'{data_folder}/data.parquet')
+    X = load(f'{data_folder}/samples.npy').astype('float32')
 
-    feature_columns = [
-        'user_id', 'amount', 'trans_type', 'foreign', 'interarrival'
-    ]
-    predictions = concat([
-        data[['timestamp', 'transaction_id']],
-        DataFrame(model.predict(data[feature_columns]), columns=['labels']),
-    ], axis=1)
+    session = InferenceSession('model.onnx')
+    raw_results = session.run([], {'dense_input': X})[0]
 
-    print(f'Prediction results: {predictions}')
+    results = argmax(raw_results, axis=1)
+    class_map_array = array(['no fraud', 'fraud'])
+    mapped_results = class_map_array[results]
 
-    predictions.to_csv(f'{data_folder}/predictions.csv', index=False)
+    print(f'Scored data set. Writing report.')
 
-    print('Offline scoring complete.')
+    column_names = [f'V{i}' for i in range(1, 31)]
+    report = DataFrame(X, columns=column_names)
+    report.insert(0, 'Prediction', mapped_results)
+
+    report.to_csv(f'{data_folder}/predictions.csv')
+
+    print('Wrote report. Offline scoring complete.')
 
 
 if __name__ == '__main__':
