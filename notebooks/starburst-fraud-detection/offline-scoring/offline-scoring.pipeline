@@ -37,22 +37,22 @@
               "kubernetes_secrets": [
                 {
                   "env_var": "TRINO_USERNAME",
-                  "name": "fraud-detection-offline-scoring-pipeline-secret",
+                  "name": "starburst-data-connection",
                   "key": "TRINO_USERNAME"
                 },
                 {
                   "env_var": "TRINO_PASSWORD",
-                  "name": "fraud-detection-offline-scoring-pipeline-secret",
+                  "name": "starburst-data-connection",
                   "key": "TRINO_PASSWORD"
                 },
                 {
                   "env_var": "TRINO_HOSTNAME",
-                  "name": "fraud-detection-offline-scoring-pipeline-secret",
+                  "name": "starburst-data-connection",
                   "key": "TRINO_HOSTNAME"
                 },
                 {
                   "env_var": "TRINO_PORT",
-                  "name": "fraud-detection-offline-scoring-pipeline-secret",
+                  "name": "starburst-data-connection",
                   "key": "TRINO_PORT"
                 }
               ],
@@ -71,7 +71,7 @@
             "label": "",
             "ui_data": {
               "label": "data_ingestion.py",
-              "image": "/notebook/fraud-detection/fraud-workbench/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
               "x_pos": 96,
               "y_pos": 233,
               "description": "Run Python script"
@@ -134,7 +134,7 @@
             "label": "",
             "ui_data": {
               "label": "preprocessing.py",
-              "image": "/notebook/fraud-detection/fraud-workbench/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
               "x_pos": 295,
               "y_pos": 233,
               "description": "Run Python script"
@@ -202,7 +202,7 @@
             "label": "",
             "ui_data": {
               "label": "model_loading.py",
-              "image": "/notebook/fraud-detection/fraud-workbench/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
               "x_pos": 205,
               "y_pos": 362,
               "description": "Run Python script"
@@ -264,7 +264,7 @@
             "label": "",
             "ui_data": {
               "label": "scoring.py",
-              "image": "/notebook/fraud-detection/fraud-workbench/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
               "x_pos": 475,
               "y_pos": 310,
               "description": "Run Python script"
@@ -338,7 +338,7 @@
             "label": "",
             "ui_data": {
               "label": "results_upload.py",
-              "image": "/notebook/fraud-detection/fraud-workbench/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
               "x_pos": 666,
               "y_pos": 309,
               "description": "Run Python script"
@@ -391,8 +391,8 @@
           "name": "offline-scoring",
           "runtime": "Data Science Pipelines",
           "pipeline_defaults": {
-            "kubernetes_pod_labels": [],
             "kubernetes_pod_annotations": [],
+            "kubernetes_pod_labels": [],
             "mounted_volumes": [],
             "kubernetes_tolerations": [],
             "kubernetes_shared_mem_size": {},

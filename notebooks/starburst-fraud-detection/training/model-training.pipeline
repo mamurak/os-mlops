@@ -17,41 +17,28 @@
               "dependencies": [],
               "include_subdirectories": false,
               "outputs": [],
-              "env_vars": [
-                {
-                  "env_var": "TRINO_USERNAME"
-                },
-                {
-                  "env_var": "TRINO_PASSWORD"
-                },
-                {
-                  "env_var": "TRINO_HOSTNAME"
-                },
-                {
-                  "env_var": "TRINO_PORT"
-                }
-              ],
+              "env_vars": [],
               "kubernetes_pod_annotations": [],
               "kubernetes_pod_labels": [],
               "kubernetes_secrets": [
                 {
                   "env_var": "TRINO_USERNAME",
-                  "name": "fraud-detection-training-pipeline-secret",
+                  "name": "starburst-data-connection",
                   "key": "TRINO_USERNAME"
                 },
                 {
                   "env_var": "TRINO_PASSWORD",
-                  "name": "fraud-detection-training-pipeline-secret",
+                  "name": "starburst-data-connection",
                   "key": "TRINO_PASSWORD"
                 },
                 {
                   "env_var": "TRINO_HOSTNAME",
-                  "name": "fraud-detection-training-pipeline-secret",
+                  "name": "starburst-data-connection",
                   "key": "TRINO_HOSTNAME"
                 },
                 {
                   "env_var": "TRINO_PORT",
-                  "name": "fraud-detection-training-pipeline-secret",
+                  "name": "starburst-data-connection",
                   "key": "TRINO_PORT"
                 }
               ],
@@ -69,7 +56,7 @@
             "label": "",
             "ui_data": {
               "label": "data_ingestion.py",
-              "image": "/notebook/fraud-detection/fraud-workbench/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
               "x_pos": 199,
               "y_pos": 268,
               "description": "Run Python script"
@@ -138,7 +125,7 @@
             "label": "",
             "ui_data": {
               "label": "model_training.py",
-              "image": "/notebook/fraud-detection/fraud-workbench/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
               "x_pos": 671,
               "y_pos": 266,
               "description": "Run Python script"
@@ -207,7 +194,7 @@
             "label": "",
             "ui_data": {
               "label": "preprocessing.py",
-              "image": "/notebook/fraud-detection/fraud-workbench/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
               "x_pos": 428,
               "y_pos": 260,
               "description": "Run Python script"
@@ -270,7 +257,7 @@
             "label": "",
             "ui_data": {
               "label": "model_validation.py",
-              "image": "/notebook/fraud-detection/fraud-workbench/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
               "x_pos": 895,
               "y_pos": 267,
               "description": "Run Python script"
@@ -370,7 +357,7 @@
             "label": "",
             "ui_data": {
               "label": "model_upload.py",
-              "image": "/notebook/fraud-detection/fraud-workbench/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
               "x_pos": 1106,
               "y_pos": 268,
               "description": "Run Python script"
@@ -423,8 +410,8 @@
           "name": "model-training",
           "runtime": "Data Science Pipelines",
           "pipeline_defaults": {
-            "kubernetes_pod_labels": [],
             "kubernetes_pod_annotations": [],
+            "kubernetes_pod_labels": [],
             "mounted_volumes": [],
             "kubernetes_tolerations": [],
             "kubernetes_shared_mem_size": {},
