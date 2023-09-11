@@ -18,20 +18,7 @@
               "dependencies": [],
               "include_subdirectories": false,
               "outputs": [],
-              "env_vars": [
-                {
-                  "env_var": "TRINO_USERNAME"
-                },
-                {
-                  "env_var": "TRINO_PASSWORD"
-                },
-                {
-                  "env_var": "TRINO_HOSTNAME"
-                },
-                {
-                  "env_var": "TRINO_PORT"
-                }
-              ],
+              "env_vars": [],
               "kubernetes_pod_annotations": [],
               "kubernetes_pod_labels": [],
               "kubernetes_secrets": [
@@ -65,14 +52,13 @@
                   "read_only": false
                 }
               ],
-              "filename": "data_ingestion.py",
-              "runtime_image": "quay.io/mmurakam/runtimes:trino-v1.0.3"
+              "filename": "data_ingestion.py"
             },
             "label": "",
             "ui_data": {
               "label": "data_ingestion.py",
               "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
-              "x_pos": 96,
+              "x_pos": 95,
               "y_pos": 233,
               "description": "Run Python script"
             }
@@ -128,8 +114,7 @@
                   "read_only": false
                 }
               ],
-              "filename": "preprocessing.py",
-              "runtime_image": "quay.io/mmurakam/runtimes:trino-v1.0.3"
+              "filename": "preprocessing.py"
             },
             "label": "",
             "ui_data": {
@@ -190,7 +175,11 @@
               "outputs": [
                 "model.onnx"
               ],
-              "env_vars": [],
+              "env_vars": [
+                {
+                  "env_var": "model_object_name"
+                }
+              ],
               "kubernetes_pod_annotations": [],
               "kubernetes_pod_labels": [],
               "kubernetes_secrets": [],
@@ -419,7 +408,7 @@
                 "key": "AWS_S3_BUCKET"
               }
             ],
-            "runtime_image": "quay.io/mmurakam/runtimes:fraud-detection-v0.1.0"
+            "runtime_image": "quay.io/mmurakam/runtimes:fraud-detection-v1.0.1"
           },
           "pipeline_parameters": [
             {

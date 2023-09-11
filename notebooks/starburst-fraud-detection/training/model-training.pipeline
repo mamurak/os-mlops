@@ -44,21 +44,15 @@
               ],
               "kubernetes_shared_mem_size": {},
               "kubernetes_tolerations": [],
-              "mounted_volumes": [
-                {
-                  "path": "/data",
-                  "pvc_name": "fraud-detection-training-pvc",
-                  "read_only": false
-                }
-              ],
+              "mounted_volumes": [],
               "filename": "data_ingestion.py"
             },
             "label": "",
             "ui_data": {
               "label": "data_ingestion.py",
               "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
-              "x_pos": 199,
-              "y_pos": 268,
+              "x_pos": 202,
+              "y_pos": 267,
               "description": "Run Python script"
             }
           },
@@ -112,15 +106,8 @@
               "kubernetes_secrets": [],
               "kubernetes_shared_mem_size": {},
               "kubernetes_tolerations": [],
-              "mounted_volumes": [
-                {
-                  "path": "/data",
-                  "pvc_name": "fraud-detection-training-pvc",
-                  "read_only": false
-                }
-              ],
-              "filename": "model_training.py",
-              "runtime_image": "quay.io/mmurakam/runtimes:fraud-detection-v0.1.0"
+              "mounted_volumes": [],
+              "filename": "model_training.py"
             },
             "label": "",
             "ui_data": {
@@ -182,13 +169,7 @@
               "kubernetes_secrets": [],
               "kubernetes_shared_mem_size": {},
               "kubernetes_tolerations": [],
-              "mounted_volumes": [
-                {
-                  "path": "/data",
-                  "pvc_name": "fraud-detection-training-pvc",
-                  "read_only": false
-                }
-              ],
+              "mounted_volumes": [],
               "filename": "preprocessing.py"
             },
             "label": "",
@@ -311,42 +292,29 @@
               "dependencies": [],
               "include_subdirectories": false,
               "outputs": [],
-              "env_vars": [
-                {
-                  "env_var": "AWS_S3_ENDPOINT"
-                },
-                {
-                  "env_var": "AWS_ACCESS_KEY_ID"
-                },
-                {
-                  "env_var": "AWS_SECRET_ACCESS_KEY"
-                },
-                {
-                  "env_var": "AWS_S3_BUCKET"
-                }
-              ],
+              "env_vars": [],
               "kubernetes_pod_annotations": [],
               "kubernetes_pod_labels": [],
               "kubernetes_secrets": [
                 {
-                  "env_var": "AWS_S3_ENDPOINT",
-                  "name": "fraud-detection-training-pipeline-secret",
-                  "key": "AWS_S3_ENDPOINT"
-                },
-                {
                   "env_var": "AWS_ACCESS_KEY_ID",
-                  "name": "fraud-detection-training-pipeline-secret",
+                  "name": "aws-connection-fraud-detection",
                   "key": "AWS_ACCESS_KEY_ID"
                 },
                 {
-                  "env_var": "AWS_SECRET_ACCESS_KEY",
-                  "name": "fraud-detection-training-pipeline-secret",
-                  "key": "AWS_SECRET_ACCESS_KEY"
+                  "env_var": "AWS_S3_BUCKET",
+                  "name": "aws-connection-fraud-detection",
+                  "key": "AWS_S3_BUCKET"
                 },
                 {
-                  "env_var": "AWS_S3_BUCKET",
-                  "name": "fraud-detection-training-pipeline-secret",
-                  "key": "AWS_S3_BUCKET"
+                  "env_var": "AWS_S3_ENDPOINT",
+                  "name": "aws-connection-fraud-detection",
+                  "key": "AWS_S3_ENDPOINT"
+                },
+                {
+                  "env_var": "AWS_SECRET_ACCESS_KEY",
+                  "name": "aws-connection-fraud-detection",
+                  "key": "AWS_SECRET_ACCESS_KEY"
                 }
               ],
               "kubernetes_shared_mem_size": {},
@@ -412,12 +380,18 @@
           "pipeline_defaults": {
             "kubernetes_pod_annotations": [],
             "kubernetes_pod_labels": [],
-            "mounted_volumes": [],
+            "mounted_volumes": [
+              {
+                "path": "/data",
+                "pvc_name": "fraud-detection-training-pvc",
+                "read_only": false
+              }
+            ],
             "kubernetes_tolerations": [],
             "kubernetes_shared_mem_size": {},
             "env_vars": [],
             "kubernetes_secrets": [],
-            "runtime_image": "quay.io/mmurakam/runtimes:trino-v1.0.3"
+            "runtime_image": "quay.io/mmurakam/runtimes:fraud-detection-v1.0.1"
           },
           "pipeline_parameters": [
             {
