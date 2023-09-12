@@ -276,10 +276,10 @@ spec:
   lookupPolicy:
     local: true
   tags:
-    - name: "0.2.0"
+    - name: "1.0.1"
       from:
         kind: DockerImage
-        name: quay.io/mmurakam/workbenches:fraud-detection-v0.2.0
+        name: quay.io/mmurakam/workbenches:fraud-detection-v1.0.1
       importPolicy: {}
       referencePolicy:
         type: Local
