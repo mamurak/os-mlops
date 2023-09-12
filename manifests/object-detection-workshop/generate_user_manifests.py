@@ -46,10 +46,6 @@ def _generate_manifest(resources, output_file_path):
 def _get_user_resources(user_id):
     user_resources = [
         _get_project_resource(user_id),
-        # # _get_single_obc_resource(user_id),
-        # # _get_namespace_store_resource(user_id),
-        # # _get_combined_obc_resource(user_id),
-        # # _get_bucket_class_resource(user_id),
         _get_role_binding_resource(user_id),
         _get_pvc_resource(user_id),
 
@@ -88,107 +84,6 @@ def _get_project_resource(user_id):
         }
     }
     return project_resource
-
-
-def _get_single_obc_resource(user_id):
-    obc_resource = {
-        'apiVersion': 'objectbucket.io/v1alpha1',
-        'kind': 'ObjectBucketClaim',
-        'metadata': {
-            'name': f'{user_id}-single',
-            'namespace': user_id,
-            'finalizers': ['objectbucket.io/finalizer'],
-            'labels': {
-                'app': 'noobaa',
-                'bucket-provisioner': 'openshift-storage.noobaa.io-obc',
-                'noobaa-domain': 'openshift-storage.noobaa.io',
-            },
-        },
-        'spec': {
-            'additionalConfig': {
-                'bucketclass': 'noobaa-default-bucket-class',
-            },
-            'bucketName': f'{user_id}-single',
-            'generateBucketName': f'{user_id}-single',
-            'storageClassName': 'openshift-storage.noobaa.io',
-        }
-    }
-    return obc_resource
-
-
-def _get_namespace_store_resource(user_id):
-    namespace_store_resource = {
-        'apiVersion': 'noobaa.io/v1alpha1',
-        'kind': 'NamespaceStore',
-        'metadata': {
-            'name': user_id,
-            'namespace': 'openshift-storage',
-            'finalizers': ['noobaa.io/finalizer'],
-            'labels': {'app': 'noobaa'},
-        },
-        'spec': {
-            's3Compatible': {
-                'endpoint': 'http://s3.openshift-storage.svc',
-                'secret': {
-                    'name': f'{user_id}-single',
-                    'namespace': user_id,
-                },
-                'targetBucket': f'{user_id}-single',
-            },
-            'type': 's3-compatible',
-        },
-    }
-    return namespace_store_resource
-
-
-def _get_bucket_class_resource(user_id):
-    bucket_class_resource = {
-        'apiVersion': 'noobaa.io/v1alpha1',
-        'kind': 'BucketClass',
-        'metadata': {
-            'name': user_id,
-            'namespace': 'openshift-storage',
-            'finalizers': ['noobaa.io/finalizer'],
-            'labels': {'app': 'noobaa'},
-        },
-        'spec': {
-            'namespacePolicy': {
-                'multi': {
-                    'readResources': [
-                        'aws-s3-data', 'aws-s3-models', user_id,
-                    ],
-                    'writeResource': user_id,
-                },
-                'type': 'Multi',
-            },
-        },
-    }
-    return bucket_class_resource
-
-
-def _get_combined_obc_resource(user_id):
-    combined_obc_resouce = {
-        'apiVersion': 'objectbucket.io/v1alpha1',
-        'kind': 'ObjectBucketClaim',
-        'metadata': {
-            'name': user_id,
-            'namespace': user_id,
-            'finalizers': ['objectbucket.io/finalizer'],
-            'labels': {
-                'app': 'noobaa',
-                'bucket-provisioner': 'openshift-storage.noobaa.io-obc',
-                'noobaa-domain': 'openshift-storage.noobaa.io',
-            },
-        },
-        'spec': {
-            'additionalConfig': {
-                'bucketclass': user_id,
-            },
-            'generateBucketName': user_id,
-            'storageClassName': 'openshift-storage.noobaa.io',
-        },
-    }
-    return combined_obc_resouce
 
 
 def _get_role_binding_resource(user_id):
@@ -231,216 +126,222 @@ def _get_pvc_resource(user_id):
     }
     return pvc_resource
 
+
 def _get_aws_connection_pipelines_resource(user_id):
     aws_connection_pipelines_resource = {
-        "kind": "Secret",
-        "apiVersion": "v1",
-        "metadata": {
-            "name": "aws-connection-pipelines",
-            "namespace": user_id,
-            "labels":{
-                "opendatahub.io/dashboard": 'true',
-                "opendatahub.io/managed": 'true',
+        'kind': 'Secret',
+        'apiVersion': 'v1',
+        'metadata': {
+            'name': 'aws-connection-pipelines',
+            'namespace': user_id,
+            'labels':{
+                'opendatahub.io/dashboard': 'true',
+                'opendatahub.io/managed': 'true',
             },
-            "annotations": {
-                "opendatahub.io/connection-type": "s3",
-                "openshift.io/display-name": "pipelines",
+            'annotations': {
+                'opendatahub.io/connection-type': 's3',
+                'openshift.io/display-name': 'pipelines',
             },
         },
-        "stringData":{
-            "AWS_ACCESS_KEY_ID": "minio",
-            "AWS_DEFAULT_REGION": "us-east-1",
-            "AWS_S3_BUCKET": user_id+"-pipelines",
-            "AWS_S3_ENDPOINT": "http://minio-service.minio.svc:9000",
-            "AWS_SECRET_ACCESS_KEY": "minio123",
-            "type": "Opaque",
+        'stringData':{
+            'AWS_ACCESS_KEY_ID': 'minio',
+            'AWS_DEFAULT_REGION': 'us-east-1',
+            'AWS_S3_BUCKET': f'{user_id}-pipelines',
+            'AWS_S3_ENDPOINT': 'http://minio-service.minio.svc:9000',
+            'AWS_SECRET_ACCESS_KEY': 'minio123',
+            'type': 'Opaque',
         }
     }
     return aws_connection_pipelines_resource
 
+
 def _get_aws_connection_object_detection_resource(user_id):
     aws_connection_object_detection_resource = {
-        "kind": "Secret",
-        "apiVersion": "v1",
-        "metadata":{
-            "name": "aws-connection-object-detection",
-            "namespace": user_id,
-            "labels":{
-                "opendatahub.io/dashboard": 'true',
-                "opendatahub.io/managed": 'true',
+        'kind': 'Secret',
+        'apiVersion': 'v1',
+        'metadata':{
+            'name': 'aws-connection-object-detection',
+            'namespace': user_id,
+            'labels':{
+                'opendatahub.io/dashboard': 'true',
+                'opendatahub.io/managed': 'true',
             },
-            "annotations":{
-                "opendatahub.io/connection-type": "s3",
-                "openshift.io/display-name": "object-detection",
+            'annotations':{
+                'opendatahub.io/connection-type': 's3',
+                'openshift.io/display-name': 'object-detection',
             },
         },
-        "stringData":{
-            "AWS_ACCESS_KEY_ID": "minio",
-            "AWS_DEFAULT_REGION": "us-east-1",
-            "AWS_S3_BUCKET": user_id,
-            "AWS_S3_ENDPOINT": "http://minio-service.minio.svc:9000",
-            "AWS_SECRET_ACCESS_KEY": "minio123",
-            "type": "Opaque",
+        'stringData':{
+            'AWS_ACCESS_KEY_ID': 'minio',
+            'AWS_DEFAULT_REGION': 'us-east-1',
+            'AWS_S3_BUCKET': user_id,
+            'AWS_S3_ENDPOINT': 'http://minio-service.minio.svc:9000',
+            'AWS_SECRET_ACCESS_KEY': 'minio123',
+            'type': 'Opaque',
         }
     }
     return aws_connection_object_detection_resource
 
+
 def _get_allow_from_all_namespaces_resource(user_id):
     allow_from_all_namespaces_resource = {
-        "kind": "NetworkPolicy",
-        "apiVersion": "networking.k8s.io/v1",
-        "metadata":{
-            "name": "allow-from-all-namespaces",
-            "namespace": user_id,
+        'kind': 'NetworkPolicy',
+        'apiVersion': 'networking.k8s.io/v1',
+        'metadata':{
+            'name': 'allow-from-all-namespaces',
+            'namespace': user_id,
         },
-        "spec":{
-            "podSelector": {},
-            "ingress": [{"from": [{"namespaceSelector":{}}]}]
+        'spec':{
+            'podSelector': {},
+            'ingress': [{'from': [{'namespaceSelector':{}}]}]
         },
-        "policyTypes": ["Ingress"]
+        'policyTypes': ['Ingress']
     }
     return allow_from_all_namespaces_resource
 
+
 def _get_allow_from_ingress_namespace_resource(user_id):
     allow_from_ingress_namespace_resource = {
-        "kind": "NetworkPolicy",
-        "apiVersion": "networking.k8s.io/v1",
-        "metadata":{
-            "name": "allow-from-ingress-namespace",
-            "namespace": user_id,
+        'kind': 'NetworkPolicy',
+        'apiVersion': 'networking.k8s.io/v1',
+        'metadata':{
+            'name': 'allow-from-ingress-namespace',
+            'namespace': user_id,
         },
-        "spec":{
-            "podSelector": {},
-            "ingress": [{
-                "from": [{
-                    "namespaceSelector": {
-                        "matchLabels": {
-                            "network-policy": "global"
+        'spec':{
+            'podSelector': {},
+            'ingress': [{
+                'from': [{
+                    'namespaceSelector': {
+                        'matchLabels': {
+                            'network-policy': 'global'
                         }
                     }
                 }]
             }],
-            "policyTypes": ["Ingress"],
+            'policyTypes': ['Ingress'],
         }
     }
     return allow_from_ingress_namespace_resource
 
+
 def _get_pvc_development_resource(user_id):
     pvc_development_resource = {
-        "kind": "PersistentVolumeClaim",
-        "apiVersion": "v1",
-        "metadata":{
-            "annotations":{
-                "openshift.io/description": '',
-                "openshift.io/display-name": "development",
+        'kind': 'PersistentVolumeClaim',
+        'apiVersion': 'v1',
+        'metadata':{
+            'annotations':{
+                'openshift.io/description': '',
+                'openshift.io/display-name': 'development',
             },
-            "name": "development",
-            "namespace": user_id,
-            "finalizers": ["kubernetes.io/pvc-protection"],
-            "labels":{
-                "opendatahub.io/dashboard": 'true'
+            'name': 'development',
+            'namespace': user_id,
+            'finalizers': ['kubernetes.io/pvc-protection'],
+            'labels':{
+                'opendatahub.io/dashboard': 'true'
             },
         },
-        "spec":{
-            "accessModes": ["ReadWriteOnce"],
-            "resources":{
-                "requests":{
-                    "storage": "20Gi"
+        'spec':{
+            'accessModes': ['ReadWriteOnce'],
+            'resources':{
+                'requests':{
+                    'storage': '20Gi'
                 }
             },
-            "volumeMode": "Filesystem"
+            'volumeMode': 'Filesystem'
         }
     }
-    
     return pvc_development_resource
+
 
 def _get_pipelines_definition_resource(user_id):
     pipelines_definition_resource = {
-        "apiVersion": "datasciencepipelinesapplications.opendatahub.io/v1alpha1",
-        "kind": "DataSciencePipelinesApplication",
-        "metadata":{
-            "finalizers":["datasciencepipelinesapplications.opendatahub.io/finalizer"],
-            "name": "pipelines-definition",
-            "namespace": user_id,
+        'apiVersion': 'datasciencepipelinesapplications.opendatahub.io/v1alpha1',
+        'kind': 'DataSciencePipelinesApplication',
+        'metadata':{
+            'finalizers':['datasciencepipelinesapplications.opendatahub.io/finalizer'],
+            'name': 'pipelines-definition',
+            'namespace': user_id,
         },
-        "spec":{
-            "apiServer":{
-                "stripEOF": True,
-                "dbConfigConMaxLifetimeSec": 120,
-                "applyTektonCustomResource": True,
-                "deploy": True,
-                "enableSamplePipeline": False,
-                "autoUpdatePipelineDefaultVersion": True,
-                "archiveLogs": False,
-                "terminateStatus": "Cancelled",
-                "enableOauth": True,
-                "trackArtifacts": True,
-                "collectMetrics": True,
-                "injectDefaultScript": True,
+        'spec':{
+            'apiServer':{
+                'stripEOF': True,
+                'dbConfigConMaxLifetimeSec': 120,
+                'applyTektonCustomResource': True,
+                'deploy': True,
+                'enableSamplePipeline': False,
+                'autoUpdatePipelineDefaultVersion': True,
+                'archiveLogs': False,
+                'terminateStatus': 'Cancelled',
+                'enableOauth': True,
+                'trackArtifacts': True,
+                'collectMetrics': True,
+                'injectDefaultScript': True,
             },
-            "database":{
-                "mariaDB":{
-                    "deploy": True,
-                    "pipelineDBName": "mlpipeline",
-                    "pvcSize": "10Gi",
-                    "username": "mlpipeline",
+            'database':{
+                'mariaDB':{
+                    'deploy': True,
+                    'pipelineDBName': 'mlpipeline',
+                    'pvcSize': '10Gi',
+                    'username': 'mlpipeline',
                 }
             },
-            "objectStorage":{
-                "externalStorage":{
-                    "bucket": "object-detection-pipelines",
-                    "host": "minio-service.minio.svc:9000",
-                    "port": '',
-                    "s3CredentialsSecret":{
-                        "accessKey": "AWS_ACCESS_KEY_ID",
-                        "secretKey": "AWS_SECRET_ACCESS_KEY",
-                        "secretName": "aws-connection-pipelines",
+            'objectStorage':{
+                'externalStorage':{
+                    'bucket': 'object-detection-pipelines',
+                    'host': 'minio-service.minio.svc:9000',
+                    'port': '',
+                    's3CredentialsSecret':{
+                        'accessKey': 'AWS_ACCESS_KEY_ID',
+                        'secretKey': 'AWS_SECRET_ACCESS_KEY',
+                        'secretName': 'aws-connection-pipelines',
                     },
-                    "scheme": "http",
-                    "secure": False,
+                    'scheme': 'http',
+                    'secure': False,
                 }
             },
-            "persistenceAgent":{
-                "deploy": True,
-                "numWorkers": 2
+            'persistenceAgent':{
+                'deploy': True,
+                'numWorkers': 2
             },
-            "scheduledWorkflow":{
-                "cronScheduleTimezone": "UTC",
-                "deploy": True,
+            'scheduledWorkflow':{
+                'cronScheduleTimezone': 'UTC',
+                'deploy': True,
             }
         }
     }
     return pipelines_definition_resource
 
+
 def _get_ovms_resource(user_id):
     ovms_resource = {
-        "apiVersion": "serving.kserve.io/v1alpha1",
-        "kind": "ServingRuntime",
-        "metadata":{
-            "annotations":{
-                "enable-auth": 'false',
-                "enable-route": 'true',
-                "opendatahub.io/disable-gpu": 'true',
-                "opendatahub.io/template-display-name": "OpenVINO Model Server",
-                "opendatahub.io/template-name": "ovms",
-                "openshift.io/display-name": "OVMS",
+        'apiVersion': 'serving.kserve.io/v1alpha1',
+        'kind': 'ServingRuntime',
+        'metadata':{
+            'annotations':{
+                'enable-auth': 'false',
+                'enable-route': 'true',
+                'opendatahub.io/disable-gpu': 'true',
+                'opendatahub.io/template-display-name': 'OpenVINO Model Server',
+                'opendatahub.io/template-name': 'ovms',
+                'openshift.io/display-name': 'OVMS',
             },
-            "name": "ovms",
-            "namespace": user_id,
-            "labels":{
-                "name": "ovms",
-                "opendatahub.io/dashboard": 'true',
+            'name': 'ovms',
+            'namespace': user_id,
+            'labels':{
+                'name': 'ovms',
+                'opendatahub.io/dashboard': 'true',
             }
         },
-        "spec": {
-            "builtInAdapter": {
-                "memBufferBytes": 134217728,
-                "modelLoadingTimeoutMillis": 90000,
-                "runtimeManagementPort": 8888,
-                "serverType": "ovms",
+        'spec': {
+            'builtInAdapter': {
+                'memBufferBytes': 134217728,
+                'modelLoadingTimeoutMillis': 90000,
+                'runtimeManagementPort': 8888,
+                'serverType': 'ovms',
             },
-            "containers": [{
-                "args": [
+            'containers': [{
+                'args': [
                     '--port=8001',
                     '--rest_port=8888',
                     '--config_path=/models/model_config_list.json',
@@ -448,81 +349,84 @@ def _get_ovms_resource(user_id):
                     '--grpc_bind_address=127.0.0.1',
                     '--rest_bind_address=127.0.0.1'
                 ],
-                "image": "quay.io/opendatahub/openvino_model_server@sha256:20dbfbaf53d1afbd47c612d953984238cb0e207972ed544a5ea662c2404f276d",
-                "name": "ovms",
-                "resources":{
-                    "limits":{
-                        "cpu": '2',
-                        "memory": "8Gi",
+                'image': 'quay.io/opendatahub/openvino_model_server@sha256:20dbfbaf53d1afbd47c612d953984238cb0e207972ed544a5ea662c2404f276d',
+                'name': 'ovms',
+                'resources':{
+                    'limits':{
+                        'cpu': '2',
+                        'memory': '8Gi',
                     },
-                    "requests":{
-                        "cpu": '1',
-                        "memory": "4Gi",
+                    'requests':{
+                        'cpu': '1',
+                        'memory': '4Gi',
                     }
                 }
             }],
-            "grpcDataEndpoint": 'port:8001',
-            "grpcEndpoint": 'port:8085',
-            "multiModel": True,
-            "protocolVersions": ["grpc-v1"],
-            "replicas": 1,
-            "supportedModelFormats":
+            'grpcDataEndpoint': 'port:8001',
+            'grpcEndpoint': 'port:8085',
+            'multiModel': True,
+            'protocolVersions': ['grpc-v1'],
+            'replicas': 1,
+            'supportedModelFormats':
                 [{
-                    "autoSelect": True,
-                    "name": "openvino_ir",
-                    "version": "opset1",
+                    'autoSelect': True,
+                    'name': 'openvino_ir',
+                    'version': 'opset1',
                 },{
-                    "autoSelect": True,
-                    "name": "onnx",
-                    "version": '1',
+                    'autoSelect': True,
+                    'name': 'onnx',
+                    'version': '1',
                 },{
-                    "autoSelect": True,
-                    "name": "tensorflow",
-                    "version": '2',
+                    'autoSelect': True,
+                    'name': 'tensorflow',
+                    'version': '2',
                 }]
         }
     }
     return ovms_resource
 
+
 def _get_offline_scoring_pvc_resource(user_id):
     offline_scoring_pvc_resource = {
-        "kind": "PersistentVolumeClaim",
-        "apiVersion": "v1",
-        "metadata": {
-            "name": "offline-scoring-pvc",
-            "namespace": user_id,
+        'kind': 'PersistentVolumeClaim',
+        'apiVersion': 'v1',
+        'metadata': {
+            'name': 'offline-scoring-pvc',
+            'namespace': user_id,
         },
-        "spec": {
-            "accessModes": ["ReadWriteOnce"],
-            "resources": {
-                "requests": {
-                    "storage": "10Gi"
+        'spec': {
+            'accessModes': ['ReadWriteOnce'],
+            'resources': {
+                'requests': {
+                    'storage': '10Gi'
                 }
             },
-            "volumeMode": "Filesystem"
+            'volumeMode': 'Filesystem'
         }
     }
     return offline_scoring_pvc_resource
 
+
 def _get_object_detection_training_pvc_resource(user_id):
     object_detection_training_pvc_resource = {
-        "kind": "PersistentVolumeClaim",
-        "apiVersion": "v1",
-        "metadata": {
-            "name": "object-detection-training-pvc",
-            "namespace": user_id,
+        'kind': 'PersistentVolumeClaim',
+        'apiVersion': 'v1',
+        'metadata': {
+            'name': 'object-detection-training-pvc',
+            'namespace': user_id,
         },
-        "spec": {
-            "accessModes": ["ReadWriteOnce"],
-            "resources":{
-                "requests": {
-                    "storage": "10Gi"
+        'spec': {
+            'accessModes': ['ReadWriteOnce'],
+            'resources':{
+                'requests': {
+                    'storage': '10Gi'
                 }
             },
-            "volumeMode": "Filesystem"
+            'volumeMode': 'Filesystem'
         }
     }
     return object_detection_training_pvc_resource
+
 
 if __name__ == '__main__':
     main()
