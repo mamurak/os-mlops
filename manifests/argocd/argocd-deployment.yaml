@@ -51,11 +51,20 @@ spec:
   rbac:
     defaultPolicy: 'role:readonly'
     policy: |
-      g, system:cluster-admins, role:admin
-      p, rhods-admins, repositories, get, *, allow
-      p, rhods-admins, repositories, create, *, allow
-      p, rhods-admins, repositories, update, *, allow
-      p, rhods-admins, repositories, delete, *, allow
+      g, rhods-admins, role:admin
+      p, role:admin, repositories, get, *, allow
+      p, role:admin, repositories, create, *, allow
+      p, role:admin, repositories, update, *, allow
+      p, role:admin, repositories, delete, *, allow
+      p, role:admin, applications, *, */*, allow
+      p, role:admin, clusters, get, *, allow
+      p, role:admin, projects, get, *, allow
+      p, role:admin, projects, create, *, allow
+      p, role:admin, projects, update, *, allow
+      p, role:admin, projects, delete, *, allow
+      p, role:admin, logs, get, *, allow
+      p, role:admin, exec, create, */*, allow
+      p, role:admin, applications, sync, */*, allow
     scopes: '[groups]'
   repo:
     resources:
