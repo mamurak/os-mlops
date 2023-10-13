@@ -1,0 +1,46 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: upload-pipeline
+spec:
+  params:
+    - name: manifest-location
+      type: string
+    - name: pipeline_name
+      type: string
+  steps:
+    - image: 'quay.io/mmurakam/runtimes:elyra-kfp-tekton-runtime-v0.1.0'
+      name: upload-pipeline
+      resources: {}
+      script: |
+        #!/usr/bin/env python
+
+        from datetime import datetime
+        from json import load
+
+        from kfp import Client
+
+        with open('/var/run/secrets/dsp/conf.json', 'r') as conf:
+            dsp_conf = load(conf)
+
+        print(f'Instantiating KFP client for service at {dsp_conf["host"]}')
+        client = Client(host=dsp_conf['host'], existing_token=dsp_conf['token'])
+
+        timestamp = datetime.now().strftime('%y%m%d%H%M')
+
+        print(f'Uploading version {timestamp} of pipeline $(params.pipeline_name)')
+        client.upload_pipeline_version(
+            "$(params.manifest-location)",
+            pipeline_version_name=timestamp,
+            pipeline_name="$(params.pipeline_name)"
+        )
+      volumeMounts:
+        - mountPath: /var/run/secrets/dsp
+          name: dsp-secret
+      workingDir: $(workspaces.manifest-repository.path)
+  volumes:
+    - name: dsp-secret
+      secret:
+        secretName: dsp-secret
+  workspaces:
+    - name: manifest-repository

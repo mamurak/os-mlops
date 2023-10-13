@@ -1,0 +1,51 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: build-pipeline-manifest
+spec:
+  params:
+    - name: pipeline-location
+      type: string
+    - name: manifest-location
+      type: string
+  workspaces:
+    - name: code-repository
+    - name: manifest-repository
+  volumes:
+    - name: elyra-runtime
+      secret:
+        secretName: elyra-runtime
+  steps:
+    - image: quay.io/mmurakam/runtimes:elyra-kfp-tekton-runtime-v0.1.0
+      name: export-elyra-pipeline
+      resources: {}
+      workingDir: $(workspaces.code-repository.path)
+      volumeMounts:
+        - name: elyra-runtime
+          mountPath: /tmp
+      script: >
+        echo "importing elyra runtime"
+
+        mkdir -p ~/.local/share/jupyter/runtime
+        elyra-metadata import runtimes --directory "/tmp"
+
+
+        echo "exporting elyra pipeline from
+        $(workspaces.code-repository.path)/$(params.pipeline-location) to
+        $(workspaces.manifest-repository.path)/$(params.manifest-location)"
+
+        echo "content of code repository workspace: $(ls
+        $(workspaces.code-repository.path))" 
+
+        echo "content of manifest repository workspace: $(ls
+        $(workspaces.manifest-repository.path))"
+
+        elyra-pipeline export
+        $(workspaces.code-repository.path)/$(params.pipeline-location) \
+          --runtime-config odh_dsp \
+          --output $(workspaces.manifest-repository.path)/$(params.manifest-location) --overwrite
+
+        sed -i 's|tekton.dev/v1|tekton.dev/v1beta1|g' \
+          $(workspaces.manifest-repository.path)/$(params.manifest-location)
+
+        echo "export complete"
