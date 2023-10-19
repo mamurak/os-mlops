@@ -1,0 +1,152 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: ml-pipeline-ci-cd
+spec:
+  tasks:
+    - name: git-clone-code-repo
+      params:
+        - name: url
+          value: ''
+        - name: revision
+          value: ''
+        - name: refspec
+          value: ''
+        - name: submodules
+          value: 'false'
+        - name: depth
+          value: '1'
+        - name: sslVerify
+          value: 'true'
+        - name: crtFileName
+          value: ca-bundle.crt
+        - name: subdirectory
+          value: ''
+        - name: sparseCheckoutDirectories
+          value: ''
+        - name: deleteExisting
+          value: 'true'
+        - name: httpProxy
+          value: ''
+        - name: httpsProxy
+          value: ''
+        - name: noProxy
+          value: ''
+        - name: verbose
+          value: 'true'
+        - name: gitInitImage
+          value: >-
+            registry.redhat.io/openshift-pipelines/pipelines-git-init-rhel8@sha256:1a50511583fc02a27012d17d942e247813404104ddd282d7e26f99765174392c
+        - name: userHome
+          value: /home/git
+      taskRef:
+        kind: ClusterTask
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: code-repository
+    - name: build-pipeline-manifest
+      params:
+        - name: appName
+          value: manifest-generator
+        - name: pipeline-location
+          value: training/model-training.pipeline
+        - name: manifest-location
+          value: manifests/model-training.yaml
+      runAfter:
+        - git-clone-code-repo
+        - git-clone-manifest-repo
+      taskRef:
+        kind: Task
+        name: build-pipeline-manifest
+      workspaces:
+        - name: code-repository
+          workspace: code-repository
+        - name: manifest-repository
+          workspace: manifest-repository
+    - name: git-push
+      params:
+        - name: BASE_IMAGE
+          value: >-
+            cgr.dev/chainguard/git:root-2.39@sha256:7759f87050dd8bacabe61354d75ccd7f864d6b6f8ec42697db7159eccd491139
+        - name: GIT_USER_NAME
+          value: CI-Pipeline
+        - name: GIT_USER_EMAIL
+          value: CI-Pipeline@openshift.com
+        - name: GIT_SCRIPT
+          value: >
+            git config --global --add safe.directory /workspace/source && git
+            add -u && git commit -m "added new pipeline manifest version"
+            --allow-empty && git push origin HEAD:main
+        - name: USER_HOME
+          value: /home/git
+        - name: VERBOSE
+          value: 'true'
+      runAfter:
+        - upload-pipeline
+      taskRef:
+        kind: ClusterTask
+        name: git-cli
+      workspaces:
+        - name: source
+          workspace: manifest-repository
+        - name: input
+          workspace: manifest-repository
+    - name: git-clone-manifest-repo
+      params:
+        - name: url
+          value: ''
+        - name: revision
+          value: ''
+        - name: refspec
+          value: ''
+        - name: submodules
+          value: 'false'
+        - name: depth
+          value: '1'
+        - name: sslVerify
+          value: 'true'
+        - name: crtFileName
+          value: ca-bundle.crt
+        - name: subdirectory
+          value: ''
+        - name: sparseCheckoutDirectories
+          value: ''
+        - name: deleteExisting
+          value: 'true'
+        - name: httpProxy
+          value: ''
+        - name: httpsProxy
+          value: ''
+        - name: noProxy
+          value: ''
+        - name: verbose
+          value: 'true'
+        - name: gitInitImage
+          value: >-
+            registry.redhat.io/openshift-pipelines/pipelines-git-init-rhel8@sha256:1a50511583fc02a27012d17d942e247813404104ddd282d7e26f99765174392c
+        - name: userHome
+          value: /home/git
+      taskRef:
+        kind: ClusterTask
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: manifest-repository
+    - name: upload-pipeline
+      params:
+        - name: manifest-location
+          value: manifests/model-training.yaml
+        - name: pipeline_name
+          value: model-training
+      runAfter:
+        - build-pipeline-manifest
+      taskRef:
+        kind: Task
+        name: upload-pipeline
+      workspaces:
+        - name: manifest-repository
+          workspace: manifest-repository
+  workspaces:
+    - name: code-repository
+    - name: manifest-repository
