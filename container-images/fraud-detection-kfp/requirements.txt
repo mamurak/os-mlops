@@ -1,0 +1,8 @@
+trino==0.323.0
+boto3==1.28.2
+seaborn==0.12.2
+imbalanced-learn==0.11.0
+onnx==1.14.1
+tf2onnx==1.13.0
+onnxruntime==1.15.1
+pyarrow==13.0.0

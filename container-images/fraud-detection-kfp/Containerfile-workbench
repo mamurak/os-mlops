@@ -1,0 +1,10 @@
+FROM quay.io/opendatahub-contrib/workbench-images:vscode-datascience-c9s-py311_2023c_latest
+
+RUN pip install pip==22.3.1 setuptools==65.3.0
+
+COPY requirements.txt ./
+COPY requirements-kfp.txt ./
+RUN pip install --no-cache-dir -r requirements-kfp.txt && \
+    pip install --no-cache-dir -r requirements.txt && \
+    chmod -R g+w /opt/app-root/lib/python3.11/site-packages && \
+    fix-permissions /opt/app-root -P
