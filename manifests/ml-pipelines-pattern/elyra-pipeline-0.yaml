@@ -1,0 +1,460 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: model-training
+  annotations:
+    tekton.dev/output_artifacts: '{}'
+    tekton.dev/input_artifacts: '{}'
+    tekton.dev/artifact_bucket: mlpipeline
+    tekton.dev/artifact_endpoint: minio-service.kubeflow:9000
+    tekton.dev/artifact_endpoint_scheme: http://
+    tekton.dev/artifact_items: '{"data-ingestion": [], "model-training": [], "model-upload":
+      [], "model-validation2": [], "preprocessing": []}'
+    sidecar.istio.io/inject: "false"
+    tekton.dev/template: ''
+    pipelines.kubeflow.org/big_data_passing_format: $(workspaces.$TASK_NAME.path)/artifacts/$ORIG_PR_NAME/$TASKRUN_NAME/$TASK_PARAM_NAME
+    pipelines.kubeflow.org/pipeline_spec: '{"inputs": [{"default": "training-data.csv",
+      "name": "data_object_name", "optional": true, "type": "String"}, {"default":
+      "20", "name": "epoch_count", "optional": true, "type": "Integer"}, {"default":
+      "0.001", "name": "learning_rate", "optional": true, "type": "Float"}, {"default":
+      "model", "name": "model_object_prefix", "optional": true, "type": "String"}],
+      "name": "model-training"}'
+  labels:
+    pipelines.kubeflow.org/pipelinename: ''
+    pipelines.kubeflow.org/generation: ''
+spec:
+  params:
+  - name: data_object_name
+    value: training-data.csv
+  - name: epoch_count
+    value: '20'
+  - name: learning_rate
+    value: '0.001'
+  - name: model_object_prefix
+    value: model
+  pipelineSpec:
+    params:
+    - name: data_object_name
+      default: training-data.csv
+    - name: epoch_count
+      default: '20'
+    - name: learning_rate
+      default: '0.001'
+    - name: model_object_prefix
+      default: model
+    tasks:
+    - name: data-ingestion
+      params:
+      - name: data_object_name
+        value: $(params.data_object_name)
+      taskSpec:
+        steps:
+        - name: main
+          args:
+          - --data-object-name
+          - $(inputs.params.data_object_name)
+          command:
+          - sh
+          - -ec
+          - |
+            program_path=$(mktemp)
+            printf "%s" "$0" > "$program_path"
+            python3 -u "$program_path" "$@"
+          - |
+            def data_ingestion(data_object_name):
+                from os import environ
+
+                import boto3
+
+                raw_data_file_location = '/data/raw_data.csv'
+
+                print('Commencing data ingestion.')
+
+                s3_endpoint_url = environ.get('AWS_S3_ENDPOINT')
+                s3_access_key = environ.get('AWS_ACCESS_KEY_ID')
+                s3_secret_key = environ.get('AWS_SECRET_ACCESS_KEY')
+                s3_bucket_name = environ.get('AWS_S3_BUCKET')
+
+                print(f'Downloading data "{data_object_name}" '
+                    f'from bucket "{s3_bucket_name}" '
+                    f'from S3 storage at {s3_endpoint_url}'
+                    f'to {raw_data_file_location}')
+
+                s3_client = boto3.client(
+                    's3', endpoint_url=s3_endpoint_url,
+                    aws_access_key_id=s3_access_key, aws_secret_access_key=s3_secret_key
+                )
+
+                s3_client.download_file(
+                    s3_bucket_name,
+                    data_object_name,
+                    raw_data_file_location
+                )
+                print('Finished data ingestion.')
+
+            import argparse
+            _parser = argparse.ArgumentParser(prog='Data ingestion', description='')
+            _parser.add_argument("--data-object-name", dest="data_object_name", type=str, required=True, default=argparse.SUPPRESS)
+            _parsed_args = vars(_parser.parse_args())
+
+            _outputs = data_ingestion(**_parsed_args)
+          env:
+          - name: AWS_S3_ENDPOINT
+            valueFrom:
+              secretKeyRef:
+                key: AWS_S3_ENDPOINT
+                name: aws-connection-fraud-detection
+          - name: AWS_ACCESS_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                key: AWS_ACCESS_KEY_ID
+                name: aws-connection-fraud-detection
+          - name: AWS_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                key: AWS_SECRET_ACCESS_KEY
+                name: aws-connection-fraud-detection
+          - name: AWS_S3_BUCKET
+            valueFrom:
+              secretKeyRef:
+                key: AWS_S3_BUCKET
+                name: aws-connection-fraud-detection
+          image: quay.io/mmurakam/runtimes:fraud-detection-v0.1.0
+          volumeMounts:
+          - mountPath: /data
+            name: model-training-data-volume
+        params:
+        - name: data_object_name
+        volumes:
+        - name: model-training-data-volume
+          persistentVolumeClaim:
+            claimName: model-training-data-volume
+        metadata:
+          labels:
+            pipelines.kubeflow.org/cache_enabled: "true"
+          annotations:
+            pipelines.kubeflow.org/component_spec_digest: '{"name": "Data ingestion",
+              "outputs": [], "version": "Data ingestion@sha256=36222c07ccbb099a241021df7657d3887b93fadcf2f30dcc3c0fd3a38f2dd93b"}'
+    - name: preprocessing
+      taskSpec:
+        steps:
+        - name: main
+          command:
+          - sh
+          - -ec
+          - |
+            program_path=$(mktemp)
+            printf "%s" "$0" > "$program_path"
+            python3 -u "$program_path" "$@"
+          - |
+            def preprocessing():
+                from imblearn.over_sampling import SMOTE
+                from numpy import save
+                from pandas import read_csv
+                from sklearn.model_selection import StratifiedKFold
+                from sklearn.preprocessing import RobustScaler
+
+                print('Preprocessing data.')
+
+                raw_data_file_location = '/data/raw_data.csv'
+                training_data_folder = '/data'
+                df = read_csv(raw_data_file_location)
+
+                rob_scaler = RobustScaler()
+
+                df['scaled_amount'] = rob_scaler.fit_transform(
+                    df['Amount'].values.reshape(-1, 1)
+                )
+                df['scaled_time'] = rob_scaler.fit_transform(
+                    df['Time'].values.reshape(-1, 1)
+                )
+                df.drop(['Time', 'Amount'], axis=1, inplace=True)
+                scaled_amount = df['scaled_amount']
+                scaled_time = df['scaled_time']
+
+                df.drop(['scaled_amount', 'scaled_time'], axis=1, inplace=True)
+                df.insert(0, 'scaled_amount', scaled_amount)
+                df.insert(1, 'scaled_time', scaled_time)
+
+                X = df.drop('Class', axis=1)
+                y = df['Class']
+                sss = StratifiedKFold(n_splits=5, random_state=None, shuffle=False)
+
+                for train_index, test_index in sss.split(X, y):
+                    print("Train:", train_index, "Test:", test_index)
+                    original_Xtrain = X.iloc[train_index]
+                    original_ytrain = y.iloc[train_index]
+
+                original_Xtrain = original_Xtrain.values
+                original_ytrain = original_ytrain.values
+
+                sm = SMOTE(sampling_strategy='minority', random_state=42)
+                Xsm_train, ysm_train = sm.fit_resample(original_Xtrain, original_ytrain)
+
+                save(f'{training_data_folder}/training_samples.npy', Xsm_train)
+                save(f'{training_data_folder}/training_labels.npy', ysm_train)
+
+                print('Data processing done.')
+
+            import argparse
+            _parser = argparse.ArgumentParser(prog='Preprocessing', description='')
+            _parsed_args = vars(_parser.parse_args())
+
+            _outputs = preprocessing(**_parsed_args)
+          image: quay.io/mmurakam/runtimes:fraud-detection-v0.1.0
+          volumeMounts:
+          - mountPath: /data
+            name: model-training-data-volume
+        volumes:
+        - name: model-training-data-volume
+          persistentVolumeClaim:
+            claimName: model-training-data-volume
+        metadata:
+          labels:
+            pipelines.kubeflow.org/cache_enabled: "true"
+          annotations:
+            pipelines.kubeflow.org/component_spec_digest: '{"name": "Preprocessing",
+              "outputs": [], "version": "Preprocessing@sha256=9d343bc30fd7b1cdba8bc426289e8159e50b11f2ea87f61a7ec0ed0d27d30697"}'
+      runAfter:
+      - data-ingestion
+    - name: model-training
+      params:
+      - name: epoch_count
+        value: $(params.epoch_count)
+      - name: learning_rate
+        value: $(params.learning_rate)
+      taskSpec:
+        steps:
+        - name: main
+          args:
+          - --epoch-count
+          - $(inputs.params.epoch_count)
+          - --learning-rate
+          - $(inputs.params.learning_rate)
+          command:
+          - sh
+          - -ec
+          - |
+            program_path=$(mktemp)
+            printf "%s" "$0" > "$program_path"
+            python3 -u "$program_path" "$@"
+          - |
+            def model_training(epoch_count, learning_rate):
+                from os import environ
+
+                environ['CUDA_VISIBLE_DEVICES'] = '-1'
+
+                from keras.models import Sequential
+                from keras.layers.core import Dense
+                from keras.optimizers import Adam
+                from numpy import load
+                from onnx import save
+                from tf2onnx import convert
+
+                print('Training model')
+
+                Xsm_train = load('/data/training_samples.npy')
+                ysm_train = load('/data/training_labels.npy')
+                n_inputs = Xsm_train.shape[1]
+
+                oversample_model = Sequential([
+                    Dense(n_inputs, input_shape=(n_inputs, ), activation='relu'),
+                    Dense(32, activation='relu'),
+                    Dense(2, activation='softmax'),
+                ])
+                oversample_model.compile(
+                    Adam(learning_rate=learning_rate),
+                    loss='sparse_categorical_crossentropy',
+                    metrics=['accuracy'],
+                )
+                oversample_model.fit(
+                    Xsm_train,
+                    ysm_train,
+                    validation_split=0.2,
+                    batch_size=300,
+                    epochs=epoch_count,
+                    shuffle=True,
+                    verbose=2,
+                )
+                onnx_model, _ = convert.from_keras(oversample_model)
+                save(onnx_model, '/data/model.onnx')
+
+            import argparse
+            _parser = argparse.ArgumentParser(prog='Model training', description='')
+            _parser.add_argument("--epoch-count", dest="epoch_count", type=int, required=True, default=argparse.SUPPRESS)
+            _parser.add_argument("--learning-rate", dest="learning_rate", type=float, required=True, default=argparse.SUPPRESS)
+            _parsed_args = vars(_parser.parse_args())
+
+            _outputs = model_training(**_parsed_args)
+          image: quay.io/mmurakam/runtimes:fraud-detection-v0.1.0
+          volumeMounts:
+          - mountPath: /data
+            name: model-training-data-volume
+        params:
+        - name: epoch_count
+        - name: learning_rate
+        volumes:
+        - name: model-training-data-volume
+          persistentVolumeClaim:
+            claimName: model-training-data-volume
+        metadata:
+          labels:
+            pipelines.kubeflow.org/cache_enabled: "true"
+          annotations:
+            pipelines.kubeflow.org/component_spec_digest: '{"name": "Model training",
+              "outputs": [], "version": "Model training@sha256=38690177d0e6ed52b4aafb231568292f1776ec22184e31234454936154838479"}'
+      runAfter:
+      - preprocessing
+    - name: model-validation2
+      taskSpec:
+        steps:
+        - name: main
+          command:
+          - sh
+          - -ec
+          - |
+            program_path=$(mktemp)
+            printf "%s" "$0" > "$program_path"
+            python3 -u "$program_path" "$@"
+          - |
+            def model_validation2():
+                from time import sleep
+
+                print('validating model using group fairness scores, for instance')
+                sleep(1)
+                print('model validated')
+
+            import argparse
+            _parser = argparse.ArgumentParser(prog='Model validation2', description='')
+            _parsed_args = vars(_parser.parse_args())
+
+            _outputs = model_validation2(**_parsed_args)
+          image: quay.io/mmurakam/runtimes:fraud-detection-v0.1.0
+          volumeMounts:
+          - mountPath: /data
+            name: model-training-data-volume
+        volumes:
+        - name: model-training-data-volume
+          persistentVolumeClaim:
+            claimName: model-training-data-volume
+        metadata:
+          labels:
+            pipelines.kubeflow.org/cache_enabled: "true"
+          annotations:
+            pipelines.kubeflow.org/component_spec_digest: '{"name": "Model validation2",
+              "outputs": [], "version": "Model validation2@sha256=4f756ecceb264eb95e2d5e6e49343f23c315ae8521fc2c366c394e9dcc7bd606"}'
+      runAfter:
+      - model-training
+    - name: model-upload
+      params:
+      - name: model_object_prefix
+        value: $(params.model_object_prefix)
+      taskSpec:
+        steps:
+        - name: main
+          args:
+          - --model-object-prefix
+          - $(inputs.params.model_object_prefix)
+          command:
+          - sh
+          - -ec
+          - |
+            program_path=$(mktemp)
+            printf "%s" "$0" > "$program_path"
+            python3 -u "$program_path" "$@"
+          - |
+            def model_upload(model_object_prefix):
+                from os import environ
+                from datetime import datetime
+
+                from boto3 import client
+
+                def _initialize_s3_client(s3_endpoint_url, s3_access_key, s3_secret_key):
+                    print('initializing S3 client')
+                    s3_client = client(
+                        's3', aws_access_key_id=s3_access_key,
+                        aws_secret_access_key=s3_secret_key,
+                        endpoint_url=s3_endpoint_url,
+                    )
+                    return s3_client
+
+                def _generate_model_name(model_object_prefix, version=''):
+                    version = version if version else _timestamp()
+                    model_name = f'{model_object_prefix}-{version}.onnx'
+                    return model_name
+
+                def _timestamp():
+                    return datetime.now().strftime('%y%m%d%H%M')
+
+                def _do_upload(s3_client, object_name):
+                    print(f'Uploading model to {object_name}')
+                    try:
+                        s3_client.upload_file('/data/model.onnx', s3_bucket_name, object_name)
+                    except:
+                        print(f'S3 upload to bucket {s3_bucket_name} at {s3_endpoint_url} failed!')
+                        raise
+                    print(f'Model uploaded and available as "{object_name}"')
+
+                s3_endpoint_url = environ.get('AWS_S3_ENDPOINT')
+                s3_access_key = environ.get('AWS_ACCESS_KEY_ID')
+                s3_secret_key = environ.get('AWS_SECRET_ACCESS_KEY')
+                s3_bucket_name = environ.get('AWS_S3_BUCKET')
+
+                s3_client = _initialize_s3_client(
+                    s3_endpoint_url=s3_endpoint_url,
+                    s3_access_key=s3_access_key,
+                    s3_secret_key=s3_secret_key
+                )
+                model_object_name = _generate_model_name(model_object_prefix)
+                _do_upload(s3_client, model_object_name)
+
+                model_object_name_latest = _generate_model_name(
+                    model_object_prefix, 'latest'
+                )
+                _do_upload(s3_client, model_object_name_latest)
+
+            import argparse
+            _parser = argparse.ArgumentParser(prog='Model upload', description='')
+            _parser.add_argument("--model-object-prefix", dest="model_object_prefix", type=str, required=True, default=argparse.SUPPRESS)
+            _parsed_args = vars(_parser.parse_args())
+
+            _outputs = model_upload(**_parsed_args)
+          env:
+          - name: AWS_S3_ENDPOINT
+            valueFrom:
+              secretKeyRef:
+                key: AWS_S3_ENDPOINT
+                name: aws-connection-fraud-detection
+          - name: AWS_ACCESS_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                key: AWS_ACCESS_KEY_ID
+                name: aws-connection-fraud-detection
+          - name: AWS_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                key: AWS_SECRET_ACCESS_KEY
+                name: aws-connection-fraud-detection
+          - name: AWS_S3_BUCKET
+            valueFrom:
+              secretKeyRef:
+                key: AWS_S3_BUCKET
+                name: aws-connection-fraud-detection
+          image: quay.io/mmurakam/runtimes:fraud-detection-v0.1.0
+          volumeMounts:
+          - mountPath: /data
+            name: model-training-data-volume
+        params:
+        - name: model_object_prefix
+        volumes:
+        - name: model-training-data-volume
+          persistentVolumeClaim:
+            claimName: model-training-data-volume
+        metadata:
+          labels:
+            pipelines.kubeflow.org/cache_enabled: "true"
+          annotations:
+            pipelines.kubeflow.org/component_spec_digest: '{"name": "Model upload",
+              "outputs": [], "version": "Model upload@sha256=595ec63722162812dee20559a1792444ba0bc7ea1570b4b3f936e800533d43a5"}'
+      runAfter:
+      - model-validation2

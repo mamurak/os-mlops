@@ -1,0 +1,380 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  annotations:
+    openshift.io/description: ''
+    openshift.io/display-name: VS Code
+  name: vs-code
+  namespace: fraud-detection
+  finalizers:
+    - kubernetes.io/pvc-protection
+  labels:
+    opendatahub.io/dashboard: 'true'
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  volumeMode: Filesystem
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: model-training-data-volume
+  namespace: fraud-detection
+  finalizers:
+    - kubernetes.io/pvc-protection
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  volumeMode: Filesystem
+---
+apiVersion: kubeflow.org/v1
+kind: Notebook
+metadata:
+  annotations:
+    notebooks.opendatahub.io/inject-oauth: 'true'
+    notebooks.opendatahub.io/last-size-selection: Small
+    notebooks.opendatahub.io/oauth-logout-url: >-
+      https://rhods-dashboard-redhat-ods-applications.apps.{{ .Values.clusterdomainurl }}/projects/fraud-detection?notebookLogout=jupyterlab
+    opendatahub.io/username: 'user'
+    openshift.io/description: ''
+    openshift.io/display-name: JupyterLab
+  name: jupyterlab
+  namespace: fraud-detection
+  labels:
+    app: jupyterlab
+    opendatahub.io/dashboard: 'true'
+    opendatahub.io/odh-managed: 'true'
+    opendatahub.io/user: 'user'
+spec:
+  template:
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - preference:
+                matchExpressions:
+                  - key: nvidia.com/gpu.present
+                    operator: NotIn
+                    values:
+                      - 'true'
+              weight: 1
+      containers:
+        - resources:
+            limits:
+              cpu: '2'
+              memory: 8Gi
+            requests:
+              cpu: '1'
+              memory: 8Gi
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /notebook/fraud-detection/jupyterlab/api
+              port: notebook-port
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: jupyterlab
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /notebook/fraud-detection/jupyterlab/api
+              port: notebook-port
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          env:
+            - name: NOTEBOOK_ARGS
+              value: |-
+                --ServerApp.port=8888
+                                  --ServerApp.token=''
+                                  --ServerApp.password=''
+                                  --ServerApp.base_url=/notebook/fraud-detection/jupyterlab
+                                  --ServerApp.quit_button=False
+                                  --ServerApp.tornado_settings={"user":"user","hub_host":"https://rhods-dashboard-redhat-ods-applications.apps.{{ .Values.clusterdomainurl }}","hub_prefix":"/projects/fraud-detection"}
+            - name: JUPYTER_IMAGE
+              value: >-
+                image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/fraud-detection:1.0.1
+          ports:
+            - containerPort: 8888
+              name: notebook-port
+              protocol: TCP
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /opt/app-root/src
+              name: jupyterlab
+            - mountPath: /opt/app-root/runtimes
+              name: elyra-dsp-details
+            - mountPath: /dev/shm
+              name: shm
+          envFrom:
+            - secretRef:
+                name: aws-connection-fraud-detection
+          image: >-
+            image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/fraud-detection:1.0.1
+          workingDir: /opt/app-root/src
+        - resources:
+            limits:
+              cpu: 100m
+              memory: 64Mi
+            requests:
+              cpu: 100m
+              memory: 64Mi
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /oauth/healthz
+              port: oauth-proxy
+              scheme: HTTPS
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: oauth-proxy
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /oauth/healthz
+              port: oauth-proxy
+              scheme: HTTPS
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          env:
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          ports:
+            - containerPort: 8443
+              name: oauth-proxy
+              protocol: TCP
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /etc/oauth/config
+              name: oauth-config
+            - mountPath: /etc/tls/private
+              name: tls-certificates
+          image: >-
+            registry.redhat.io/openshift4/ose-oauth-proxy@sha256:4bef31eb993feb6f1096b51b4876c65a6fb1f4401fee97fa4f4542b6b7c9bc46
+          args:
+            - '--provider=openshift'
+            - '--https-address=:8443'
+            - '--http-address='
+            - '--openshift-service-account=jupyterlab'
+            - '--cookie-secret-file=/etc/oauth/config/cookie_secret'
+            - '--cookie-expire=24h0m0s'
+            - '--tls-cert=/etc/tls/private/tls.crt'
+            - '--tls-key=/etc/tls/private/tls.key'
+            - '--upstream=http://localhost:8888'
+            - '--upstream-ca=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt'
+            - '--email-domain=*'
+            - '--skip-provider-button'
+            - >-
+              --openshift-sar={"verb":"get","resource":"notebooks","resourceAPIGroup":"kubeflow.org","resourceName":"jupyterlab","namespace":"$(NAMESPACE)"}
+            - >-
+              --logout-url=https://rhods-dashboard-redhat-ods-applications.apps.{{ .Values.clusterdomainurl }}/projects/fraud-detection?notebookLogout=jupyterlab
+      enableServiceLinks: false
+      serviceAccountName: jupyterlab
+      volumes:
+        - name: jupyterlab
+          persistentVolumeClaim:
+            claimName: development
+        - name: elyra-dsp-details
+          secret:
+            secretName: ds-pipeline-config
+        - emptyDir:
+            medium: Memory
+          name: shm
+        - name: oauth-config
+          secret:
+            defaultMode: 420
+            secretName: jupyterlab-oauth-config
+        - name: tls-certificates
+          secret:
+            defaultMode: 420
+            secretName: jupyterlab-tls
+---
+apiVersion: kubeflow.org/v1
+kind: Notebook
+metadata:
+  annotations:
+    notebooks.opendatahub.io/inject-oauth: 'true'
+    notebooks.opendatahub.io/last-size-selection: Small
+    notebooks.opendatahub.io/oauth-logout-url: >-
+      https://rhods-dashboard-redhat-ods-applications.apps.{{ .Values.clusterdomainurl }}/projects/fraud-detection?notebookLogout=vs-code
+    opendatahub.io/username: user
+    openshift.io/description: ''
+    openshift.io/display-name: VS Code
+  name: vs-code
+  namespace: fraud-detection
+  labels:
+    app: vs-code
+    opendatahub.io/dashboard: 'true'
+    opendatahub.io/odh-managed: 'true'
+    opendatahub.io/user: user
+spec:
+  template:
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - preference:
+                matchExpressions:
+                  - key: nvidia.com/gpu.present
+                    operator: NotIn
+                    values:
+                      - 'true'
+              weight: 1
+      containers:
+        - resources:
+            limits:
+              cpu: '2'
+              memory: 8Gi
+            requests:
+              cpu: '1'
+              memory: 8Gi
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /notebook/fraud-detection/vs-code/api
+              port: notebook-port
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: vs-code
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /notebook/fraud-detection/vs-code/api
+              port: notebook-port
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          env:
+            - name: NOTEBOOK_ARGS
+              value: |-
+                --ServerApp.port=8888
+                                  --ServerApp.token=''
+                                  --ServerApp.password=''
+                                  --ServerApp.base_url=/notebook/fraud-detection/vs-code
+                                  --ServerApp.quit_button=False
+                                  --ServerApp.tornado_settings={"user":"user","hub_host":"https://rhods-dashboard-redhat-ods-applications.apps.{{ .Values.clusterdomainurl }}","hub_prefix":"/projects/fraud-detection"}
+            - name: JUPYTER_IMAGE
+              value: >-
+                image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/vscode-kfp:v0.1.2
+          ports:
+            - containerPort: 8888
+              name: notebook-port
+              protocol: TCP
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /opt/app-root/src
+              name: vs-code
+            - mountPath: /opt/app-root/runtimes
+              name: elyra-dsp-details
+            - mountPath: /dev/shm
+              name: shm
+          envFrom:
+            - secretRef:
+                name: aws-connection-fraud-detection
+          image: >-
+            image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/vscode-kfp:v0.1.2
+          workingDir: /opt/app-root/src
+        - resources:
+            limits:
+              cpu: 100m
+              memory: 64Mi
+            requests:
+              cpu: 100m
+              memory: 64Mi
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /oauth/healthz
+              port: oauth-proxy
+              scheme: HTTPS
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: oauth-proxy
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /oauth/healthz
+              port: oauth-proxy
+              scheme: HTTPS
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          env:
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          ports:
+            - containerPort: 8443
+              name: oauth-proxy
+              protocol: TCP
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /etc/oauth/config
+              name: oauth-config
+            - mountPath: /etc/tls/private
+              name: tls-certificates
+          image: >-
+            registry.redhat.io/openshift4/ose-oauth-proxy@sha256:4bef31eb993feb6f1096b51b4876c65a6fb1f4401fee97fa4f4542b6b7c9bc46
+          args:
+            - '--provider=openshift'
+            - '--https-address=:8443'
+            - '--http-address='
+            - '--openshift-service-account=vs-code'
+            - '--cookie-secret-file=/etc/oauth/config/cookie_secret'
+            - '--cookie-expire=24h0m0s'
+            - '--tls-cert=/etc/tls/private/tls.crt'
+            - '--tls-key=/etc/tls/private/tls.key'
+            - '--upstream=http://localhost:8888'
+            - '--upstream-ca=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt'
+            - '--email-domain=*'
+            - '--skip-provider-button'
+            - >-
+              --openshift-sar={"verb":"get","resource":"notebooks","resourceAPIGroup":"kubeflow.org","resourceName":"vs-code","namespace":"$(NAMESPACE)"}
+            - >-
+              --logout-url=https://rhods-dashboard-redhat-ods-applications.apps.{{ .Values.clusterdomainurl }}/projects/fraud-detection?notebookLogout=vs-code
+      enableServiceLinks: false
+      serviceAccountName: vs-code
+      volumes:
+        - name: vs-code
+          persistentVolumeClaim:
+            claimName: vs-code
+        - name: elyra-dsp-details
+          secret:
+            secretName: ds-pipeline-config
+        - emptyDir:
+            medium: Memory
+          name: shm
+        - name: oauth-config
+          secret:
+            defaultMode: 420
+            secretName: vs-code-oauth-config
+        - name: tls-certificates
+          secret:
+            defaultMode: 420
+            secretName: vs-code-tls

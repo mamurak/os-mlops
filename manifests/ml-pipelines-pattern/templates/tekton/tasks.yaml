@@ -1,0 +1,146 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: build-pipeline-manifest
+  namespace: ci-cd
+spec:
+  params:
+    - name: pipeline-location
+      type: string
+    - name: manifest-location
+      type: string
+  steps:
+    - image: 'quay.io/mmurakam/runtimes:elyra-kfp-tekton-runtime-v0.1.1'
+      name: export-elyra-pipeline
+      resources: {}
+      script: >
+        echo "importing elyra runtime"
+
+        mkdir -p ~/.local/share/jupyter/runtime
+
+        elyra-metadata import runtimes --directory "/tmp"
+
+        echo "exporting elyra pipeline from
+        $(workspaces.code-repository.path)/$(params.pipeline-location) to
+        $(workspaces.manifest-repository.path)/$(params.manifest-location)"
+
+        echo "content of code repository workspace: $(ls
+        $(workspaces.code-repository.path))" 
+
+        echo "content of manifest repository workspace: $(ls
+        $(workspaces.manifest-repository.path))"
+
+        elyra-pipeline export
+        $(workspaces.code-repository.path)/$(params.pipeline-location) \
+          --runtime-config odh_dsp \
+          --output $(workspaces.manifest-repository.path)/$(params.manifest-location) --overwrite
+
+        #sed -i 's|tekton.dev/v1|tekton.dev/v1beta1|g'
+        #$(workspaces.manifest-repository.path)/$(params.manifest-location)
+
+        echo "export complete"
+      volumeMounts:
+        - mountPath: /tmp
+          name: elyra-runtime
+      workingDir: $(workspaces.code-repository.path)
+  volumes:
+    - name: elyra-runtime
+      secret:
+        secretName: elyra-runtime
+  workspaces:
+    - name: code-repository
+    - name: manifest-repository
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: compile-kfp-pipeline
+  namespace: ci-cd
+spec:
+  params:
+    - name: pipeline-location
+      type: string
+    - name: manifest-location
+      type: string
+  steps:
+    - image: 'quay.io/mmurakam/runtimes:elyra-kfp-tekton-runtime-v0.1.1'
+      name: export-kfp-pipeline
+      resources: {}
+      script: >
+        echo "exporting kfp pipeline from
+        $(workspaces.code-repository.path)/$(params.pipeline-location) to
+        $(workspaces.manifest-repository.path)/$(params.manifest-location)"
+
+        echo "content of code repository workspace: $(ls
+        $(workspaces.code-repository.path))" 
+
+        echo "content of manifest repository workspace: $(ls
+        $(workspaces.manifest-repository.path))"
+
+        dsl-compile-tekton --py
+        $(workspaces.code-repository.path)/$(params.pipeline-location) --output
+        $(workspaces.manifest-repository.path)/$(params.manifest-location)
+
+        echo "export complete"
+      workingDir: $(workspaces.code-repository.path)
+  workspaces:
+    - name: code-repository
+    - name: manifest-repository
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: upload-pipeline
+  namespace: ci-cd
+spec:
+  params:
+    - name: manifest-location
+      type: string
+    - name: pipeline_name
+      type: string
+  steps:
+    - image: 'quay.io/mmurakam/runtimes:elyra-kfp-tekton-runtime-v0.1.1'
+      name: upload-pipeline
+      resources: {}
+      script: >
+        #!/usr/bin/env python
+
+
+        from datetime import datetime
+
+        from json import load
+
+
+        from kfp import Client
+
+
+        with open('/var/run/secrets/dsp/conf.json', 'r') as conf:
+            dsp_conf = load(conf)
+
+
+        print(f'Instantiating KFP client for service at {dsp_conf["host"]}')
+
+        client = Client(host=dsp_conf['host'], existing_token=dsp_conf['token'])
+
+
+        timestamp = datetime.now().strftime('%y%m%d%H%M')
+
+
+        print(f'Uploading version {timestamp} of pipeline
+        $(params.pipeline_name)')
+
+        client.upload_pipeline_version(
+            "$(params.manifest-location)",
+            pipeline_version_name=timestamp,
+            pipeline_name="$(params.pipeline_name)"
+        )
+      volumeMounts:
+        - mountPath: /var/run/secrets/dsp
+          name: dsp-secret
+      workingDir: $(workspaces.manifest-repository.path)
+  volumes:
+    - name: dsp-secret
+      secret:
+        secretName: dsp-secret
+  workspaces:
+    - name: manifest-repository

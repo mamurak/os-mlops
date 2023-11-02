@@ -65,3 +65,25 @@ metadata:
 spec:
   finalizers:
   - kubernetes
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: production-project
+  labels:
+    kubernetes.io/metadata.name: production-project
+    modelmesh-enabled: 'true'
+    opendatahub.io/dashboard: 'true'
+  annotations:
+    openshift.io/display-name: production-project
+spec:
+  finalizers:
+    - kubernetes
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: ci-cd
+spec:
+  finalizers:
+    - kubernetes
