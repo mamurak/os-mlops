@@ -1,0 +1,8 @@
+FROM quay.io/modh/odh-pytorch-notebook:v2-2023a-20230615-e0bdaec
+
+RUN pip install pip==22.3.1 setuptools==65.3.0
+
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt && \
+    chmod -R g+w /opt/app-root/lib/python3.9/site-packages && \
+    fix-permissions /opt/app-root -P
