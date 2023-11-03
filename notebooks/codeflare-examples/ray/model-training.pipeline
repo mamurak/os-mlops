@@ -1,0 +1,422 @@
+{
+  "doc_type": "pipeline",
+  "version": "3.0",
+  "json_schema": "http://api.dataplatform.ibm.com/schemas/common-pipeline/pipeline-flow/pipeline-flow-v3-schema.json",
+  "id": "elyra-auto-generated-pipeline",
+  "primary_pipeline": "primary",
+  "pipelines": [
+    {
+      "id": "primary",
+      "nodes": [
+        {
+          "id": "09b48e95-e953-4a59-977b-bc751bc45798",
+          "type": "execution_node",
+          "op": "execute-python-node",
+          "app_data": {
+            "component_parameters": {
+              "pipeline_parameters": [
+                "data_object_name"
+              ],
+              "dependencies": [],
+              "include_subdirectories": false,
+              "outputs": [],
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [],
+              "kubernetes_shared_mem_size": {},
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "data_ingestion.py"
+            },
+            "label": "",
+            "ui_data": {
+              "label": "data_ingestion.py",
+              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
+              "x_pos": 199,
+              "y_pos": 267,
+              "description": "Run Python script"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              }
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "b40184b7-b124-4c6a-8fc0-1a58db3859fc",
+          "type": "execution_node",
+          "op": "execute-python-node",
+          "app_data": {
+            "component_parameters": {
+              "pipeline_parameters": [
+                "epoch_count",
+                "learning_rate"
+              ],
+              "dependencies": [],
+              "include_subdirectories": false,
+              "outputs": [
+                "model.onnx"
+              ],
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [],
+              "kubernetes_shared_mem_size": {},
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "model_training.py"
+            },
+            "label": "",
+            "ui_data": {
+              "label": "model_training.py",
+              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
+              "x_pos": 671,
+              "y_pos": 266,
+              "description": "Run Python script"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              },
+              "links": [
+                {
+                  "id": "d0e01d39-77fe-4968-adbb-ecd7d9c5325a",
+                  "node_id_ref": "eceab942-a848-4482-925d-9ecdd099256f",
+                  "port_id_ref": "outPort"
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "eceab942-a848-4482-925d-9ecdd099256f",
+          "type": "execution_node",
+          "op": "execute-python-node",
+          "app_data": {
+            "component_parameters": {
+              "dependencies": [],
+              "include_subdirectories": false,
+              "outputs": [],
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [],
+              "kubernetes_shared_mem_size": {},
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "preprocessing.py"
+            },
+            "label": "",
+            "ui_data": {
+              "label": "preprocessing.py",
+              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
+              "x_pos": 428,
+              "y_pos": 260,
+              "description": "Run Python script"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              },
+              "links": [
+                {
+                  "id": "2627b0ee-8ed7-4fc2-9381-14726af10260",
+                  "node_id_ref": "09b48e95-e953-4a59-977b-bc751bc45798",
+                  "port_id_ref": "outPort"
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "8124ead5-6286-4483-821e-6369a7083d0b",
+          "type": "execution_node",
+          "op": "execute-python-node",
+          "app_data": {
+            "component_parameters": {
+              "dependencies": [],
+              "include_subdirectories": false,
+              "outputs": [],
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [],
+              "kubernetes_shared_mem_size": {},
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "model_validation.py"
+            },
+            "label": "",
+            "ui_data": {
+              "label": "model_validation.py",
+              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
+              "x_pos": 895,
+              "y_pos": 267,
+              "description": "Run Python script"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              },
+              "links": [
+                {
+                  "id": "144ac4c4-750a-4a34-b072-5e966ad32d1c",
+                  "node_id_ref": "b40184b7-b124-4c6a-8fc0-1a58db3859fc",
+                  "port_id_ref": "outPort"
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "1d3834c6-5f1b-4b5e-a45a-51c0ca032c14",
+          "type": "execution_node",
+          "op": "execute-python-node",
+          "app_data": {
+            "component_parameters": {
+              "pipeline_parameters": [
+                "model_object_prefix"
+              ],
+              "dependencies": [],
+              "include_subdirectories": false,
+              "outputs": [],
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [],
+              "kubernetes_shared_mem_size": {},
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "model_upload.py"
+            },
+            "label": "",
+            "ui_data": {
+              "label": "model_upload.py",
+              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
+              "x_pos": 1106,
+              "y_pos": 269,
+              "description": "Run Python script"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              },
+              "links": [
+                {
+                  "id": "7358fb20-f54c-4cbf-9c34-8028d36b19f6",
+                  "node_id_ref": "8124ead5-6286-4483-821e-6369a7083d0b",
+                  "port_id_ref": "outPort"
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "app_data": {
+        "ui_data": {
+          "comments": []
+        },
+        "version": 8,
+        "runtime_type": "KUBEFLOW_PIPELINES",
+        "properties": {
+          "name": "model-training",
+          "runtime": "Data Science Pipelines",
+          "pipeline_defaults": {
+            "mounted_volumes": [
+              {
+                "path": "/data",
+                "pvc_name": "fraud-detection-training-pvc",
+                "read_only": false
+              }
+            ],
+            "kubernetes_pod_annotations": [],
+            "kubernetes_shared_mem_size": {},
+            "kubernetes_pod_labels": [],
+            "kubernetes_tolerations": [],
+            "env_vars": [],
+            "kubernetes_secrets": [
+              {
+                "env_var": "AWS_S3_ENDPOINT",
+                "name": "aws-connection-fraud-detection",
+                "key": "AWS_S3_ENDPOINT"
+              },
+              {
+                "env_var": "AWS_ACCESS_KEY_ID",
+                "name": "aws-connection-fraud-detection",
+                "key": "AWS_ACCESS_KEY_ID"
+              },
+              {
+                "env_var": "AWS_SECRET_ACCESS_KEY",
+                "name": "aws-connection-fraud-detection",
+                "key": "AWS_SECRET_ACCESS_KEY"
+              },
+              {
+                "env_var": "AWS_S3_BUCKET",
+                "name": "aws-connection-fraud-detection",
+                "key": "AWS_S3_BUCKET"
+              }
+            ],
+            "runtime_image": "quay.io/mmurakam/runtimes:fraud-detection-v0.1.0"
+          },
+          "pipeline_parameters": [
+            {
+              "name": "data_object_name",
+              "description": "",
+              "default_value": {
+                "type": "String",
+                "value": "training-data.csv"
+              },
+              "required": false
+            },
+            {
+              "name": "epoch_count",
+              "description": "",
+              "default_value": {
+                "type": "Integer",
+                "value": 20
+              },
+              "required": false
+            },
+            {
+              "name": "learning_rate",
+              "description": "",
+              "default_value": {
+                "type": "Float",
+                "value": 0.001
+              },
+              "required": false
+            },
+            {
+              "name": "model_object_prefix",
+              "description": "",
+              "default_value": {
+                "type": "String",
+                "value": "model"
+              },
+              "required": false
+            }
+          ]
+        }
+      },
+      "runtime_ref": ""
+    }
+  ],
+  "schemas": []
+}
