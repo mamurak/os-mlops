@@ -31,14 +31,14 @@ spec:
 kind: Project
 apiVersion: project.openshift.io/v1
 metadata:
-  name: huggingface-demo
+  name: ray-demo
   labels:
-    kubernetes.io/metadata.name: huggingface-demo
+    kubernetes.io/metadata.name: ray-demo
     modelmesh-enabled: 'true'
     opendatahub.io/dashboard: 'true'
   annotations:
     openshift.io/description: ''
-    openshift.io/display-name: huggingface-demo
+    openshift.io/display-name: ray-demo
 spec:
   finalizers:
     - kubernetes

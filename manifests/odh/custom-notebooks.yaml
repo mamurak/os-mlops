@@ -247,16 +247,16 @@ spec:
   lookupPolicy:
     local: true
   tags:
-    - name: "0.10.1"
+    - name: "0.1.0"
       from:
         kind: DockerImage
-        name: quay.io/project-codeflare/notebook:v0.10.1
+        name: quay.io/mmurakam/workbenches:codeflare-v0.1.0
       importPolicy: {}
       referencePolicy:
         type: Local
       annotations:
         opendatahub.io/notebook-python-dependencies: >-
-          [{"name":"codeflare-sdk","version":"0.4.5"},{"name":"torch","version":"1.12.1"},{"name":"scikit-learn","version":"0.24.2"}]
+          [{"name":"codeflare-sdk","version":"0.10.1"},{"name":"torch","version":"1.13.1"},{"name":"ray","version":"2.7.0"},{"name":"scikit-learn","version":"1.1.1"}]
         opendatahub.io/notebook-software: '[{"name":"Python","version":"3.8"}]'
 ---
 kind: ImageStream

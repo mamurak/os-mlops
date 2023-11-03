@@ -14,7 +14,7 @@ To quickly set up a RHODS environment for fraud detection and object detection d
 1. (optional) [Set up GPU enablement](gpu-enablement.md) if GPUs are present in your cluster.
 2. Deploy the RHODS operator on your OpenShift cluster. The demo pack has been tested with RHODS 1.28.1.
 3. Deploy the OpenShift Pipelines operator. The demo pack has been tested with Pipelines versions 1.8 to 1.10.
-4. Deploy the Codeflare operator. The demo pack has been tested with Codeflare versions 0.0.4 to 0.0.6.
+4. Deploy the Codeflare operator. The demo pack has been tested with Codeflare version 1.0.0 (community operator).
 5. Clone this repository and navigate to `manifests`.
 6. Run `oc apply -f projects.yaml`
 7. Run `oc apply -k .`
@@ -23,7 +23,7 @@ Once the manifests have been deployed, your environment contains:
 - A Minio instance as a lightweight S3 storage provider. You can manage the S3 buckets through the Minio UI through the `minio-ui` route URL in project `minio`. Use `minio` and `minio123` for logging in.
 - A Data Science Project `fraud-detection` for running the [fraud detection demo](notebooks/fraud-detection/instructions.md). The pipeline server is instantiated and cluster storage and data connections are configured.
 - A Data Science Project `object-detection` for running the [object detection demo](notebooks/object-detection-example). The pipeline server is instantiated and cluster storage and data connections are configured. The OVMS model server is instantiatend for model deployment.
-- A Data Science Project `huggingface-demo` for running the [Huggingface demo](notebooks/codeflare-examples/guided-demos). Cluster storage is configured.
+- A Data Science Project `ray-demo` for running the [Ray demo](notebooks/codeflare-examples/ray/README.md).
 - A number of [community workbench images](manifests/odh/custom-notebooks.yaml).
 - A number of [custom serving runtimes](manifests/odh/modelmesh/custom-serving-runtimes.yaml).
 
@@ -46,14 +46,6 @@ To get started with your demo, instantiate the respective workbenches.
     - existing cluster storage: `development`
     - existing data connection: `object-detection`
 3. In the workbench, clone this repository, navigate to `notebooks/fraud-detection` and follow the [instructions](notebooks/object-detection-example/demo-setup.ipynb).
-
-#### Huggingface demo
-
-1. In the RHODS dashboard, enter the `huggingface-demo` project.
-2. Create a new workbench with an arbitrary name and these parameters:
-    - image: `CodeFlare Notebook`
-    - existing cluster storage: `development`
-3. In the workbench, clone this repository, navigate to `notebooks/codeflare-examples/guided-demos` and follow the notebooks.
 
 ### References
 
