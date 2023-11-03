@@ -8,18 +8,18 @@ from codeflare_sdk.job.jobs import DDPJobDefinition
 
 
 def submit_training_job(server_url='', token=''):
-    
-    server_url = environ.get('SERVER_URL', server_url)
-    token = environ.get('TOKEN', token)
-    
-    auth = _cluster_login(server_url, token)
-    cluster = _create_cluster()
-    job = _submit_job(cluster)
-    _wait_for_completion(job)
-    _clean_up(cluster, auth)
 
-    
-def _cluster_login(server_url, token):
+    server_url = environ.get('OCP_API_SERVER_URL', server_url)
+    token = environ.get('OCP_TOKEN', token)
+
+    auth = cluster_login(server_url, token)
+    cluster = create_cluster()
+    job = submit_job(cluster)
+    wait_for_completion(job)
+    clean_up(cluster, auth)
+
+
+def cluster_login(server_url, token):
     print(f'logging into cluster at {server_url}')
 
     auth = TokenAuthentication(
@@ -31,7 +31,7 @@ def _cluster_login(server_url, token):
     return auth
 
 
-def _create_cluster():
+def create_cluster():
     print('creating framework cluster')
 
     cluster = Cluster(
@@ -48,16 +48,22 @@ def _create_cluster():
         )
     )
 
-    cluster.up()
-    print('booting cluster')
+    cluster_running = cluster.status()[1]
 
-    cluster.wait_ready()
-    print('cluster is online')
+    if not cluster_running:
+        cluster.up()
+        print('booting cluster')
+
+        cluster.wait_ready()
+        print('cluster is online')
+
+    print('cluster details:\n')
+    cluster.details()
 
     return cluster
 
 
-def _submit_job(cluster):
+def submit_job(cluster):
     print('creating and submitting job')
 
     environment_variables = {
@@ -65,6 +71,8 @@ def _submit_job(cluster):
         'AWS_ACCESS_KEY_ID': environ.get('AWS_ACCESS_KEY_ID'),
         'AWS_SECRET_ACCESS_KEY': environ.get('AWS_SECRET_ACCESS_KEY'),
         'AWS_S3_BUCKET': environ.get('AWS_S3_BUCKET'),
+        'hidden_size': environ.get('hidden_size', '16'),
+        'max_epochs': environ.get('max_epochs', '1'),
     }
 
     jobdef = DDPJobDefinition(
@@ -76,11 +84,11 @@ def _submit_job(cluster):
     job = jobdef.submit(cluster)
 
     print('job submitted')
-    
+
     return job
 
 
-def _wait_for_completion(job):
+def wait_for_completion(job):
     print('awaiting job completion')
 
     job_finished = False
@@ -89,13 +97,15 @@ def _wait_for_completion(job):
         job_finished = job.status().is_terminal()
         print(f'job is finished: {job_finished}')
 
+    print(f'job finished with status: {job.status()}')
+
     print('job logs:\n')
     pprint(job.logs())
 
     return
 
 
-def _clean_up(cluster, auth):
+def clean_up(cluster, auth):
     print('shutting down cluster and logging out')
 
     cluster.down()

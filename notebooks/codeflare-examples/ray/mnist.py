@@ -20,7 +20,6 @@ from boto3 import client
 import torch
 from pytorch_lightning import LightningModule, Trainer
 from pytorch_lightning.callbacks.progress import TQDMProgressBar
-from pytorch_lightning.loggers import CSVLogger
 from torch import nn
 from torch.nn import functional as F
 from torch.utils.data import DataLoader, random_split
@@ -35,12 +34,12 @@ s3_endpoint_url = environ.get('AWS_S3_ENDPOINT')
 s3_access_key = environ.get('AWS_ACCESS_KEY_ID')
 s3_secret_key = environ.get('AWS_SECRET_ACCESS_KEY')
 s3_bucket_name = environ.get('AWS_S3_BUCKET')
-hidden_size = environ.get('hidden_size', 64)
-max_epochs = environ.get('max_epochs', 10)
+hidden_size = int(environ.get('hidden_size', 64))
+max_epochs = int(environ.get('max_epochs', 10))
 
 print("prior to running the trainer")
-print("MASTER_ADDR: is ", environ("MASTER_ADDR"))
-print("MASTER_PORT: is ", environ("MASTER_PORT"))
+print("MASTER_ADDR: is ", environ.get("MASTER_ADDR"))
+print("MASTER_PORT: is ", environ.get("MASTER_PORT"))
 
 
 class LitMNIST(LightningModule):
