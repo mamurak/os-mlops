@@ -8,10 +8,6 @@ from codeflare_sdk.job.jobs import DDPJobDefinition
 
 
 def submit_training_job(server_url='', token=''):
-
-    server_url = environ.get('OCP_API_SERVER_URL', server_url)
-    token = environ.get('OCP_TOKEN', token)
-
     auth = cluster_login(server_url, token)
     cluster = create_cluster()
     job = submit_job(cluster)
@@ -20,6 +16,9 @@ def submit_training_job(server_url='', token=''):
 
 
 def cluster_login(server_url, token):
+    server_url = server_url or environ.get('OCP_API_SERVER_URL')
+    token = token or environ.get('OCP_TOKEN')
+
     print(f'logging into cluster at {server_url}')
 
     auth = TokenAuthentication(
