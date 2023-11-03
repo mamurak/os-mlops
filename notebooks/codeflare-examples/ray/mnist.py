@@ -172,7 +172,7 @@ def run_training():
     trainer.fit(model)
 
     print('finished training')
-    
+
     return model
 
 

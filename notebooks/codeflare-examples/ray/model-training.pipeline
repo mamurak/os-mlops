@@ -205,7 +205,7 @@
         "version": 8,
         "runtime_type": "KUBEFLOW_PIPELINES",
         "properties": {
-          "name": "training",
+          "name": "model-training",
           "runtime": "Data Science Pipelines",
           "pipeline_defaults": {
             "mounted_volumes": [],
@@ -217,32 +217,32 @@
             "kubernetes_secrets": [
               {
                 "env_var": "AWS_ACCESS_KEY_ID",
-                "name": "aws-connection-mybucket",
+                "name": "aws-connection-ray-demo",
                 "key": "AWS_ACCESS_KEY_ID"
               },
               {
                 "env_var": "AWS_SECRET_ACCESS_KEY",
-                "name": "aws-connection-mybucket",
+                "name": "aws-connection-ray-demo",
                 "key": "AWS_SECRET_ACCESS_KEY"
               },
               {
                 "env_var": "AWS_S3_ENDPOINT",
-                "name": "aws-connection-mybucket",
+                "name": "aws-connection-ray-demo",
                 "key": "AWS_S3_ENDPOINT"
               },
               {
                 "env_var": "AWS_S3_BUCKET",
-                "name": "aws-connection-mybucket",
+                "name": "aws-connection-ray-demo",
                 "key": "AWS_S3_BUCKET"
               },
               {
                 "env_var": "OCP_TOKEN",
-                "name": "secret-v86rnu",
+                "name": "ocp-login-secret",
                 "key": "OCP_TOKEN"
               },
               {
                 "env_var": "OCP_API_SERVER_URL",
-                "name": "secret-v86rnu",
+                "name": "ocp-login-secret",
                 "key": "OCP_API_SERVER_URL"
               }
             ],
