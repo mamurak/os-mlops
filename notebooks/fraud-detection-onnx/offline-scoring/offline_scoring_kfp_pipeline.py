@@ -1,3 +1,5 @@
+from typing import NamedTuple
+
 from kfp.components import create_component_from_func
 from kfp.dsl import pipeline
 from kfp_tekton import TektonClient
@@ -11,7 +13,7 @@ runtime_image = 'quay.io/mmurakam/runtimes:fraud-detection-v0.1.0'
 def data_ingestion(data_object_name: str):
     from os import environ
 
-    import boto3
+    from boto3 import client
 
     raw_data_file_location = '/data/raw_data.csv'
 
@@ -27,7 +29,7 @@ def data_ingestion(data_object_name: str):
         f'from S3 storage at {s3_endpoint_url}'
         f'to {raw_data_file_location}')
 
-    s3_client = boto3.client(
+    s3_client = client(
         's3', endpoint_url=s3_endpoint_url,
         aws_access_key_id=s3_access_key, aws_secret_access_key=s3_secret_key
     )
@@ -41,17 +43,15 @@ def data_ingestion(data_object_name: str):
 
 
 def preprocessing():
-    from imblearn.over_sampling import SMOTE
     from numpy import save
     from pandas import read_csv
-    from sklearn.model_selection import StratifiedKFold
     from sklearn.preprocessing import RobustScaler
 
 
     print('Preprocessing data.')
 
     raw_data_file_location = '/data/raw_data.csv'
-    training_data_folder = '/data'
+    features_file_location = '/data/features.npy'
     df = read_csv(raw_data_file_location)
 
     rob_scaler = RobustScaler()
@@ -70,130 +70,97 @@ def preprocessing():
     df.insert(0, 'scaled_amount', scaled_amount)
     df.insert(1, 'scaled_time', scaled_time)
 
-    X = df.drop('Class', axis=1)
-    y = df['Class']
-    sss = StratifiedKFold(n_splits=5, random_state=None, shuffle=False)
-
-    for train_index, test_index in sss.split(X, y):
-        print("Train:", train_index, "Test:", test_index)
-        original_Xtrain = X.iloc[train_index]
-        original_ytrain = y.iloc[train_index]
-
-    original_Xtrain = original_Xtrain.values
-    original_ytrain = original_ytrain.values
-
-    sm = SMOTE(sampling_strategy='minority', random_state=42)
-    Xsm_train, ysm_train = sm.fit_resample(original_Xtrain, original_ytrain)
-
-    save(f'{training_data_folder}/training_samples.npy', Xsm_train)
-    save(f'{training_data_folder}/training_labels.npy', ysm_train)
+    save(features_file_location, df.values)
 
     print('data processing done')
 
 
-def model_training(epoch_count: int, learning_rate: float):
+def load_model(model_object_name: str)->NamedTuple(
+        'Outputs', [('model_path', str)]):
     from os import environ
-
-    environ['CUDA_VISIBLE_DEVICES'] = '-1'
-
-    from keras.models import Sequential
-    from keras.layers.core import Dense
-    from keras.optimizers import Adam
-    from numpy import load
-    from onnx import save
-    from tf2onnx import convert
-
-    print('training model')
-
-    Xsm_train = load('/data/training_samples.npy')
-    ysm_train = load('/data/training_labels.npy')
-    n_inputs = Xsm_train.shape[1]
-
-    oversample_model = Sequential([
-        Dense(n_inputs, input_shape=(n_inputs, ), activation='relu'),
-        Dense(32, activation='relu'),
-        Dense(2, activation='softmax'),
-    ])
-    oversample_model.compile(
-        Adam(learning_rate=learning_rate),
-        loss='sparse_categorical_crossentropy',
-        metrics=['accuracy'],
-    )
-    oversample_model.fit(
-        Xsm_train,
-        ysm_train,
-        validation_split=0.2,
-        batch_size=300,
-        epochs=epoch_count,
-        shuffle=True,
-        verbose=2,
-    )
-    onnx_model, _ = convert.from_keras(oversample_model)
-    save(onnx_model, '/data/model.onnx')
-
-
-def model_validation():
-    from time import sleep
-
-    print('validating model using group fairness scores, for instance')
-    sleep(1)
-    print('model validated')
-
-
-def model_upload(model_object_prefix: str):
-    from os import environ
-    from datetime import datetime
 
     from boto3 import client
 
-
-    def _initialize_s3_client(s3_endpoint_url, s3_access_key, s3_secret_key):
-        print('initializing S3 client')
-        s3_client = client(
-            's3', aws_access_key_id=s3_access_key,
-            aws_secret_access_key=s3_secret_key,
-            endpoint_url=s3_endpoint_url,
-        )
-        return s3_client
-
-
-    def _generate_model_name(model_object_prefix, version=''):
-        version = version if version else _timestamp()
-        model_name = f'{model_object_prefix}-{version}.onnx'
-        return model_name
-
-
-    def _timestamp():
-        return datetime.now().strftime('%y%m%d%H%M')
-
-
-    def _do_upload(s3_client, object_name):
-        print(f'uploading model to {object_name}')
-        try:
-            s3_client.upload_file('/data/model.onnx', s3_bucket_name, object_name)
-        except:
-            print(f'S3 upload to bucket {s3_bucket_name} at {s3_endpoint_url} failed!')
-            raise
-        print(f'model uploaded and available as "{object_name}"')
-
+    print('Commencing model loading.')
+    model_path = '/tmp/model.onnx'
 
     s3_endpoint_url = environ.get('AWS_S3_ENDPOINT')
     s3_access_key = environ.get('AWS_ACCESS_KEY_ID')
     s3_secret_key = environ.get('AWS_SECRET_ACCESS_KEY')
     s3_bucket_name = environ.get('AWS_S3_BUCKET')
 
-    s3_client = _initialize_s3_client(
-        s3_endpoint_url=s3_endpoint_url,
-        s3_access_key=s3_access_key,
-        s3_secret_key=s3_secret_key
-    )
-    model_object_name = _generate_model_name(model_object_prefix)
-    _do_upload(s3_client, model_object_name)
+    print(f'Downloading model "{model_object_name}" '
+          f'from bucket {s3_bucket_name} '
+          f'from S3 storage at {s3_endpoint_url}')
 
-    model_object_name_latest = _generate_model_name(
-        model_object_prefix, 'latest'
+    s3_client = client(
+        's3', endpoint_url=s3_endpoint_url,
+        aws_access_key_id=s3_access_key, aws_secret_access_key=s3_secret_key
     )
-    _do_upload(s3_client, model_object_name_latest)
+
+    s3_client.download_file(
+        s3_bucket_name, model_object_name, model_path
+    )
+
+    print('Finished model loading.')
+    return [model_path]
+
+
+def predict(model_path:str):
+    from numpy import argmax, array, load
+    from onnxruntime import InferenceSession
+    from pandas import DataFrame
+
+    print('Commencing offline scoring.')
+
+    X = load('/data/features.npy').astype('float32')
+
+    session = InferenceSession(model_path)
+    raw_results = session.run([], {'dense_input': X})[0]
+
+    results = argmax(raw_results, axis=1)
+    class_map_array = array(['no fraud', 'fraud'])
+    mapped_results = class_map_array[results]
+
+    print(f'Scored data set. Writing report.')
+
+    column_names = [f'V{i}' for i in range(1, 31)]
+    report = DataFrame(X, columns=column_names)
+    report.insert(0, 'Prediction', mapped_results)
+
+    report.to_csv(f'/data/predictions.csv')
+
+    print('Wrote report. Offline scoring complete.')
+
+
+def upload_results():
+    from datetime import datetime
+    from os import environ
+
+    from boto3 import client
+
+    print('Commencing results upload.')
+
+    s3_endpoint_url = environ.get('AWS_S3_ENDPOINT')
+    s3_access_key = environ.get('AWS_ACCESS_KEY_ID')
+    s3_secret_key = environ.get('AWS_SECRET_ACCESS_KEY')
+    s3_bucket_name = environ.get('AWS_S3_BUCKET')
+
+    timestamp = datetime.now().strftime('%y%m%d%H%M')
+    results_name = f'predictions-{timestamp}.csv'
+
+    print(f'Uploading predictions to bucket {s3_bucket_name} '
+          f'to S3 storage at {s3_endpoint_url}')
+
+    s3_client = client(
+        's3', endpoint_url=s3_endpoint_url,
+        aws_access_key_id=s3_access_key, aws_secret_access_key=s3_secret_key
+    )
+
+    with open(f'/data/predictions.csv', 'rb') as results_file:
+        s3_client.upload_fileobj(results_file, s3_bucket_name, results_name)
+
+    print('Finished uploading results.')
 
 
 data_ingestion_op = create_component_from_func(
@@ -202,29 +169,27 @@ data_ingestion_op = create_component_from_func(
 preprocessing_op = create_component_from_func(
     preprocessing, base_image=runtime_image
 )
-model_training_op = create_component_from_func(
-    model_training, base_image=runtime_image
+load_model_op = create_component_from_func(
+    load_model, base_image=runtime_image
 )
-model_validation_op = create_component_from_func(
-    model_validation, base_image=runtime_image
+predict_op = create_component_from_func(
+    predict, base_image=runtime_image
 )
-model_upload_op = create_component_from_func(
-    model_upload, base_image=runtime_image
+upload_results_op = create_component_from_func(
+    upload_results, base_image=runtime_image
 )
 
 
-@pipeline(name='model-training-kfp')
-def model_training_pipeline(
-    data_object_name: str = 'training-data.csv',
-    epoch_count: int = 20,
-    learning_rate: float = 0.001,
-    model_object_prefix: str = 'model'
+@pipeline(name='offline-scoring-kfp')
+def offline_scoring_pipeline(
+    data_object_name: str = 'live-data.csv',
+    model_object_name: str = 'model-latest.onnx'
         ):
 
     data_volume = V1Volume(
-        name='model-training-data-volume',
+        name='offline-scoring-data-volume',
         persistent_volume_claim=V1PersistentVolumeClaimVolumeSource(
-            claim_name='model-training-data-volume'
+            claim_name='offline-scoring-data-volume'
         )
     )
 
@@ -279,19 +244,16 @@ def model_training_pipeline(
     preprocessing_task.add_pvolumes({'/data': data_volume})
     preprocessing_task.after(data_ingestion_task)
 
-    model_training_task = model_training_op(
-        epoch_count, learning_rate
-    )
-    model_training_task.add_pvolumes({'/data': data_volume})
-    model_training_task.after(preprocessing_task)
+    load_model_task = load_model_op(model_object_name)
 
-    model_validation_task = model_validation_op()
-    model_validation_task.add_pvolumes({'/data': data_volume})
-    model_validation_task.after(model_training_task)
+    predict_task = predict_op(load_model_task.outputs['model_path'])
+    predict_task.add_pvolumes({'/data': data_volume})
+    predict_task.after(preprocessing_task)
+    predict_task.after(load_model_task)
 
-    model_upload_task = model_upload_op(model_object_prefix)
-    model_upload_task.add_pvolumes({'/data': data_volume})
-    model_upload_task.add_env_variable(
+    upload_results_task = upload_results_op()
+    upload_results_task.add_pvolumes({'/data': data_volume})
+    upload_results_task.add_env_variable(
         V1EnvVar(
             name='AWS_S3_ENDPOINT',
             value_from=V1EnvVarSource(
@@ -302,7 +264,7 @@ def model_training_pipeline(
             )
         )
     )
-    model_upload_task.add_env_variable(
+    upload_results_task.add_env_variable(
         V1EnvVar(
             name='AWS_ACCESS_KEY_ID',
             value_from=V1EnvVarSource(
@@ -313,7 +275,7 @@ def model_training_pipeline(
             )
         )
     )
-    model_upload_task.add_env_variable(
+    upload_results_task.add_env_variable(
         V1EnvVar(
             name='AWS_SECRET_ACCESS_KEY',
             value_from=V1EnvVarSource(
@@ -324,7 +286,7 @@ def model_training_pipeline(
             )
         )
     )
-    model_upload_task.add_env_variable(
+    upload_results_task.add_env_variable(
         V1EnvVar(
             name='AWS_S3_BUCKET',
             value_from=V1EnvVarSource(
@@ -335,7 +297,7 @@ def model_training_pipeline(
             )
         )
     )
-    model_upload_task.after(model_validation_task)
+    upload_results_task.after(predict_task)
 
 
 if __name__ == '__main__':
@@ -350,8 +312,8 @@ if __name__ == '__main__':
         existing_token=bearer_token
     )
     result = client.create_run_from_pipeline_func(
-        model_training_pipeline,
+        offline_scoring_pipeline,
         arguments={},
-        experiment_name='model_training-kfp'
+        experiment_name='offline-scoring-kfp'
     )
     print(f'Starting pipeline run with run_id: {result.run_id}')
