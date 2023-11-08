@@ -1,6 +1,3 @@
-from os import environ
-from typing import NamedTuple
-
 from kfp.components import create_component_from_func
 from kfp.dsl import pipeline
 from kfp_tekton import TektonClient
@@ -224,50 +221,26 @@ def offline_scoring_pipeline(
 
 
 def _mount_data_connection(task):
-    task.add_env_variable(
-        V1EnvVar(
-            name='AWS_S3_ENDPOINT',
-            value_from=V1EnvVarSource(
-                secret_key_ref=V1SecretKeySelector(
-                    name='aws-connection-fraud-detection',
-                    key='AWS_S3_ENDPOINT'
+    data_connection_variables = [
+        'AWS_S3_ENDPOINT',
+        'AWS_ACCESS_KEY_ID',
+        'AWS_SECRET_ACCESS_KEY',
+        'AWS_S3_BUCKET'
+    ]
+    data_connection_name = 'aws-connection-fraud-detection'
+
+    for variable in data_connection_variables:
+        task.add_env_variable(
+            V1EnvVar(
+                name=variable,
+                value_from=V1EnvVarSource(
+                    secret_key_ref=V1SecretKeySelector(
+                        name=data_connection_name,
+                        key=variable
+                    )
                 )
             )
         )
-    )
-    task.add_env_variable(
-        V1EnvVar(
-            name='AWS_ACCESS_KEY_ID',
-            value_from=V1EnvVarSource(
-                secret_key_ref=V1SecretKeySelector(
-                    name='aws-connection-fraud-detection',
-                    key='AWS_ACCESS_KEY_ID'
-                )
-            )
-        )
-    )
-    task.add_env_variable(
-        V1EnvVar(
-            name='AWS_SECRET_ACCESS_KEY',
-            value_from=V1EnvVarSource(
-                secret_key_ref=V1SecretKeySelector(
-                    name='aws-connection-fraud-detection',
-                    key='AWS_SECRET_ACCESS_KEY'
-                )
-            )
-        )
-    )
-    task.add_env_variable(
-        V1EnvVar(
-            name='AWS_S3_BUCKET',
-            value_from=V1EnvVarSource(
-                secret_key_ref=V1SecretKeySelector(
-                    name='aws-connection-fraud-detection',
-                    key='AWS_S3_BUCKET'
-                )
-            )
-        )
-    )
 
 
 if __name__ == '__main__':
