@@ -7,7 +7,7 @@ from kubernetes.client import V1Volume, V1PersistentVolumeClaimVolumeSource, \
     V1EnvVar, V1EnvVarSource, V1SecretKeySelector
 
 
-runtime_image = 'quay.io/mmurakam/runtimes:fraud-detection-v0.1.0'
+runtime_image = 'quay.io/mmurakam/runtimes:fraud-detection-v0.2.0'
 
 
 def data_ingestion(data_object_name: str):
@@ -195,56 +195,14 @@ def offline_scoring_pipeline(
 
     data_ingestion_task = data_ingestion_op(data_object_name)
     data_ingestion_task.add_pvolumes({'/data': data_volume})
-    data_ingestion_task.add_env_variable(
-        V1EnvVar(
-            name='AWS_S3_ENDPOINT',
-            value_from=V1EnvVarSource(
-                secret_key_ref=V1SecretKeySelector(
-                    name='aws-connection-fraud-detection',
-                    key='AWS_S3_ENDPOINT'
-                )
-            )
-        )
-    )
-    data_ingestion_task.add_env_variable(
-        V1EnvVar(
-            name='AWS_ACCESS_KEY_ID',
-            value_from=V1EnvVarSource(
-                secret_key_ref=V1SecretKeySelector(
-                    name='aws-connection-fraud-detection',
-                    key='AWS_ACCESS_KEY_ID'
-                )
-            )
-        )
-    )
-    data_ingestion_task.add_env_variable(
-        V1EnvVar(
-            name='AWS_SECRET_ACCESS_KEY',
-            value_from=V1EnvVarSource(
-                secret_key_ref=V1SecretKeySelector(
-                    name='aws-connection-fraud-detection',
-                    key='AWS_SECRET_ACCESS_KEY'
-                )
-            )
-        )
-    )
-    data_ingestion_task.add_env_variable(
-        V1EnvVar(
-            name='AWS_S3_BUCKET',
-            value_from=V1EnvVarSource(
-                secret_key_ref=V1SecretKeySelector(
-                    name='aws-connection-fraud-detection',
-                    key='AWS_S3_BUCKET'
-                )
-            )
-        )
-    )
+    _mount_data_connection(data_ingestion_task)
 
     preprocessing_task = preprocessing_op()
     preprocessing_task.add_pvolumes({'/data': data_volume})
     preprocessing_task.after(data_ingestion_task)
 
     load_model_task = load_model_op(model_object_name)
+    _mount_data_connection(load_model_task)
 
     predict_task = predict_op(load_model_task.outputs['model_path'])
     predict_task.add_pvolumes({'/data': data_volume})
@@ -253,7 +211,12 @@ def offline_scoring_pipeline(
 
     upload_results_task = upload_results_op()
     upload_results_task.add_pvolumes({'/data': data_volume})
-    upload_results_task.add_env_variable(
+    _mount_data_connection(upload_results_task)
+    upload_results_task.after(predict_task)
+
+
+def _mount_data_connection(task):
+    task.add_env_variable(
         V1EnvVar(
             name='AWS_S3_ENDPOINT',
             value_from=V1EnvVarSource(
@@ -264,7 +227,7 @@ def offline_scoring_pipeline(
             )
         )
     )
-    upload_results_task.add_env_variable(
+    task.add_env_variable(
         V1EnvVar(
             name='AWS_ACCESS_KEY_ID',
             value_from=V1EnvVarSource(
@@ -275,7 +238,7 @@ def offline_scoring_pipeline(
             )
         )
     )
-    upload_results_task.add_env_variable(
+    task.add_env_variable(
         V1EnvVar(
             name='AWS_SECRET_ACCESS_KEY',
             value_from=V1EnvVarSource(
@@ -286,7 +249,7 @@ def offline_scoring_pipeline(
             )
         )
     )
-    upload_results_task.add_env_variable(
+    task.add_env_variable(
         V1EnvVar(
             name='AWS_S3_BUCKET',
             value_from=V1EnvVarSource(
@@ -297,7 +260,6 @@ def offline_scoring_pipeline(
             )
         )
     )
-    upload_results_task.after(predict_task)
 
 
 if __name__ == '__main__':
