@@ -1,16 +1,13 @@
 from os import environ
 from typing import NamedTuple
 
-from kfp.components import create_component_from_func, InputPath, OutputPath
+from kfp.components import create_component_from_func
 from kfp.dsl import pipeline
 from kfp_tekton import TektonClient
 from kubernetes.client import V1Volume, V1PersistentVolumeClaimVolumeSource, \
     V1EnvVar, V1EnvVarSource, V1SecretKeySelector
 
 
-environ['DEFAULT_ACCESSMODES'] = 'ReadWriteOnce'
-environ['DEFAULT_STORAGE_SIZE'] = '2Gi'
-environ['DEFAULT_STORAGE_CLASS'] = 'gp3-csi'
 runtime_image = 'quay.io/mmurakam/runtimes:fraud-detection-v0.2.0'
 
 
@@ -79,7 +76,7 @@ def preprocessing():
     print('data processing done')
 
 
-def load_model(model_object_name: str, model_path: OutputPath()):
+def load_model(model_object_name: str):
     from os import environ
 
     from boto3 import client
@@ -90,6 +87,7 @@ def load_model(model_object_name: str, model_path: OutputPath()):
     s3_access_key = environ.get('AWS_ACCESS_KEY_ID')
     s3_secret_key = environ.get('AWS_SECRET_ACCESS_KEY')
     s3_bucket_name = environ.get('AWS_S3_BUCKET')
+    model_path = '/model/model.onnx'
 
     print(f'Downloading model "{model_object_name}" '
           f'from bucket {s3_bucket_name} '
@@ -107,7 +105,7 @@ def load_model(model_object_name: str, model_path: OutputPath()):
     print('Finished model loading.')
 
 
-def predict(model_path: InputPath()):
+def predict():
     from numpy import argmax, array, load
     from onnxruntime import InferenceSession
     from pandas import DataFrame
@@ -116,6 +114,7 @@ def predict(model_path: InputPath()):
 
     X = load('/data/features.npy').astype('float32')
 
+    model_path = '/model/model.onnx'
     session = InferenceSession(model_path)
     raw_results = session.run([], {'dense_input': X})[0]
 
@@ -193,6 +192,12 @@ def offline_scoring_pipeline(
             claim_name='offline-scoring-data-volume'
         )
     )
+    model_volume = V1Volume(
+        name='offline-scoring-model-volume',
+        persistent_volume_claim=V1PersistentVolumeClaimVolumeSource(
+            claim_name='offline-scoring-model-volume'
+        )
+    )
 
     data_ingestion_task = data_ingestion_op(data_object_name)
     data_ingestion_task.add_pvolumes({'/data': data_volume})
@@ -203,10 +208,12 @@ def offline_scoring_pipeline(
     preprocessing_task.after(data_ingestion_task)
 
     load_model_task = load_model_op(model_object_name)
+    load_model_task.add_pvolumes({'/model': model_volume})
     _mount_data_connection(load_model_task)
 
-    predict_task = predict_op(model=load_model_task.outputs['model'])
-    predict_task.add_pvolumes({'/data': data_volume})
+    predict_task = predict_op()
+    predict_task.add_pvolumes(
+        {'/data': data_volume, '/model': model_volume})
     predict_task.after(preprocessing_task)
     predict_task.after(load_model_task)
 
