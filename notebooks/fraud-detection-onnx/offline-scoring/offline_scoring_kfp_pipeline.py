@@ -1,12 +1,16 @@
+from os import environ
 from typing import NamedTuple
 
-from kfp.components import create_component_from_func
+from kfp.components import create_component_from_func, InputPath, OutputPath
 from kfp.dsl import pipeline
 from kfp_tekton import TektonClient
 from kubernetes.client import V1Volume, V1PersistentVolumeClaimVolumeSource, \
     V1EnvVar, V1EnvVarSource, V1SecretKeySelector
 
 
+environ['DEFAULT_ACCESSMODES'] = 'ReadWriteOnce'
+environ['DEFAULT_STORAGE_SIZE'] = '2Gi'
+environ['DEFAULT_STORAGE_CLASS'] = 'gp3-csi'
 runtime_image = 'quay.io/mmurakam/runtimes:fraud-detection-v0.2.0'
 
 
@@ -52,7 +56,7 @@ def preprocessing():
 
     raw_data_file_location = '/data/raw_data.csv'
     features_file_location = '/data/features.npy'
-    df = read_csv(raw_data_file_location)
+    df = read_csv(raw_data_file_location, index_col=0)
 
     rob_scaler = RobustScaler()
 
@@ -75,14 +79,12 @@ def preprocessing():
     print('data processing done')
 
 
-def load_model(model_object_name: str)->NamedTuple(
-        'Outputs', [('model_path', str)]):
+def load_model(model_object_name: str, model_path: OutputPath()):
     from os import environ
 
     from boto3 import client
 
     print('Commencing model loading.')
-    model_path = '/tmp/model.onnx'
 
     s3_endpoint_url = environ.get('AWS_S3_ENDPOINT')
     s3_access_key = environ.get('AWS_ACCESS_KEY_ID')
@@ -103,10 +105,9 @@ def load_model(model_object_name: str)->NamedTuple(
     )
 
     print('Finished model loading.')
-    return [model_path]
 
 
-def predict(model_path:str):
+def predict(model_path: InputPath()):
     from numpy import argmax, array, load
     from onnxruntime import InferenceSession
     from pandas import DataFrame
@@ -204,7 +205,7 @@ def offline_scoring_pipeline(
     load_model_task = load_model_op(model_object_name)
     _mount_data_connection(load_model_task)
 
-    predict_task = predict_op(load_model_task.outputs['model_path'])
+    predict_task = predict_op(model=load_model_task.outputs['model'])
     predict_task.add_pvolumes({'/data': data_volume})
     predict_task.after(preprocessing_task)
     predict_task.after(load_model_task)
