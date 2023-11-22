@@ -37,6 +37,6 @@ Open the Minio admin console via the `minio-ui` route URL in the `minio` namespa
 
 ## Running the end-to-end workflow
 
-### Developing and deploying Elyra pipelines
+### Interactive 
 
 TODO
