@@ -2,6 +2,12 @@ FROM quay.io/modh/runtime-images:runtime-pytorch-ubi9-python-3.9-2023a-20230817-
 
 RUN pip install pip==22.3.1 setuptools==65.3.0
 
+USER 0
+RUN yum -y install unixODBC unixODBC-devel && \
+    yum clean all
+
+USER 1001
+
 COPY requirements-elyra.txt ./
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt && \

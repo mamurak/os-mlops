@@ -2,6 +2,12 @@ FROM quay.io/modh/odh-pytorch-notebook:v2-2023a-20230817-5873c3d
 
 RUN pip install pip==22.3.1 setuptools==65.3.0
 
+USER 0
+RUN yum -y install unixODBC unixODBC-devel && \
+    yum clean all
+
+USER 1001
+
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt && \
     chmod -R g+w /opt/app-root/lib/python3.9/site-packages && \
