@@ -8,3 +8,5 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt && \
     chmod -R g+w /opt/app-root/lib/python3.11/site-packages && \
     fix-permissions /opt/app-root -P
+
+RUN python -m nltk.downloader all

@@ -1,10 +1,6 @@
-FROM quay.io/modh/runtime-images:runtime-pytorch-ubi9-python-3.9-2023a-20230817-b7e647e
+FROM quay.io/opendatahub-contrib/workbench-images:cuda-runtime-pytorch-c9s-py311_2023c_latest
 
 RUN pip install pip==22.3.1 setuptools==65.3.0
-
-USER 0
-RUN yum -y install unixODBC && \
-    yum clean all
 
 USER 1001
 
@@ -12,7 +8,7 @@ COPY requirements-elyra.txt ./
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt && \
     pip install --no-cache-dir -r requirements-elyra.txt && \
-    chmod -R g+w /opt/app-root/lib/python3.9/site-packages && \
+    chmod -R g+w /opt/app-root/lib/python3.11/site-packages && \
     fix-permissions /opt/app-root -P
 
-COPY api.py /opt/app-root/lib64/python3.9/site-packages/minio/api.py
+RUN python -m nltk.downloader all
