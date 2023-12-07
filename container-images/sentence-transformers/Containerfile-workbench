@@ -1,4 +1,4 @@
-FROM quay.io/opendatahub-contrib/workbench-images:cuda-jupyter-pytorch-c9s-py311_2023c_latest
+FROM quay.io/modh/odh-pytorch-notebook:v2-2023b-20231116-5aa595f
 
 RUN pip install pip==22.3.1 setuptools==65.3.0
 
