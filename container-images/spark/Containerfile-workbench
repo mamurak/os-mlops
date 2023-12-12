@@ -124,7 +124,9 @@ WORKDIR /opt/app-root/src
 USER 1001
 
 # Install PySpark and cleanup
-RUN pip install --no-cache-dir pyspark~=3.3.1 && \
-    fix-permissions /opt/app-root -P
+RUN pip install --no-cache-dir pyspark~=3.3.1 jupyterlab-sparkmonitor && \
+    fix-permissions /opt/app-root -P && \
+    ipython profile create --ipython-dir=.ipython && \
+    echo "c.InteractiveShellApp.extensions.append('sparkmonitor.kernelextension')" >>  .ipython/profile_default/ipython_config.py
 
 ENTRYPOINT ["start-notebook.sh"] 
