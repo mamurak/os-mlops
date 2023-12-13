@@ -23,9 +23,9 @@ def data_ingestion(data_object_name: str):
     s3_bucket_name = environ.get('AWS_S3_BUCKET')
 
     print(f'Downloading data "{data_object_name}" '
-        f'from bucket "{s3_bucket_name}" '
-        f'from S3 storage at {s3_endpoint_url}'
-        f'to {raw_data_file_location}')
+          f'from bucket "{s3_bucket_name}" '
+          f'from S3 storage at {s3_endpoint_url}'
+          f'to {raw_data_file_location}')
 
     s3_client = boto3.client(
         's3', endpoint_url=s3_endpoint_url,
@@ -46,7 +46,6 @@ def preprocessing():
     from pandas import read_csv
     from sklearn.model_selection import StratifiedKFold
     from sklearn.preprocessing import RobustScaler
-
 
     print('Preprocessing data.')
 
