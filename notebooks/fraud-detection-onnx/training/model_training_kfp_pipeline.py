@@ -146,7 +146,6 @@ def model_upload(model_object_prefix: str):
 
     from boto3 import client
 
-
     def _initialize_s3_client(s3_endpoint_url, s3_access_key, s3_secret_key):
         print('initializing S3 client')
         s3_client = client(
@@ -156,16 +155,13 @@ def model_upload(model_object_prefix: str):
         )
         return s3_client
 
-
     def _generate_model_name(model_object_prefix, version=''):
         version = version if version else _timestamp()
         model_name = f'{model_object_prefix}-{version}.onnx'
         return model_name
 
-
     def _timestamp():
         return datetime.now().strftime('%y%m%d%H%M')
-
 
     def _do_upload(s3_client, object_name):
         print(f'uploading model to {object_name}')
@@ -175,7 +171,6 @@ def model_upload(model_object_prefix: str):
             print(f'S3 upload to bucket {s3_bucket_name} at {s3_endpoint_url} failed!')
             raise
         print(f'model uploaded and available as "{object_name}"')
-
 
     s3_endpoint_url = environ.get('AWS_S3_ENDPOINT')
     s3_access_key = environ.get('AWS_ACCESS_KEY_ID')
