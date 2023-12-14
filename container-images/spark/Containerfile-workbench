@@ -121,18 +121,24 @@ ENV PATH="${PATH}:${PKG_ROOT}/spark-${SPARK_VERSION}/bin"
 
 WORKDIR /opt/app-root/src
 
+# Setup spark-monitor
+
+COPY jpserver-sparkmonitor.json /opt/app-root/etc/jupyter/jupyter_server_config.d/
+COPY nbserver-sparkmonitor.json /opt/app-root/etc/jupyter/jupyter_notebook_config.d/
+COPY start-notebook.sh /opt/app-root/bin/
+
+RUN chown 1001:0 /opt/app-root/etc/jupyter/jupyter_server_config.d/jpserver-sparkmonitor.json \
+    /opt/app-root/etc/jupyter/jupyter_notebook_config.d/nbserver-sparkmonitor.json \
+    /opt/app-root/bin/start-notebook.sh
+
 USER 1001
 
-# Setup spark-monitor
 RUN mkdir -p /opt/app-root/.ipython && \
     ipython profile create --ipython-dir=/opt/app-root/.ipython && \
     echo "c.InteractiveShellApp.extensions.append('sparkmonitor.kernelextension')" >>  /opt/app-root/.ipython/profile_default/ipython_config.py
 
 ENV IPYTHONDIR=/opt/app-root/.ipython
 
-COPY jpserver-sparkmonitor.json /opt/app-root/etc/jupyter/jupyter_server_config.d/
-COPY nbserver-sparkmonitor.json /opt/app-root/etc/jupyter/jupyter_notebook_config.d/
-COPY start-notebook.sh /opt/app-root/bin/
 
 # Install PySpark and cleanup
 RUN pip install --no-cache-dir pyspark~=3.3.1 jupyterlab-sparkmonitor && \
