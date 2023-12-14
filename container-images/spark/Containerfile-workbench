@@ -129,7 +129,8 @@ COPY start-notebook.sh /opt/app-root/bin/
 
 RUN chown 1001:0 /opt/app-root/etc/jupyter/jupyter_server_config.d/jpserver-sparkmonitor.json \
     /opt/app-root/etc/jupyter/jupyter_notebook_config.d/nbserver-sparkmonitor.json \
-    /opt/app-root/bin/start-notebook.sh
+    /opt/app-root/bin/start-notebook.sh && \
+    chmod 775 /opt/app-root/bin/start-notebook.sh
 
 USER 1001
 
