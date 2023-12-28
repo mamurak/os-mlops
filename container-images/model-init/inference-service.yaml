@@ -1,0 +1,21 @@
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  annotations:
+    openshift.io/display-name: model
+    serving.kserve.io/deploymentMode: ModelMesh
+  labels:
+    name: model
+    opendatahub.io/dashboard: "true"
+  name: model
+  namespace: object-detection
+spec:
+  predictor:
+    model:
+      modelFormat:
+        name: onnx
+        version: "1"
+      runtime: ovms
+      storage:
+        key: aws-connection-model-bucket
+        path: model.onnx
