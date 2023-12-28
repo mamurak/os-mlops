@@ -1,0 +1,18 @@
+kind: Secret
+apiVersion: v1
+metadata:
+  name: aws-connection-models
+  namespace: ml-development
+  labels:
+    opendatahub.io/dashboard: 'true'
+    opendatahub.io/managed: 'true'
+  annotations:
+    opendatahub.io/connection-type: s3
+    openshift.io/display-name: models
+stringData:
+  AWS_ACCESS_KEY_ID: minio
+  AWS_DEFAULT_REGION: us-east-1
+  AWS_S3_BUCKET: models
+  AWS_S3_ENDPOINT: http://minio-service.minio.svc:9000
+  AWS_SECRET_ACCESS_KEY: minio123
+type: Opaque

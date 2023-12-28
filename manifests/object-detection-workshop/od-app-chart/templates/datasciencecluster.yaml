@@ -1,0 +1,37 @@
+apiVersion: datasciencecluster.opendatahub.io/v1
+kind: DataScienceCluster
+metadata:
+  name: rhods
+  labels:
+    app.kubernetes.io/name: datasciencecluster
+    app.kubernetes.io/instance: rhods
+    app.kubernetes.io/part-of: rhods-operator
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: rhods-operator
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "1"
+spec:
+  components:
+    codeflare:
+      managementState: Removed
+    dashboard:
+      managementState: Managed
+    datasciencepipelines:
+      managementState: Managed
+    kserve:
+      serving:
+        ingressGateway:
+          certificate:
+            type: SelfSigned
+        managementState: Managed
+        name: knative-serving
+      managementState: Removed
+    modelmeshserving:
+      managementState: Managed
+    ray:
+      managementState: Removed
+    trustyai:
+      managementState: Removed
+    workbenches:
+      managementState: Managed
