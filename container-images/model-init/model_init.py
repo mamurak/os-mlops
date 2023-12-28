@@ -31,7 +31,7 @@ def _download(url, chunk_size=128):
     model_file = NamedTemporaryFile(delete=False)
     download = get(url, stream=True)
     with open(model_file.name, 'wb') as outputfile:
-        for chunk in download.iter_content(chunk_size=chunk_size)
+        for chunk in download.iter_content(chunk_size=chunk_size):
             outputfile.write(chunk)
     print(f'Wrote model to {model_file.name}')
     return model_file.name
