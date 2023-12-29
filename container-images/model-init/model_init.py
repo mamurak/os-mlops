@@ -44,6 +44,9 @@ def _upload_to_s3(bucket_name, object_name, filename):
     print(f'Uploading model from {filename} to {object_name} '
           f'in bucket {bucket_name}')
     minio_client = Minio(minio_host, access_key, secret_key)
+    if not minio_client.bucket_exists(bucket_name):
+        print(f'Bucket {bucket_name} not found. Creating bucket.')
+        minio_client.make_bucket(bucket_name)
     minio_client.fput_object(bucket_name, object_name, filename)
     print('Upload complete')
 
