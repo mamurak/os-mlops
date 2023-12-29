@@ -1,9 +1,12 @@
 from tempfile import NamedTemporaryFile
 from os import environ
 
-from kubernetes import client, config, utils
+from kubernetes.client.api_client import ApiClient
+from kubernetes.config import load_incluster_config
+from kubernetes.dynamic import DynamicClient
 from minio import Minio
 from requests import get
+from yaml import safe_load
 
 
 model_url = environ.get(
@@ -47,9 +50,15 @@ def _upload_to_s3(bucket_name, object_name, filename):
 
 def _apply_manifest(manifest_location):
     print(f'Applying manifest {manifest_location}')
-    config.load_kube_config()
-    k8s_client = client.ApiClient()
-    utils.create_from_yaml(k8s_client, manifest_location, verbose=True)
+    with open(manifest_location, 'r') as inputfile:
+        cr = safe_load(inputfile)
+
+    load_incluster_config()
+    k8s_client = DynamicClient(ApiClient())
+    resource_api = k8s_client.resources.get(
+        api_version=cr['apiVersion'], kind=cr['kind']
+    )
+    resource_api.create(body=cr)
     print('Applied manifest')
 
 
