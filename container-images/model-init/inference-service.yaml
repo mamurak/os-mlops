@@ -17,5 +17,5 @@ spec:
         version: "1"
       runtime: ovms
       storage:
-        key: aws-connection-model-bucket
+        key: aws-connection-models
         path: model.onnx

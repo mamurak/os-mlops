@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "model-init-job"
+  annotations:
+    "helm.sh/hook": post-install
+spec:
+  template:
+    metadata:
+      name: "model-init-job"
+    spec:
+      restartPolicy: Never
+      serviceAccountName: model-init-sa
+      containers:
+      - name: model-init-job
+        image: "quay.io/mmurakam/model-init:model-init-v0.1.7"
+        command:
+          - python
+          - model_init.py

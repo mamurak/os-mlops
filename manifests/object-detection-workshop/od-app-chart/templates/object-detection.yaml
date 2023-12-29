@@ -35,6 +35,8 @@ rules:
     - inferenceservices
   verbs:
     - create
+    - get
+    - delete
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
