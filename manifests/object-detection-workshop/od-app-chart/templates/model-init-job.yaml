@@ -2,12 +2,14 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: "model-init-job"
+  namespace: object-detection
   annotations:
     "helm.sh/hook": post-install
 spec:
   template:
     metadata:
       name: "model-init-job"
+      namespace: object-detection
     spec:
       restartPolicy: Never
       serviceAccountName: model-init-sa
