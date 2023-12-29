@@ -11,7 +11,7 @@ from yaml import safe_load
 
 model_url = environ.get(
     'MODEL_URL',
-    'https://github.com/mamurak/os-mlops-artefacts/blob/'
+    'https://github.com/mamurak/os-mlops-artefacts/raw/'
     'object-detection-model-v0.1/models/object-detection/yolov5m.onnx'
 )
 chunk_size = int(environ.get('CHUNK_SIZE', '128'))
