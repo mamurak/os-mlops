@@ -4,6 +4,7 @@ from os import environ
 from kubernetes.client.api_client import ApiClient
 from kubernetes.config import load_incluster_config
 from kubernetes.dynamic import DynamicClient
+from kubernetes.dynamic.exceptions import NotFoundError
 from minio import Minio
 from requests import get
 from yaml import safe_load
@@ -61,6 +62,19 @@ def _apply_manifest(manifest_location):
     resource_api = k8s_client.resources.get(
         api_version=cr['apiVersion'], kind=cr['kind']
     )
+    try:
+        resource_api.get(
+            name=cr['metadata']['name'],
+            namespace=cr['metadata']['namespace']
+        )
+        print('Found inference service. Deleting it.')
+        resource_api.delete(
+            name=cr['metadata']['name'],
+            namespace=cr['metadata']['namespace']
+        )
+    except NotFoundError:
+        print('Inference service not found. Creating it.')
+
     resource_api.create(body=cr)
     print('Applied manifest')
 
