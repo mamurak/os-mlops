@@ -2,7 +2,7 @@ kind: Secret
 apiVersion: v1
 metadata:
   name: aws-connection-models
-  namespace: ml-development
+  namespace: object-detection
   labels:
     opendatahub.io/dashboard: 'true'
     opendatahub.io/managed: 'true'
@@ -16,3 +16,36 @@ stringData:
   AWS_S3_ENDPOINT: http://minio-service.minio.svc:9000
   AWS_SECRET_ACCESS_KEY: minio123
 type: Opaque
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: model-init-sa
+  namespace: object-detection
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: model-init-role
+  namespace: object-detection
+rules:
+- apiGroups: 
+    - serving.kserve.io
+  resources:
+    - inferenceservices
+  verbs:
+    - create
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: model-init-rb
+  namespace: object-detection
+subjects:
+- kind: ServiceAccount
+  name: model-init-sa
+  namespace: object-detection
+roleRef:
+  kind: Role
+  name: model-init-role
+  apiGroup: rbac.authorization.k8s.io
