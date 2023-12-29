@@ -48,6 +48,7 @@ metadata:
   labels:
     app: object-detection-rest
   name: object-detection-rest
+  namespace: object-detection
 spec:
   internalTrafficPolicy: Cluster
   ipFamilies:

@@ -1,3 +1,8 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: object-detection
+---
 kind: Secret
 apiVersion: v1
 metadata:

@@ -4,6 +4,7 @@ metadata:
   labels:
     app: object-detection-app
   name: object-detection-app
+  namespace: object-detection
 spec:
   progressDeadlineSeconds: 600
   replicas: 2
@@ -47,6 +48,7 @@ metadata:
   labels:
     app: object-detection-app
   name: object-detection-app
+  namespace: object-detection
 spec:
   internalTrafficPolicy: Cluster
   ipFamilies:
@@ -69,6 +71,7 @@ metadata:
   labels:
     app: object-detection-app
   name: object-detection-app
+  namespace: object-detection
 spec:
   port:
     targetPort: 8080-tcp
