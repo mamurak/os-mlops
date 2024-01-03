@@ -1,23 +1,24 @@
 # OS MLOps
 
-This repository contains a number of assets for implementing an open source MLOps approach using OpenShift Container Platform and Red Hat OpenShift Data Science (RHODS).
+This repository contains a number of assets for implementing an open source MLOps approach using OpenShift Container Platform and Red Hat OpenShift AI (RHOAI).
 
-### [RHODS Pipelines and Serving](odh-kfp-modelmesh.md)
+### [RHOAI Pipelines and Serving](odh-kfp-modelmesh.md)
 
-- RHODS Workbench Controller based on Kubeflow Notebook Controller for notebook-based development,
+- RHOAI Workbench Controller based on Kubeflow Notebook Controller for notebook-based development,
 - Data Science Pipelines based on Kubeflow Pipelines for workflow orchestration and experiment tracking,
-- RHODS Model Serving based on KServe ModelMesh for model serving.
+- RHOAI Model Serving based on KServe ModelMesh for model serving.
 
-### RHODS Demo Pack
+### RHOAI Demo Pack
 
-To quickly set up a RHODS environment for fraud detection and object detection demos, follow these steps:
+To quickly set up a RHOAI environment for fraud detection and object detection demos, follow these steps:
 1. (optional) [Set up GPU enablement](gpu-enablement.md) if GPUs are present in your cluster.
-2. Deploy the RHODS operator on your OpenShift cluster. The demo pack has been tested with RHODS 1.28.1.
+2. Deploy the OpenShift Data Science operator on your OpenShift cluster. The demo pack has been tested with RHOAI 2.5.0.
 3. Deploy the OpenShift Pipelines operator. The demo pack has been tested with Pipelines versions 1.8 to 1.10.
-4. Deploy the Codeflare operator. The demo pack has been tested with Codeflare version 1.0.0 (community operator).
-5. Clone this repository and navigate to `manifests`.
-6. Run `oc apply -f projects.yaml`
-7. Run `oc apply -k .`
+4. Deploy the OpenShift Serverless operator. The demo pack has been tested with Serverless version 1.31.0.
+5. Deploy the OpenShift Service Mesh operator. The demo pack has been tested with Service Mesh version 2.4.5-0.
+6. Clone this repository and navigate to `manifests`.
+7. Run `oc apply -f dependencies.yaml`. Wait until the `DataScienceCluster` CR has been deployed.
+8. Run `oc apply -k .`
 
 Once the manifests have been deployed, your environment contains:
 - A Minio instance as a lightweight S3 storage provider. You can manage the S3 buckets through the Minio UI through the `minio-ui` route URL in project `minio`. Use `minio` and `minio123` for logging in.
@@ -31,7 +32,7 @@ To get started with your demo, instantiate the respective workbenches.
 
 #### Fraud detection
 
-1. In the RHODS dashboard, enter the `fraud-detection` project.
+1. In the RHOAI dashboard, enter the `fraud-detection` project.
 2. Create a new workbench with an arbitrary name and these parameters:
     - image: `Trino`
     - existing cluster storage: `development`
@@ -40,7 +41,7 @@ To get started with your demo, instantiate the respective workbenches.
 
 #### Object detection
 
-1. In the RHODS dashboard, enter the `object-detection` project.
+1. In the RHOAI dashboard, enter the `object-detection` project.
 2. Create a new workbench with an arbitrary name and these parameters:
     - image: `Object detection`
     - existing cluster storage: `development`
@@ -50,4 +51,4 @@ To get started with your demo, instantiate the respective workbenches.
 ### References
 
 - [AI on OpenShift](https://ai-on-openshift.io/)
-- [RHODS Documentation](https://access.redhat.com/documentation/en-us/red_hat_openshift_data_science_self-managed)
+- [RHOAI Documentation](https://access.redhat.com/documentation/en-us/red_hat_openshift_data_science_self-managed)
