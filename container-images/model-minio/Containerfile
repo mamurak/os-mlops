@@ -9,7 +9,8 @@ USER root
 RUN useradd -u 1000 -g 0 modelmesh && \
     mkdir -p ${MODEL_DIR}
 
-RUN curl -L -o ${MODEL_DIR}/object-detection/yolov5m.onnx https://github.com/mamurak/os-mlops-artefacts/raw/object-detection-model-v0.1/models/object-detection/yolov5m.onnx && \
+RUN mkdir -p ${MODEL_DIR}/object-detection && \
+    curl -L -o ${MODEL_DIR}/object-detection/yolov5m.onnx https://github.com/mamurak/os-mlops-artefacts/raw/object-detection-model-v0.1/models/object-detection/yolov5m.onnx && \
     chown -R 1000:0 /data1 && \
     chgrp -R 0 /data1 && \
     chmod -R g=u /data1
