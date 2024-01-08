@@ -5,3 +5,4 @@ resources:
 - demo-manifests/object-detection.yaml
 - demo-manifests/spark.yaml
 - odh/modelmesh/custom-serving-runtimes.yaml
+- demo-manifests/llm-demo.yaml
