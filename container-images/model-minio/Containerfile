@@ -1,0 +1,17 @@
+FROM quay.io/cloudservices/minio:RELEASE.2021-06-17T00-10-46Z.hotfix.35a0912ff
+
+EXPOSE 9000
+
+ARG MODEL_DIR=/data1/modelmesh-example-models
+
+USER root
+
+RUN useradd -u 1000 -g 0 modelmesh && \
+    mkdir -p ${MODEL_DIR}
+
+RUN curl -L -o ${MODEL_DIR}/object-detection/yolov5m.onnx https://github.com/mamurak/os-mlops-artefacts/raw/object-detection-model-v0.1/models/object-detection/yolov5m.onnx && \
+    chown -R 1000:0 /data1 && \
+    chgrp -R 0 /data1 && \
+    chmod -R g=u /data1
+
+USER 1000
