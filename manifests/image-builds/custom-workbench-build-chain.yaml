@@ -1,0 +1,53 @@
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  annotations:
+    opendatahub.io/notebook-image-desc: Description of custom workbench image
+    opendatahub.io/notebook-image-name: Custom workbench
+  name: custom-workbench-image
+  namespace: redhat-ods-applications
+  labels:
+    component.opendatahub.io/name: jupyterhub
+    opendatahub.io/component: 'true'
+    opendatahub.io/notebook-image: 'true'
+spec:
+  lookupPolicy:
+    local: true
+---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: github-token
+  namespace: redhat-ods-applications
+stringData:
+  password: REPLACE_ME
+  username: ''
+type: kubernetes.io/basic-auth
+---
+kind: BuildConfig
+apiVersion: build.openshift.io/v1
+metadata:
+  name: custom-workbench-buildconfig
+  namespace: redhat-ods-applications
+spec:
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: 'custom-workbench-image:latest'
+  resources: {}
+  successfulBuildsHistoryLimit: 5
+  failedBuildsHistoryLimit: 5
+  strategy:
+    type: Docker
+    dockerStrategy:
+      dockerfilePath: Containerfile
+  postCommit: {}
+  source:
+    type: Git
+    git:
+      uri: 'https://github.com/mamurak/test-private-repo.git'
+    contextDir: /container-source
+    sourceSecret:
+      name: github-token
+  runPolicy: Serial
