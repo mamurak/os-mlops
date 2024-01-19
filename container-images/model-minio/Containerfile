@@ -2,7 +2,7 @@ FROM quay.io/cloudservices/minio:RELEASE.2021-06-17T00-10-46Z.hotfix.35a0912ff
 
 EXPOSE 9000
 
-ARG VERSION_TAG=v0.1.0
+ARG VERSION_TAG=0.1.0
 
 USER root
 
