@@ -2,24 +2,20 @@ FROM quay.io/cloudservices/minio:RELEASE.2021-06-17T00-10-46Z.hotfix.35a0912ff
 
 EXPOSE 9000
 
-ARG MODEL_DIR=/data1/modelmesh-example-models
-ARG MODEL_TAG=object-detection-model-v0.1
-ARG DATA_TAG=object-detection-data-v0.1
+ARG VERSION_TAG=object-detection-data-v0.1
 
 USER root
 
 RUN useradd -u 1000 -g 0 modelmesh && \
-    mkdir -p ${MODEL_DIR} && \
     microdnf install -y tar && \
     microdnf clean all
 
 # object detection
 
-ADD https://github.com/mamurak/os-mlops-artefacts/archive/refs/tags/${DATA_TAG}.tar.gz .
-RUN tar -xvzf ${DATA_TAG}.tar.gz --no-same-owner && \
-    mv os-mlops-artefacts-${DATA_TAG} /data1/object-detection
-ADD https://github.com/mamurak/os-mlops-artefacts/raw/${MODEL_TAG}/models/object-detection/yolov5m.onnx /data1/object-detection
-ADD https://github.com/mamurak/os-mlops-artefacts/raw/${MODEL_TAG}/models/object-detection/yolov5n.onnx /data1/object-detection
+ADD https://github.com/mamurak/os-mlops-artefacts/archive/refs/tags/${VERSION_TAG}.tar.gz .
+RUN tar -xvzf ${VERSION_TAG}.tar.gz --no-same-owner && \
+    mv os-mlops-artefacts-${VERSION_TAG} /data1 && \
+    rm /data1/README.md /data1/.gitattributes ${VERSION_TAG}.tar.gz
 
 RUN chown -R 1000:0 /data1 && \
     chgrp -R 0 /data1 && \
