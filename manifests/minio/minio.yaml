@@ -1,21 +1,8 @@
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: minio-pvc
-  namespace: minio
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 20Gi
-  volumeMode: Filesystem
----
 kind: Secret
 apiVersion: v1
 metadata:
-  name: minio-secret
-  namespace: minio
+  name: model-minio-secret
+  namespace: model-minio
 stringData:
   accesskey: minio
   secretkey: minio123
@@ -23,23 +10,19 @@ stringData:
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: minio
-  namespace: minio
+  name: model-minio
+  namespace: model-minio
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: minio
+      app: model-minio
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: minio
+        app: model-minio
     spec:
-      volumes:
-        - name: data
-          persistentVolumeClaim:
-            claimName: minio-pvc
       containers:
         - resources:
             limits:
@@ -57,7 +40,7 @@ spec:
             successThreshold: 1
             failureThreshold: 3
           terminationMessagePath: /dev/termination-log
-          name: minio
+          name: model-minio
           livenessProbe:
             tcpSocket:
               port: 9000
@@ -70,12 +53,12 @@ spec:
             - name: MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: minio-secret
+                  name: model-minio-secret
                   key: accesskey
             - name: MINIO_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: minio-secret
+                  name: model-minio-secret
                   key: secretkey
           ports:
             - containerPort: 9000
@@ -83,18 +66,11 @@ spec:
             - containerPort: 9090
               protocol: TCP
           imagePullPolicy: IfNotPresent
-          volumeMounts:
-            - name: data
-              mountPath: /data
-              subPath: minio
           terminationMessagePolicy: File
-          image: >-
-            docker.io/minio/minio:RELEASE.2023-06-19T19-52-50Z
+          image: quay.io/mmurakam/minio:minio-v0.4.1
           args:
             - server
-            - /data
-            - --console-address
-            - :9090
+            - /data1
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
@@ -108,56 +84,35 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: minio-service
-  namespace: minio
+  name: model-minio-service
+  namespace: model-minio
 spec:
   ipFamilies:
     - IPv4
   ports:    
-    - name: api
+    - name: http
       protocol: TCP
       port: 9000
       targetPort: 9000
-    - name: ui
-      protocol: TCP
-      port: 9090
-      targetPort: 9090
   internalTrafficPolicy: Cluster
   type: ClusterIP
   ipFamilyPolicy: SingleStack
   sessionAffinity: None
   selector:
-    app: minio
+    app: model-minio
 ---
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
-  name: minio-api
-  namespace: minio
+  name: model-minio
+  namespace: model-minio
 spec:
   to:
     kind: Service
-    name: minio-service
+    name: model-minio-service
     weight: 100
   port:
-    targetPort: api
-  wildcardPolicy: None
-  tls:
-    termination: edge
-    insecureEdgeTerminationPolicy: Redirect
----
-kind: Route
-apiVersion: route.openshift.io/v1
-metadata:
-  name: minio-ui
-  namespace: minio
-spec:
-  to:
-    kind: Service
-    name: minio-service
-    weight: 100
-  port:
-    targetPort: ui
+    targetPort: http
   wildcardPolicy: None
   tls:
     termination: edge
