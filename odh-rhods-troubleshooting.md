@@ -4,6 +4,8 @@
     - Within your Data Science Project namespace, look up the `DataSciencePipelinesApplication` CR named `pipelines-definition`.
     - Ensure that `spec.objectStorage.externalStorage.secure` is `false`. If it's not, set it to `false` and save the CR. The pipeline server should now initialize properly.
     - Refer to `manifests/odh/pipelines-definition.yaml` for reference.
+- If the S3 storage provider is not available while the pipeline CR has been instantiated, the pipeline server is unable to start.
+    - Restart the `data-science-pipelines-operator-controller-manager` pod in `redhat-ods-applications`.
 
 ### Pipeline Run request in Elyra fails
 

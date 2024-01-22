@@ -1,0 +1,4 @@
+apiVersion: v2
+description: A Helm chart to prepare the object detection workshop with OpenShift AI
+name: object-detection-workshop
+version: 0.0.1
