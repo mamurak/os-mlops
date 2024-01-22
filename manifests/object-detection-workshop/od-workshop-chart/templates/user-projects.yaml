@@ -159,7 +159,7 @@ metadata:
 subjects:
   - kind: User
     apiGroup: rbac.authorization.k8s.io
-    name: user-0
+    name: {{ printf "user-%d" $i }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
