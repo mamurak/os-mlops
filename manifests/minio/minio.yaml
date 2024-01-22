@@ -1,8 +1,8 @@
 kind: Secret
 apiVersion: v1
 metadata:
-  name: model-minio-secret
-  namespace: model-minio
+  name: minio-secret
+  namespace: minio
 stringData:
   accesskey: minio
   secretkey: minio123
@@ -10,18 +10,18 @@ stringData:
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: model-minio
-  namespace: model-minio
+  name: minio
+  namespace: minio
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: model-minio
+      app: minio
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: model-minio
+        app: minio
     spec:
       containers:
         - resources:
@@ -40,7 +40,7 @@ spec:
             successThreshold: 1
             failureThreshold: 3
           terminationMessagePath: /dev/termination-log
-          name: model-minio
+          name: minio
           livenessProbe:
             tcpSocket:
               port: 9000
@@ -53,12 +53,12 @@ spec:
             - name: MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: model-minio-secret
+                  name: minio-secret
                   key: accesskey
             - name: MINIO_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: model-minio-secret
+                  name: minio-secret
                   key: secretkey
           ports:
             - containerPort: 9000
@@ -84,8 +84,8 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: model-minio-service
-  namespace: model-minio
+  name: minio-service
+  namespace: minio
 spec:
   ipFamilies:
     - IPv4
@@ -99,17 +99,17 @@ spec:
   ipFamilyPolicy: SingleStack
   sessionAffinity: None
   selector:
-    app: model-minio
+    app: minio
 ---
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
-  name: model-minio
-  namespace: model-minio
+  name: minio
+  namespace: minio
 spec:
   to:
     kind: Service
-    name: model-minio-service
+    name: minio-service
     weight: 100
   port:
     targetPort: http
