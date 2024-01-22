@@ -1,0 +1,120 @@
+apiVersion: config.openshift.io/v1
+kind: OAuth
+metadata:
+  name: cluster
+spec:
+  identityProviders:
+  - name: htpasswd
+    mappingMethod: claim 
+    type: HTPasswd
+    htpasswd:
+      fileData:
+        name: htpass-secret 
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: htpass-secret
+  namespace: openshift-config
+stringData:
+  htpasswd: |
+    user-0:$apr1$xWthCicf$Zr6g7pdx9JiO.OX52XazG1
+    user-1:$apr1$wIuzHd9/$U41S8qspZoX6vg3yN2rKD0
+    user-2:$apr1$59Q4u19Y$C31yREJv.Cg9OpxcbFim4.
+    user-3:$apr1$LwqioOKI$lqIExaTAAGQPS/R9pYmLb.
+    user-4:$apr1$bLp.Tc3Q$yhoBGUHy/hWM9hN0Oq8ie0
+    user-5:$apr1$ew2UwDZl$wXxihkD6ZoJo0L4wXhw1A/
+    user-6:$apr1$ogwcNhMj$3u7xU6dC2/VsPYpExBDjg.
+    user-7:$apr1$wBc21ZFh$ztkcrzhFCiMrZatCSgJSK1
+    user-8:$apr1$FWc4fKwI$bKMfseUm1JMGhHHBfBQFm/
+    user-9:$apr1$u5v915X8$QoEnx702se.fmsskq6xiK1
+    user-10:$apr1$4KmtsfM0$pmv4i1LW.T41gt99sMAYh0
+    user-11:$apr1$siFtLAGW$kYk6HPKVmOBx69bGwJpYa1
+    user-12:$apr1$pZyfNiBe$IPXBJmehCWuJ3fQSuV60f.
+    user-13:$apr1$CkV20Vpz$/.QVTGE0gDvvU7fbaYGPq1
+    user-14:$apr1$ywj2MuLa$JJpKFNMqpAXRYi.IUtixS.
+    user-15:$apr1$Z08UxnzL$X3zqJfhO97A615yW1nHj1/
+    user-16:$apr1$mug/kbGa$c.IpORuSAIlxBkyjOpeVl.
+    user-17:$apr1$fhQkNBfk$ICmJ5TH8YuqHgVtG5PRif/
+    user-18:$apr1$rAO1AMvW$Hs0UTa2mk2M5PHqImn5L0/
+    user-19:$apr1$X6lGqoUX$d1rxTOQhz2RbLE5QKewJM.
+    user-20:$apr1$p9KX6xGk$JvrBZZY1QatcATCEycZzy/
+    user-21:$apr1$3MHme9Z/$1cF15cDITjNlAi8vS.KIA.
+    user-22:$apr1$8oDO.hHT$Pec4J3swD3bWugLyAqLns.
+    user-23:$apr1$CYfeJc8G$rOn4BwgeSic1rgw7zpOi9/
+    user-24:$apr1$O29pFrIw$/6sLqRUudfBJsbdE/gzly1
+    user-25:$apr1$fl/DThBc$jNwIJ1ODIY3m1.ffs5rXI1
+    user-26:$apr1$nafIrRk0$Ok.ROlc2pX/m7GV9tweIo0
+    user-27:$apr1$.uRsWXjw$gcVZaJajYwzZIG0DnqxRn.
+    user-28:$apr1$2yKhIeIE$RjhCiDdwnnN9LhIMrdxgY1
+    user-29:$apr1$ltSv7Y4N$rQLXl5Mpq4S8MnD2tr1Ov.
+    user-30:$apr1$UL2W4VcF$ZRe9i1gNtcBL/C40ndtak0
+    user-31:$apr1$fw5Otj/o$fVFf.17xMf1ODOhXSaJVI/
+    user-32:$apr1$VxOHqBCy$lHRE4PogoRa4dquJE.Tc20
+    user-33:$apr1$RiyB9qR6$2Tq2NdF1HPkGEJEsF5o8F1
+    user-34:$apr1$Wmv8Idwp$FrkMjDTrg/iDJ9MgAaX24.
+    user-35:$apr1$5/iMH7sx$zXvGbF0iEl.H4MpmqBuqF/
+    user-36:$apr1$YrAUwGHj$VceHDRTxEU1TzusZOTqQf.
+    user-37:$apr1$zEiMT4Kk$EO5YuX62YZ3Isio8CVyEi1
+    user-38:$apr1$rZ1SbJla$VJvNtqX7EuPXliGoNDTpm.
+    user-39:$apr1$59hEhH3G$rziayuNVMm0mfGWIhnBgE.
+    user-40:$apr1$pnZyXNLP$KCvHVtQcdkc6aKPSsPpRv0
+    user-41:$apr1$jmg7UDKc$shCJ1IHdps8q3GO3Xqvhq.
+    user-42:$apr1$Ikv3/wNC$BLxN01jMi8TVE3BeY.XQs.
+    user-43:$apr1$thj5NVJj$TMCIdcoiges.Ll9XdhqAv/
+    user-44:$apr1$bkqpjZN.$cmIAXG.R3d51wKUbQ/b3B.
+    user-45:$apr1$8ql5zoVu$8ECgjIcjJ2YYgooUH6vyw.
+    user-46:$apr1$/.InPUAe$LuKwc4QxzhXDwY/8YiuYE.
+    user-47:$apr1$jIGvVxVn$my0/rduc.ltcloZ.ANDrg0
+    user-48:$apr1$.gwTSCAl$ObdAR19td35XiYKA7IyMD1
+    user-49:$apr1$y/wenswP$IfQp3Sem5Qa.KVT5WewOr0
+    user-50:$apr1$RA1l79Sy$FdmGlDQ77OYxx1HfPAoai1
+    user-51:$apr1$3a./VXp2$dks2vdsB1ZeobP9QXbpsC1
+    user-52:$apr1$X.o.omsd$S1rE5aOR2HiKqd4KF4coh/
+    user-53:$apr1$9UqGXQHl$cNRoJWZId/GrrafOBPh1e.
+    user-54:$apr1$CKBBV6SJ$AMPfAyeFfo4knpN7lvb3V.
+    user-55:$apr1$ZBwDILhG$hNcFHbLcI2IZK7ywaqJFl1
+    user-56:$apr1$H3nujqmP$XXUP86LtGFuYDS6gCNmsL.
+    user-57:$apr1$Hp7MiA8V$2TLWumMNTnYKaxX5hFAgt0
+    user-58:$apr1$5vCUkOT8$rdFOiLe4a3i0iRJilmgRW.
+    user-59:$apr1$XQ7tb//A$VPg3HCPNtCWl0c5gStyLe1
+    user-60:$apr1$x/HJHBBJ$zAdJV5QRv9BTdErPbXyxa.
+    user-61:$apr1$2XZ7wqjr$ANfLoZGOI6fLZO40Fi3w4.
+    user-62:$apr1$FVyfSe3D$bYA.DoWp5h0PASOkxR5HR0
+    user-63:$apr1$Z.qOdp/u$3G5aYTZY6ldJwyi15Jz/N1
+    user-64:$apr1$jD0Is.31$ZcI35oeoHlHj5wsjgBoMB.
+    user-65:$apr1$X2hR53gY$fviXxt9Rp6nLlFofiAl8T1
+    user-66:$apr1$JJ2WHAdE$Gd71ZMZxhWsMd6wzH3Y5u0
+    user-67:$apr1$PkrUKqwy$crO1bmQDJXj0vISxNHz8i1
+    user-68:$apr1$Pr3b.0GO$xqdt.vkvwK3znC/yTEmEH1
+    user-69:$apr1$mHh89TXh$UVlz14F/glrxam9gojy9w/
+    user-70:$apr1$dIC1/kM5$qzdt.qzErQQ2RIzrcuo3R/
+    user-71:$apr1$5.bnPlpp$aDE0eysTtzbkAdpZ.Pz94.
+    user-72:$apr1$afaegO5F$i4.pvTzyPn6wq2.LXWRGa.
+    user-73:$apr1$KSz77Qhm$vmiWHubET7PpwY23tzHOc0
+    user-74:$apr1$zfCOFFZh$tQGFhFIN965z44b2J2MZI0
+    user-75:$apr1$GoAZw4RL$HDWXkV2zZh4gSR8UrTJi/1
+    user-76:$apr1$Ro.jWs7C$zXLEzfC5CCxY2TUvQMf9/1
+    user-77:$apr1$t3cVCzPh$l15KJiHsnU4XLxR3SJVrp0
+    user-78:$apr1$/qqQkH45$BaiB9mYtOfU02Hor1Dqnq/
+    user-79:$apr1$rX9.yE/T$4PA5UlHlH9dmHSwylrbbD/
+    user-80:$apr1$4feu8G3A$xD1.iMXKEKYL1U1p9K2dx0
+    user-81:$apr1$qlYAH1Er$3lh0crJ8iBhEfX9UpTC9w/
+    user-82:$apr1$paIUhKln$WwgS8HKPNtYfFcFeT/GrU/
+    user-83:$apr1$gkNTvpzs$gX4alOE1tkLXWNBmUkHLS0
+    user-84:$apr1$e7yWsIxQ$rGAbkEVo7ZLKt957Giz5L.
+    user-85:$apr1$w3276A83$1TFpetgTarJ9YbCRtDR3n.
+    user-86:$apr1$h8LCG1gE$XblyjqQL1w6ox3WpOcten/
+    user-87:$apr1$Vpbljava$GxWlk8mCqoCKk20qqQ6c60
+    user-88:$apr1$d5Tfsfn1$dxY0p/ehA797NrsfWJU4G0
+    user-89:$apr1$4spCNDMP$gpgn9X3HWq9xPHQDFkIOy1
+    user-90:$apr1$Nuc4jC55$tkzWufg773HXc40FAH2kz0
+    user-91:$apr1$q4RPLDv1$VxU2lV3yI/CbiCQ/HbKqw0
+    user-92:$apr1$kEEr/HNV$o7xZ7Ow8XwGHr47UATGfB/
+    user-93:$apr1$pR.Eydik$CHmeZLEZrDrfaxd.aWCXe1
+    user-94:$apr1$ZbHKKRjT$GOcWX2hseg98oW5uPp7V1.
+    user-95:$apr1$mHTy0LPt$A/HB4.MjQM7lHaPbBqcMB/
+    user-96:$apr1$xb7yS9mX$SKelWd6c763tNAfjUMjEY.
+    user-97:$apr1$akSAJwQn$8x.PrfahoStVMbB19X9ir.
+    user-98:$apr1$/0s1hRZg$zLoG0HQnQ2IprQk61AB311
+    user-99:$apr1$bA4iGN5N$SCxIB4eVqa//utUiVbmfg/
