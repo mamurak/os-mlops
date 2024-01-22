@@ -50,51 +50,6 @@ stringData:
   AWS_SECRET_ACCESS_KEY: minio123
 type: Opaque
 ---
-apiVersion: datasciencepipelinesapplications.opendatahub.io/v1alpha1
-kind: DataSciencePipelinesApplication
-metadata:
-  finalizers:
-    - datasciencepipelinesapplications.opendatahub.io/finalizer
-  name: pipelines-definition
-  namespace: {{ printf "user-%d" $i }}
-spec:
-  apiServer:
-    stripEOF: true
-    dbConfigConMaxLifetimeSec: 120
-    applyTektonCustomResource: true
-    deploy: true
-    enableSamplePipeline: false
-    autoUpdatePipelineDefaultVersion: true
-    archiveLogs: false
-    terminateStatus: Cancelled
-    enableOauth: true
-    trackArtifacts: true
-    collectMetrics: true
-    injectDefaultScript: true
-  database:
-    mariaDB:
-      deploy: true
-      pipelineDBName: mlpipeline
-      pvcSize: 10Gi
-      username: mlpipeline
-  objectStorage:
-    externalStorage:
-      bucket: object-detection-pipelines
-      host: minio-service:9000
-      port: ''
-      s3CredentialsSecret:
-        accessKey: AWS_ACCESS_KEY_ID
-        secretKey: AWS_SECRET_ACCESS_KEY
-        secretName: aws-connection-pipelines
-      scheme: http
-      secure: false
-  persistenceAgent:
-    deploy: true
-    numWorkers: 2
-  scheduledWorkflow:
-    cronScheduleTimezone: UTC
-    deploy: true
----
 kind: Secret
 apiVersion: v1
 metadata:
