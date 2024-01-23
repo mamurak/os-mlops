@@ -29,8 +29,7 @@ def ingest_data(bucket_name='', data_folder='./data'):
         for obj in page.get('Contents', []):
             key = obj['Key']
             if key.endswith('.jpg'):
-                key = key.split('/')[-1]
-                local_file_path = path.join(data_folder, key)
+                local_file_path = path.join(data_folder, key.split('/')[-1])
 
                 print(f'Downloading {key} to {local_file_path}')
                 s3_client.download_file(
