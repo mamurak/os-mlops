@@ -24,7 +24,9 @@ def upload_results(bucket_name='', data_folder='./data'):
     )
 
     with open(f'{data_folder}/results.csv', 'rb') as results_file:
-        s3_client.upload_fileobj(results_file, s3_bucket_name, results_name)
+        s3_client.upload_fileobj(
+            results_file, s3_bucket_name, f'data/{results_name}'
+        )
 
     print('Finished uploading results.')
 

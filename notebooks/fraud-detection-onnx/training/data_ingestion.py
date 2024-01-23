@@ -25,7 +25,7 @@ def ingest_data(data_object_name='', data_folder='./data'):
 
     s3_client.download_file(
         s3_bucket_name,
-        data_object_name,
+        f'data/{data_object_name}',
         f'{data_folder}/raw_data.csv'
     )
     print('Finished data ingestion.')

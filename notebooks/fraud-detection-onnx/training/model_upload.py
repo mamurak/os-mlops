@@ -40,7 +40,7 @@ def _initialize_s3_client(s3_endpoint_url, s3_access_key, s3_secret_key):
 
 def _generate_model_name(model_object_prefix, version=''):
     version = version if version else _timestamp()
-    model_name = f'{model_object_prefix}-{version}.onnx'
+    model_name = f'models/{model_object_prefix}-{version}.onnx'
     return model_name
 
 
