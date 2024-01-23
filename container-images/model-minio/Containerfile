@@ -2,20 +2,20 @@ FROM quay.io/cloudservices/minio:RELEASE.2021-06-17T00-10-46Z.hotfix.35a0912ff
 
 EXPOSE 9000
 
-ARG VERSION_TAG=0.1.0
-
 USER root
 
 RUN useradd -u 1000 -g 0 modelmesh && \
-    microdnf install -y tar && \
-    microdnf clean all
+    microdnf install -y git git-lfs && \
+    microdnf clean all && \
+    mkdir /data1
 
-# object detection
+WORKDIR /data1
 
-ADD https://github.com/mamurak/os-mlops-artefacts/archive/refs/tags/${VERSION_TAG}.tar.gz .
-RUN tar -xvzf ${VERSION_TAG}.tar.gz --no-same-owner && \
-    mv os-mlops-artefacts-${VERSION_TAG} /data1 && \
-    rm /data1/README.md /data1/.gitattributes ${VERSION_TAG}.tar.gz
+ARG VERSION_TAG=0.1.0
+
+RUN git clone https://github.com/mamurak/os-mlops-artefacts.git . && \
+    git checkout ${VERSION_TAG} && \
+    rm -r README.md .git .gitattributes
 
 RUN chown -R 1000:0 /data1 && \
     chgrp -R 0 /data1 && \
