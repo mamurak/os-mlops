@@ -4,7 +4,7 @@
 kind: Namespace
 apiVersion: v1
 metadata:
-  name: {{ printf "user-%d" $i }}
+  name: {{ printf "user%d" $i }}
   labels:
     modelmesh-enabled: 'true'
     opendatahub.io/dashboard: 'true'
@@ -16,7 +16,7 @@ kind: Secret
 apiVersion: v1
 metadata:
   name: aws-connection-models
-  namespace: {{ printf "user-%d" $i }}
+  namespace: {{ printf "user%d" $i }}
   labels:
     opendatahub.io/dashboard: 'true'
     opendatahub.io/managed: 'true'
@@ -35,7 +35,7 @@ kind: Secret
 apiVersion: v1
 metadata:
   name: aws-connection-pipelines
-  namespace: {{ printf "user-%d" $i }}
+  namespace: {{ printf "user%d" $i }}
   labels:
     opendatahub.io/dashboard: 'true'
     opendatahub.io/managed: 'true'
@@ -56,7 +56,7 @@ metadata:
   finalizers:
     - datasciencepipelinesapplications.opendatahub.io/finalizer
   name: pipelines-definition
-  namespace: {{ printf "user-%d" $i }}
+  namespace: {{ printf "user%d" $i }}
 spec:
   apiServer:
     stripEOF: true
@@ -80,7 +80,7 @@ spec:
   objectStorage:
     externalStorage:
       bucket: object-detection-pipelines
-      host: minio-service.{{ printf "user-%d" $i }}.svc:9000
+      host: minio-service.{{ printf "user%d" $i }}.svc:9000
       port: ''
       s3CredentialsSecret:
         accessKey: AWS_ACCESS_KEY_ID
@@ -99,7 +99,7 @@ kind: Secret
 apiVersion: v1
 metadata:
   name: minio-secret
-  namespace: {{ printf "user-%d" $i }}
+  namespace: {{ printf "user%d" $i }}
 stringData:
   accesskey: minio
   secretkey: minio123
@@ -108,7 +108,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: minio
-  namespace: {{ printf "user-%d" $i }}
+  namespace: {{ printf "user%d" $i }}
 spec:
   replicas: 1
   selector:
@@ -182,7 +182,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: minio-service
-  namespace: {{ printf "user-%d" $i }}
+  namespace: {{ printf "user%d" $i }}
 spec:
   ipFamilies:
     - IPv4
@@ -202,7 +202,7 @@ kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
   name: minio
-  namespace: {{ printf "user-%d" $i }}
+  namespace: {{ printf "user%d" $i }}
 spec:
   to:
     kind: Service
@@ -219,11 +219,11 @@ kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: dashboard-permissions
-  namespace: {{ printf "user-%d" $i }}
+  namespace: {{ printf "user%d" $i }}
 subjects:
   - kind: User
     apiGroup: rbac.authorization.k8s.io
-    name: {{ printf "user-%d" $i }}
+    name: {{ printf "user%d" $i }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
