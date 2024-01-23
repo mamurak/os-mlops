@@ -31,7 +31,7 @@ spec:
   objectStorage:
     externalStorage:
       bucket: object-detection-pipelines
-      host: minio-service:9000
+      host: minio-service.{{ printf "user-%d" $i }}.svc:9000
       port: ''
       s3CredentialsSecret:
         accessKey: AWS_ACCESS_KEY_ID
