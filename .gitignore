@@ -3,9 +3,5 @@
 *-checkpoint.ipynb
 *-checkpoint.pipeline
 *-checkpoint.md
-notebooks/object-detection-example/data
-notebooks/object-detection-example/model-training/data
 notebooks/object-detection-example/model.onnx
 notebooks/object-detection-example/model-training/yolov5/runs/train
-notebooks/fraud-detection-onnx/offline-scoring/data
-notebooks/fraud-detection-onnx/training/data
