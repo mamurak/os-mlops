@@ -15,7 +15,7 @@ metadata:
 kind: Secret
 apiVersion: v1
 metadata:
-  name: aws-connection-models
+  name: aws-connection-object-detection
   namespace: {{ printf "user%d" $i }}
   labels:
     opendatahub.io/dashboard: 'true'
@@ -49,6 +49,32 @@ stringData:
   AWS_S3_ENDPOINT: http://minio-service:9000
   AWS_SECRET_ACCESS_KEY: minio123
 type: Opaque
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: offline-scoring-pvc
+  namespace: {{ printf "user%d" $i }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  volumeMode: Filesystem
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: object-detection-training-pvc
+  namespace: {{ printf "user%d" $i }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  volumeMode: Filesystem
 ---
 apiVersion: datasciencepipelinesapplications.opendatahub.io/v1alpha1
 kind: DataSciencePipelinesApplication
@@ -283,5 +309,5 @@ subjects:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: edit
+  name: admin
 {{- end }}
