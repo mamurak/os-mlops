@@ -1,0 +1,28 @@
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  annotations:
+    opendatahub.io/notebook-image-name: "Object detection"
+    opendatahub.io/notebook-image-desc: >-
+      Jupyter notebook image enabling computer vision use cases, in particular object detection.
+  name: object-detection
+  namespace: redhat-ods-applications
+  labels:
+    component.opendatahub.io/name: jupyterhub
+    opendatahub.io/component: "true"
+    opendatahub.io/notebook-image: "true"
+spec:
+  lookupPolicy:
+    local: true
+  tags:
+    - name: "1.0.5"
+      from:
+        kind: DockerImage
+        name: quay.io/mmurakam/workbenches:object-detection-v1.0.5
+      importPolicy: {}
+      referencePolicy:
+        type: Local
+      annotations:
+        opendatahub.io/notebook-python-dependencies: >-
+          [{"name":"opencv","version":"4.8.0.74"},{"name":"ultralytics","version":"8.0.130"},{"name":"onnxruntime","version":"1.15.1"}]
+        opendatahub.io/notebook-software: '[{"name":"Python","version":"3.9"}]'

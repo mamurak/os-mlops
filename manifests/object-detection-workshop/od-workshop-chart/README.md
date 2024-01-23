@@ -1,15 +1,17 @@
-# Object Detection Helm Chart
+# Object Detection Workshop Helm Chart
 
 This chart deploys:
-- the OpenShift AI operator,
-- Minio as the S3 storage backend,
-- the object detection application based on RHOAI Model Serving.
+- an HTPasswd identity provider for 100 workshop participants,
+- the object detection workshop imagestream,
+- a variable number of data science projects,
+- individual Minio instances with prepopulated S3 buckets.
 
 ## Prerequisites
 
 - An OpenShift cluster with internet access. This chart was tested on OCP 4.14.
 - Cluster admin access.
-- The RHOAI operator is not installed.
+- The RHOAI operator and an instantiated Data Science Cluster (e.g. the one in [here](../../dependencies.yaml)). The chart was tested with RHOAI 2.5.0.
+- The OpenShift Pipelines operator. The chart was tested with OpenShift Pipelines 1.13.1.
 
 If you don't have Helm installed yet, you can use this recipe:
 ```
@@ -28,49 +30,62 @@ cd ~
 1. Clone this repository and navigate to this folder:
 ```
 git clone https://github.com/mamurak/os-mlops.git
-cd os-mlops/manifests/object-detection-workshop/od-app-chart
+cd os-mlops/manifests/object-detection-workshop/od-workshop-chart
 ```
 
-2. Create the RHOAI operator namespace:
-```
-oc new-project redhat-ods-operator
-```
+2. Update the number of workshop participants in the `values.yaml` file.
 
 3. Install the chart:
 ```
-helm install od-app .
+helm install od-workshop .
 ```
 
-Installation will take a couple of minutes. The app is ready once the `modelmesh` pod in the `object-detection` namespace is up and running.
+4. Update the cluster's `OAuth` CR to consume the htpasswd file that was deployed through the chart. It should contain the following identity provider entry:
+```
+apiVersion: config.openshift.io/v1
+kind: OAuth
+metadata:
+  name: cluster
+spec:
+  identityProviders:
+  - name: htpasswd
+    mappingMethod: claim 
+    type: HTPasswd
+    htpasswd:
+      fileData:
+        name: htpass-secret 
+```
+
+The new IDP should be usable in a few minutes, after the authentication and console pods have restarted.
+
+5. Optional: You may want to prevent workshop participants from creating new namespaces, which may be enabled by default. Check whether the following role binding exists and remove it if needed.
+```
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: self-provisioners
+subjects:
+  - kind: Group
+    apiGroup: rbac.authorization.k8s.io
+    name: 'system:authenticated:oauth'
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: self-provisioner
+```
 
 ## Usage
 
-Call the app from a device with a camera, e.g. your laptop or smart phone. The app URL is provided by the frontend route:
-```
-oc get route object-detection-app -n object-detection
-```
+Log into the RHOAI dashboard with a participant account:
+- login: user[n]
+- password: user[n]
+
+You should only have access to your namespace / data science project, in which you can follow the [workshop guide](https://mamurak.github.io/rhods-od-workshop/rhods-od-workshop/index.html). By navigating to the OpenShift console, you can find your personal Minio instance and browse its S3 buckets.
 
 ## Deinstallation
 
-1. Delete the Helm chart:
+Delete the Helm chart:
 
 ```
-helm delete od-app
+helm delete od-workshop
 ```
-
-2. Delete the data science cluster CR:
-
-```
-oc delete datasciencecluster rhods
-```
-
-3. Delete the operator namespace:
-
-```
-oc delete project redhat-ods-operator
-```
-
-## To dos
-
-- Extract the RHOAI operator into a separate Helm chart. Allows to bundle the operator namespace into the chart, which is currently not possible for some reason.
-- Change update policy in operator to `Manual` to minimize the risk of automatic breaking upgrades.
