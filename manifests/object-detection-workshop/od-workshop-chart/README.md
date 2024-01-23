@@ -74,6 +74,63 @@ roleRef:
   name: self-provisioner
 ```
 
+6. Optional: You may also want to restrict the amount of resources that participants can request.
+- As RHOAI admin, go to Settings -> Cluster settings and update `PVC size` (5 GB is a reasonable value).
+- Find and customize the workbench and model server sizes in the `OdhDashboardConfig` CR. The following is a reasonable version for the workshop.
+```
+apiVersion: opendatahub.io/v1alpha
+kind: OdhDashboardConfig
+metadata:
+  name: odh-dashboard-config
+  namespace: redhat-ods-applications
+  labels:
+    app.kubernetes.io/part-of: rhods-dashboard
+    app.opendatahub.io/rhods-dashboard: 'true'
+spec:
+  dashboardConfig:
+    modelMetricsNamespace: ''
+    enablement: true
+    disableProjects: false
+    disableSupport: false
+    disablePipelines: false
+    disableProjectSharing: false
+    disableModelServing: false
+    disableKServe: false
+    disableCustomServingRuntimes: false
+    disableModelMesh: false
+    disableISVBadges: false
+    disableInfo: false
+    disableClusterManager: false
+    disableBYONImageStream: false
+    disableTracking: false
+  groupsConfig:
+    adminGroups: rhods-admins
+    allowedGroups: 'system:authenticated'
+  modelServerSizes:
+    - name: Small
+      resources:
+        limits:
+          cpu: '2'
+          memory: 8Gi
+        requests:
+          cpu: '1'
+          memory: 4Gi
+  notebookController:
+    enabled: false
+    notebookNamespace: rhods-notebooks
+    pvcSize: 5Gi
+  notebookSizes:
+    - name: Small
+      resources:
+        limits:
+          cpu: '2'
+          memory: 8Gi
+        requests:
+          cpu: '1'
+          memory: 8Gi
+  templateOrder: []
+```
+
 ## Usage
 
 Log into the RHOAI dashboard with a participant account:
