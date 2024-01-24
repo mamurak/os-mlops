@@ -1,0 +1,17 @@
+FROM registry.access.redhat.com/ubi9/python-39
+
+USER root
+
+RUN dnf -y update \
+ && dnf -y install python3-pip \
+ && dnf -y clean all \
+ && rm -rf /var/cache/dnf \
+ && pip install pip==22.2.2 setuptools==65.3.0
+
+USER 1001
+
+COPY requirements.txt ./
+RUN pip3 install --no-cache-dir -r requirements.txt
+COPY s3_transfer.py ./
+
+CMD python3 model_init.py
