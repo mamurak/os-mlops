@@ -1,0 +1,128 @@
+{
+  "doc_type": "pipeline",
+  "version": "3.0",
+  "json_schema": "http://api.dataplatform.ibm.com/schemas/common-pipeline/pipeline-flow/pipeline-flow-v3-schema.json",
+  "id": "elyra-auto-generated-pipeline",
+  "primary_pipeline": "primary",
+  "pipelines": [
+    {
+      "id": "primary",
+      "nodes": [
+        {
+          "id": "1416b069-3a34-4e38-8878-c523f1e76b59",
+          "type": "execution_node",
+          "op": "execute-python-node",
+          "app_data": {
+            "component_parameters": {
+              "pipeline_parameters": [
+                "hf-repo-id"
+              ],
+              "dependencies": [],
+              "include_subdirectories": false,
+              "outputs": [],
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [
+                {
+                  "env_var": "AWS_S3_ENDPOINT",
+                  "name": "aws-connection-llama-bucket",
+                  "key": "AWS_S3_ENDPOINT"
+                },
+                {
+                  "env_var": "AWS_ACCESS_KEY_ID",
+                  "name": "aws-connection-llama-bucket",
+                  "key": "AWS_ACCESS_KEY_ID"
+                },
+                {
+                  "env_var": "AWS_SECRET_ACCESS_KEY",
+                  "name": "aws-connection-llama-bucket",
+                  "key": "AWS_SECRET_ACCESS_KEY"
+                },
+                {
+                  "env_var": "AWS_S3_BUCKET",
+                  "name": "aws-connection-llama-bucket",
+                  "key": "AWS_S3_BUCKET"
+                }
+              ],
+              "kubernetes_shared_mem_size": {},
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "hf_to_s3.py",
+              "runtime_image": "quay.io/mmurakam/runtimes:sentence-transformer-v0.3.2"
+            },
+            "label": "",
+            "ui_data": {
+              "label": "hf_to_s3.py",
+              "image": "/notebook/ray-demo/hf-workbench/static/elyra/python.svg",
+              "x_pos": 269,
+              "y_pos": 298,
+              "description": "Run Python script"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              }
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "app_data": {
+        "ui_data": {
+          "comments": []
+        },
+        "version": 8,
+        "runtime_type": "KUBEFLOW_PIPELINES",
+        "properties": {
+          "name": "hf_to_s3",
+          "runtime": "Data Science Pipelines",
+          "pipeline_parameters": [
+            {
+              "name": "hf-repo-id",
+              "description": "",
+              "default_value": {
+                "type": "String",
+                "value": ""
+              },
+              "required": true
+            }
+          ],
+          "pipeline_defaults": {
+            "kubernetes_shared_mem_size": {},
+            "kubernetes_tolerations": [],
+            "kubernetes_pod_annotations": [],
+            "kubernetes_pod_labels": [],
+            "mounted_volumes": [],
+            "env_vars": [],
+            "kubernetes_secrets": []
+          }
+        }
+      },
+      "runtime_ref": ""
+    }
+  ],
+  "schemas": []
+}
