@@ -374,3 +374,34 @@ spec:
         importMode: Legacy
       referencePolicy:
         type: Source
+---
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  annotations:
+    opendatahub.io/notebook-image-desc: JupyterLab based workbench for the sentence transformer use case
+    opendatahub.io/notebook-image-name: Sentence transformer workbench
+    opendatahub.io/notebook-image-url: 'quay.io/mmurakam/workbenches:sentence-transformer-v0.3.1'
+  name: transformers
+  namespace: redhat-ods-applications
+  labels:
+    app.kubernetes.io/created-by: byon
+    opendatahub.io/dashboard: 'true'
+    opendatahub.io/notebook-image: 'true'
+spec:
+  lookupPolicy:
+    local: true
+  tags:
+    - name: v0.3.1
+      annotations:
+        opendatahub.io/notebook-python-dependencies: >-
+          [{"name":"PyTorch","version":"1.8","visible":true},{"name":"CUDA","version":"11.4","visible":true},{"name":"nltk","version":"3.8.1","visible":true},{"name":"transformers","version":"4.35.2","visible":true}]
+        opendatahub.io/notebook-software: '[{"name":"Python","version":"3.9","visible":true}]'
+        openshift.io/imported-from: 'quay.io/mmurakam/workbenches:sentence-transformer-v0.3.1'
+      from:
+        kind: DockerImage
+        name: 'quay.io/mmurakam/workbenches:sentence-transformer-v0.3.1'
+      importPolicy:
+        importMode: Legacy
+      referencePolicy:
+        type: Source
