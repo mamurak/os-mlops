@@ -15,7 +15,7 @@
           "app_data": {
             "component_parameters": {
               "pipeline_parameters": [
-                "hf-repo-id"
+                "hf_repo_id"
               ],
               "dependencies": [],
               "include_subdirectories": false,
@@ -101,21 +101,21 @@
           "runtime": "Data Science Pipelines",
           "pipeline_parameters": [
             {
-              "name": "hf-repo-id",
+              "name": "hf_repo_id",
               "description": "",
               "default_value": {
                 "type": "String",
-                "value": ""
+                "value": "google/flan-t5-small"
               },
-              "required": true
+              "required": false
             }
           ],
           "pipeline_defaults": {
             "kubernetes_shared_mem_size": {},
-            "kubernetes_tolerations": [],
-            "kubernetes_pod_annotations": [],
             "kubernetes_pod_labels": [],
+            "kubernetes_tolerations": [],
             "mounted_volumes": [],
+            "kubernetes_pod_annotations": [],
             "env_vars": [],
             "kubernetes_secrets": []
           }

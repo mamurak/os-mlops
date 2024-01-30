@@ -5,7 +5,7 @@ from boto3 import client
 from transformers import AutoTokenizer, AutoModel
 
 
-hf_repo_id_env = environ.get('hf-repo-id')
+hf_repo_id_env = environ.get('hf_repo_id')
 s3_endpoint_url = environ.get('AWS_S3_ENDPOINT')
 s3_access_key = environ.get('AWS_ACCESS_KEY_ID')
 s3_secret_key = environ.get('AWS_SECRET_ACCESS_KEY')
@@ -63,4 +63,4 @@ def _clean_up(folder_name):
 
 
 if __name__ == '__main__':
-    load_from_hf_to_s3()
+    transfer_artifacts()
