@@ -1,0 +1,6 @@
+boto3==1.28.53
+transformers==4.35.2
+huggingface_hub
+peft
+datasets
+codeflare_sdk
