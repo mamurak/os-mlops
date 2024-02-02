@@ -6,10 +6,11 @@ from transformers import AutoTokenizer, AutoModel
 
 
 hf_repo_id_env = environ.get('hf_repo_id')
-s3_endpoint_url = environ.get('AWS_S3_ENDPOINT')
-s3_access_key = environ.get('AWS_ACCESS_KEY_ID')
-s3_secret_key = environ.get('AWS_SECRET_ACCESS_KEY')
-s3_bucket_name = environ.get('AWS_S3_BUCKET')
+models_cache_folder = '/models'
+s3_endpoint_url = environ.get('S3_ENDPOINT')
+s3_access_key = environ.get('S3_ACCESS_KEY_ID')
+s3_secret_key = environ.get('S3_SECRET_ACCESS_KEY')
+s3_bucket_name = environ.get('S3_BUCKET')
 s3_client = client(
     's3', endpoint_url=s3_endpoint_url,
     aws_access_key_id=s3_access_key, aws_secret_access_key=s3_secret_key
@@ -19,9 +20,10 @@ s3_client = client(
 def transfer_artifacts(hf_repo_id=''):
     hf_repo_id = hf_repo_id or hf_repo_id_env
     artifacts = _download_from_hf(hf_repo_id)
-    _store_locally(artifacts, hf_repo_id)
-    _upload(hf_repo_id)
-    _clean_up(hf_repo_id)
+    model_subfolder = f'{models_cache_folder}/{hf_repo_id}'
+    _store_locally(artifacts, model_subfolder)
+    _upload(model_subfolder)
+    _clean_up(model_subfolder)
     print(f'Transferring model artifacts from {hf_repo_id} to S3 complete.')
 
 

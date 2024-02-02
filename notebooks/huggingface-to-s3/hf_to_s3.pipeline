@@ -25,36 +25,42 @@
               "kubernetes_pod_labels": [],
               "kubernetes_secrets": [
                 {
-                  "env_var": "AWS_S3_ENDPOINT",
-                  "name": "aws-connection-llama-bucket",
+                  "env_var": "S3_ENDPOINT",
+                  "name": "aws-connection-user-bucket",
                   "key": "AWS_S3_ENDPOINT"
                 },
                 {
-                  "env_var": "AWS_ACCESS_KEY_ID",
-                  "name": "aws-connection-llama-bucket",
+                  "env_var": "S3_ACCESS_KEY_ID",
+                  "name": "aws-connection-user-bucket",
                   "key": "AWS_ACCESS_KEY_ID"
                 },
                 {
-                  "env_var": "AWS_SECRET_ACCESS_KEY",
-                  "name": "aws-connection-llama-bucket",
+                  "env_var": "S3_SECRET_ACCESS_KEY",
+                  "name": "aws-connection-user-bucket",
                   "key": "AWS_SECRET_ACCESS_KEY"
                 },
                 {
-                  "env_var": "AWS_S3_BUCKET",
-                  "name": "aws-connection-llama-bucket",
+                  "env_var": "S3_BUCKET",
+                  "name": "aws-connection-user-bucket",
                   "key": "AWS_S3_BUCKET"
                 }
               ],
               "kubernetes_shared_mem_size": {},
               "kubernetes_tolerations": [],
-              "mounted_volumes": [],
+              "mounted_volumes": [
+                {
+                  "path": "/models",
+                  "pvc_name": "models-cache",
+                  "read_only": false
+                }
+              ],
               "filename": "hf_to_s3.py",
-              "runtime_image": "quay.io/mmurakam/runtimes:sentence-transformer-v0.3.2"
+              "runtime_image": "quay.io/mmurakam/runtimes:hf-codeflare-v0.1.3"
             },
             "label": "",
             "ui_data": {
               "label": "hf_to_s3.py",
-              "image": "/notebook/ray-demo/hf-workbench/static/elyra/python.svg",
+              "image": "/notebook/llm-project/jupyter/static/elyra/python.svg",
               "x_pos": 269,
               "y_pos": 298,
               "description": "Run Python script"
