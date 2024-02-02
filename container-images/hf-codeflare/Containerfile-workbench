@@ -1,4 +1,4 @@
-FROM quay.io/modh/odh-pytorch-notebook@sha256:1b6ec48247f15613d452d2972595b54c4160a0607330396ff5bf88e2140380f3
+FROM quay.io/modh/odh-pytorch-notebook:v2-2023b-20231116-d0ce8b0
 
 RUN pip install pip==22.3.1 setuptools==65.3.0
 
