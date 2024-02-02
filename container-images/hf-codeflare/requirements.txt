@@ -1,7 +1,7 @@
-boto3==1.28.53
-transformers==4.35.2
-huggingface_hub==0.20.3
-peft==0.6.0
-datasets==2.16.1
-codeflare_sdk==0.12.0
+boto3
+transformers
+huggingface_hub
+peft
+datasets
+codeflare_sdk
 caikit-nlp
