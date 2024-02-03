@@ -1,7 +1,7 @@
+codeflare_sdk==0.12.0
 boto3
 transformers
 huggingface_hub
 peft
 datasets
-codeflare_sdk
 caikit-nlp
