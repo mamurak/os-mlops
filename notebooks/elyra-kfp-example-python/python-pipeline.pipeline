@@ -33,7 +33,7 @@
             "label": "",
             "ui_data": {
               "label": "preprocessing.py",
-              "image": "/notebook/llm-project/jupyter/static/elyra/python.svg",
+              "image": "/notebook/timeseries-project/jupyter/static/elyra/python.svg",
               "x_pos": 61,
               "y_pos": 287,
               "description": "Run Python script"
@@ -91,7 +91,7 @@
             "label": "",
             "ui_data": {
               "label": "feature_extraction.py",
-              "image": "/notebook/llm-project/jupyter/static/elyra/python.svg",
+              "image": "/notebook/timeseries-project/jupyter/static/elyra/python.svg",
               "x_pos": 298,
               "y_pos": 286,
               "description": "Run Python script"
@@ -155,7 +155,7 @@
             "label": "",
             "ui_data": {
               "label": "training.py",
-              "image": "/notebook/llm-project/jupyter/static/elyra/python.svg",
+              "image": "/notebook/timeseries-project/jupyter/static/elyra/python.svg",
               "x_pos": 539,
               "y_pos": 287,
               "description": "Run Python script"
@@ -217,7 +217,7 @@
             "label": "",
             "ui_data": {
               "label": "verification.py",
-              "image": "/notebook/llm-project/jupyter/static/elyra/python.svg",
+              "image": "/notebook/timeseries-project/jupyter/static/elyra/python.svg",
               "x_pos": 471,
               "y_pos": 461,
               "description": "Run Python script"
@@ -296,12 +296,13 @@
               "kubernetes_shared_mem_size": {},
               "kubernetes_tolerations": [],
               "mounted_volumes": [],
-              "filename": "push-model.py"
+              "filename": "push-model.py",
+              "runtime_image": "quay.io/mmurakam/runtimes:fraud-detection-v0.1.0"
             },
             "label": "",
             "ui_data": {
               "label": "push-model.py",
-              "image": "/notebook/llm-project/jupyter/static/elyra/python.svg",
+              "image": "/notebook/timeseries-project/jupyter/static/elyra/python.svg",
               "x_pos": 879,
               "y_pos": 493,
               "description": "Run Python script"
@@ -352,14 +353,14 @@
         "runtime_type": "KUBEFLOW_PIPELINES",
         "properties": {
           "pipeline_defaults": {
-            "mounted_volumes": [],
-            "kubernetes_pod_annotations": [],
             "kubernetes_tolerations": [],
-            "kubernetes_shared_mem_size": {},
+            "kubernetes_pod_annotations": [],
             "kubernetes_pod_labels": [],
-            "kubernetes_secrets": [],
+            "mounted_volumes": [],
+            "kubernetes_shared_mem_size": {},
             "env_vars": [],
-            "runtime_image": "quay.io/mmurakam/elyra-kfp-runtime-base:elyra-kfp-runtime-base-v0.2.0"
+            "kubernetes_secrets": [],
+            "runtime_image": "quay.io/modh/runtime-images@sha256:58d45c4313097ccc4a8f2c81b30a5861cb51f0aa468a3bb66c5bb1ef16526c6b"
           },
           "name": "python-pipeline",
           "runtime": "Data Science Pipelines"
