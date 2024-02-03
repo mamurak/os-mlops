@@ -76,6 +76,26 @@ spec:
       storage: 10Gi
   volumeMode: Filesystem
 ---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  annotations:
+    openshift.io/description: ''
+    openshift.io/display-name: development
+  name: development
+  namespace: {{ printf "user%d" $i }}
+  finalizers:
+    - kubernetes.io/pvc-protection
+  labels:
+    opendatahub.io/dashboard: 'true'
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+  volumeMode: Filesystem
+---
 apiVersion: datasciencepipelinesapplications.opendatahub.io/v1alpha1
 kind: DataSciencePipelinesApplication
 metadata:
