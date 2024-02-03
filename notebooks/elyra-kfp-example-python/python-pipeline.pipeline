@@ -14,9 +14,7 @@
           "op": "execute-python-node",
           "app_data": {
             "component_parameters": {
-              "dependencies": [
-                "raw-data.csv"
-              ],
+              "dependencies": [],
               "include_subdirectories": false,
               "outputs": [
                 "sensor-training-data.csv"
@@ -50,7 +48,14 @@
                   },
                   "label": "Input Port"
                 }
-              }
+              },
+              "links": [
+                {
+                  "id": "2969e14d-aca1-4833-b43b-66205af16d2c",
+                  "node_id_ref": "fb579808-3c78-4119-b489-33d9af81b647",
+                  "port_id_ref": "outPort"
+                }
+              ]
             }
           ],
           "outputs": [
@@ -297,7 +302,7 @@
               "kubernetes_tolerations": [],
               "mounted_volumes": [],
               "filename": "push-model.py",
-              "runtime_image": "quay.io/mmurakam/runtimes:fraud-detection-v0.1.0"
+              "runtime_image": "quay.io/mmurakam/runtimes:timeseries-v0.1.0"
             },
             "label": "",
             "ui_data": {
@@ -343,6 +348,85 @@
               }
             }
           ]
+        },
+        {
+          "id": "fb579808-3c78-4119-b489-33d9af81b647",
+          "type": "execution_node",
+          "op": "execute-python-node",
+          "app_data": {
+            "component_parameters": {
+              "dependencies": [],
+              "include_subdirectories": false,
+              "outputs": [
+                "raw-data.csv"
+              ],
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [
+                {
+                  "env_var": "S3_ENDPOINT_URL",
+                  "name": "aws-connection-user-bucket",
+                  "key": "AWS_S3_ENDPOINT"
+                },
+                {
+                  "env_var": "S3_ACCESS_KEY_ID",
+                  "name": "aws-connection-user-bucket",
+                  "key": "AWS_ACCESS_KEY_ID"
+                },
+                {
+                  "env_var": "S3_SECRET_ACCESS_KEY",
+                  "name": "aws-connection-user-bucket",
+                  "key": "AWS_SECRET_ACCESS_KEY"
+                },
+                {
+                  "env_var": "S3_BUCKET_NAME",
+                  "name": "aws-connection-user-bucket",
+                  "key": "AWS_S3_BUCKET"
+                }
+              ],
+              "kubernetes_shared_mem_size": {},
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "data_ingestion.py"
+            },
+            "label": "",
+            "ui_data": {
+              "label": "data_ingestion.py",
+              "image": "/notebook/timeseries-project/jupyter/static/elyra/python.svg",
+              "x_pos": 156,
+              "y_pos": 176,
+              "description": "Run Python script"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              }
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
         }
       ],
       "app_data": {
@@ -353,14 +437,14 @@
         "runtime_type": "KUBEFLOW_PIPELINES",
         "properties": {
           "pipeline_defaults": {
-            "kubernetes_tolerations": [],
-            "kubernetes_pod_annotations": [],
-            "kubernetes_pod_labels": [],
-            "mounted_volumes": [],
             "kubernetes_shared_mem_size": {},
+            "kubernetes_pod_annotations": [],
+            "kubernetes_tolerations": [],
+            "mounted_volumes": [],
+            "kubernetes_pod_labels": [],
             "env_vars": [],
             "kubernetes_secrets": [],
-            "runtime_image": "quay.io/modh/runtime-images@sha256:58d45c4313097ccc4a8f2c81b30a5861cb51f0aa468a3bb66c5bb1ef16526c6b"
+            "runtime_image": "quay.io/mmurakam/runtimes:timeseries-v0.1.0"
           },
           "name": "python-pipeline",
           "runtime": "Data Science Pipelines"
