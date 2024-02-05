@@ -1,7 +1,7 @@
 codeflare_sdk==0.12.0
-boto3
-transformers
-huggingface_hub
-peft
-datasets
-caikit-nlp
+boto3==1.28.53
+transformers==4.35.2
+huggingface_hub==0.20.3
+peft==0.8.2
+datasets==2.16.1
+mlflow==2.10.0
