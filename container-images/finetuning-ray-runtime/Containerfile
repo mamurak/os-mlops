@@ -1,0 +1,10 @@
+FROM quay.io/project-codeflare/ray:latest-py39-cu118
+
+USER root
+
+RUN pip3 install pip==22.2.2 setuptools==65.3.0
+
+COPY requirements.txt ./
+RUN pip3 install --no-cache-dir -r requirements.txt
+
+USER 1001
