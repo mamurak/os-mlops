@@ -5,3 +5,4 @@ huggingface_hub==0.20.3
 peft==0.8.2
 datasets==2.16.1
 mlflow==2.10.0
+bitsandbytes==0.42.0
