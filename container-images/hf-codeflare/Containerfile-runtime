@@ -1,4 +1,4 @@
-FROM quay.io/modh/runtime-images:runtime-pytorch-ubi9-python-3.9-2023a-20230817-b7e647e
+FROM quay.io/modh/runtime-images:runtime-cuda-tensorflow-ubi9-python-3.9-2023b-20231116-d0ce8b0
 
 RUN pip install pip==22.3.1 setuptools==65.3.0
 
