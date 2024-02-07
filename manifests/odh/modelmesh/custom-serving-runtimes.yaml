@@ -119,7 +119,7 @@ objects:
 
       containers:
         - name: mlserver
-          image: seldonio/mlserver:0.5.2
+          image: seldonio/mlserver:1.3.5
           env:
             - name: MLSERVER_MODELS_DIR
               value: "/models/_mlserver_models/"
