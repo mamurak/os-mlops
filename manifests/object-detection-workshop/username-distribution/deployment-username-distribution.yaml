@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"redis"}]'
+  labels:
+    app: username-distribution
+    app.kubernetes.io/component: username-distribution
+    app.kubernetes.io/instance: username-distribution
+    app.kubernetes.io/part-of: username-distribution-app
+  name: username-distribution
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: username-distribution
+      deploymentconfig: username-distribution
+  strategy:
+    activeDeadlineSeconds: 21600
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: Rolling
+  template:
+    metadata:
+      annotations:
+        openshift.io/generated-by: OpenShiftWebConsole
+      creationTimestamp: null
+      labels:
+        app: username-distribution
+        deploymentconfig: username-distribution
+    spec:
+      containers:
+      - env:
+        - name: LAB_REDIS_HOST
+          value: redis.username-distribution.svc.cluster.local
+        - name: LAB_REDIS_PASS
+          valueFrom:
+            secretKeyRef:
+              key: database-password
+              name: redis
+        - name: LAB_TITLE
+          value: OpenShift AI Object Detection Workshop
+        - name: LAB_USER_COUNT
+          value: "50"
+        - name: LAB_USER_PASS
+          value: openshift
+        - name: LAB_USER_ACCESS_TOKEN
+          value: openshift
+        - name: LAB_MODULE_URLS
+          value: https://mamurak.github.io/rhods-od-workshop/rhods-od-workshop/index.html;Object
+            Detection Workshop
+        - name: LAB_USER_PREFIX
+          value: user
+        - name: LAB_USER_PAD_ZERO
+          value: "false"
+        image: quay.io/evanshortiss/username-distribution
+        imagePullPolicy: IfNotPresent
+        name: username-distribution
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  test: false
