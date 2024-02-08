@@ -1,1 +1,2 @@
 caikit-nlp==0.4.2
+caikit-nlp-client==0.0.8
