@@ -1,0 +1,13 @@
+apiVersion: che.eclipse.org/v1alpha1
+kind: KubernetesImagePuller
+metadata:
+  name: image-puller
+  namespace: openshift-operators
+spec:
+  configMapName: k8s-image-puller
+  daemonsetName: k8s-image-puller
+  deploymentName: kubernetes-image-puller
+  imagePullerImage: 'quay.io/eclipse/kubernetes-image-puller:next'
+  images: 'object-detection-rest=quay.io/mmurakam/object-detection-rest:v0.1.0;object-detection-app=quay.io/agroom/object-detection-app;runtimes=quay.io/mmurakam/runtimes:object-detection-v1.1.0;odh-modelmesh-runtime-adapter-rhel8=registry.redhat.io/rhoai/odh-modelmesh-runtime-adapter-rhel8@sha256:18f2a43f2e12a0aadc3695f88d5b37593027fb1a2bb5dd7ef8e119b586d2958f;odh-modelmesh-rhel8=registry.redhat.io/rhoai/odh-modelmesh-rhel8@sha256:6478ce1c4b8780a62f44517cb9c56a0f0b7b2d75ff1120bcc21fca4dea8f4c1e;odh-mm-rest-proxy-rhel8=registry.redhat.io/rhoai/odh-mm-rest-proxy-rhel8@sha256:200d075020e9f393d190a9f480ce7276ec63eb1a6edbf142c997ac8919c0eff2;ose-oauth-proxy=registry.redhat.io/openshift4/ose-oauth-proxy@sha256:4bef31eb993feb6f1096b51b4876c65a6fb1f4401fee97fa4f4542b6b7c9bc46'
+
+
