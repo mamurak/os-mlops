@@ -2,3 +2,5 @@ transformers==4.35.2
 peft==0.6.0
 datasets==2.16.1
 bitsandbytes==0.42.0
+sentencepiece==0.1.99
+ray==2.7.0
