@@ -7,4 +7,4 @@ datasets==2.16.1
 mlflow==2.10.0
 bitsandbytes==0.42.0
 sentencepiece==0.1.99
-ray==2.7.1
+ray==2.7.0
