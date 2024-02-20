@@ -1,3 +1,31 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: models-cache
+  annotations:
+    pv.kubernetes.io/bind-completed: 'yes'
+    pv.kubernetes.io/bound-by-controller: 'yes'
+    volume.beta.kubernetes.io/storage-provisioner: openshift-storage.cephfs.csi.ceph.com
+    volume.kubernetes.io/storage-provisioner: openshift-storage.cephfs.csi.ceph.com
+  finalizers:
+    - kubernetes.io/pvc-protection
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: ocs-storagecluster-cephfs
+  volumeMode: Filesystem
+---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: ocp-login-secret
+stringData:
+  OCP_API_SERVER_URL: sha256~V05pfhY0c9spjrtGvyQErdhTVXQpHSK0Ix8OjoTeRWg
+  OCP_TOKEN: https://api.cluster-cvx6l.cvx6l.sandbox399.opentlc.com:6443
+---
 apiVersion: workload.codeflare.dev/v1beta1
 kind: AppWrapper
 metadata:
@@ -32,7 +60,7 @@ spec:
               controller-tools.k8s.io: '1.0'
               workload.codeflare.dev/appwrapper: llamafinetunelora
             name: llamafinetunelora
-            namespace: llm-project
+            namespace: ray-demo
           spec:
             autoscalerOptions:
               idleTimeoutSeconds: 60
@@ -171,7 +199,7 @@ spec:
           kind: Ingress
           metadata:
             name: ray-dashboard-llamafinetunelora
-            namespace: llm-project
+            namespace: ray-demo
           spec:
             rules:
               - host: ray-dashboard-llamafinetunelora-ray-demo.apps.CLUSTER_DOMAIN
