@@ -16,19 +16,22 @@ s3_client = client(
 
 def upload_artifacts():
     print('Commencing upload.')
-    print(f'Uploading artifacts in {models_cache_folder} '
-          f'to bucket {s3_bucket_name} '
-          f'to S3 storage at {s3_endpoint_url}')
+    # for folder in ['finetuned', 'caikit']:
+    for folder in ['finetuned']:
+        upload_folder = f'{models_cache_folder}/{folder}'
+        print(f'Uploading artifacts in {upload_folder} '
+              f'to bucket {s3_bucket_name} '
+              f'to S3 storage at {s3_endpoint_url}')
 
-    for root, dirs, files in walk(models_cache_folder):
-        for filename in files:
-            local_path = path.join(root, filename)
+        for root, dirs, files in walk(upload_folder):
+            for filename in files:
+                local_path = path.join(root, filename)
 
-            relative_path = path.relpath(local_path, models_cache_folder)
-            s3_path = path.join(models_cache_folder, relative_path)
+                relative_path = path.relpath(local_path, models_cache_folder)
+                s3_path = path.join(models_cache_folder, relative_path)
 
-            s3_client.upload_file(local_path, s3_bucket_name, s3_path)
-            print(f"File {local_path} uploaded to {s3_path}")
+                s3_client.upload_file(local_path, s3_bucket_name, s3_path)
+                print(f"File {local_path} uploaded to {s3_path}")
 
     print('Finished uploading objects.')
 

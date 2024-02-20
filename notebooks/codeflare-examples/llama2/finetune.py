@@ -119,6 +119,7 @@ def _run_training(model, training_data, tokenizer):
     )
     model.config.use_cache = False
     print('Running training.')
+    # This invokes distributed training on the Ray cluster through HF Trainer
     trainer.train()
 
 
