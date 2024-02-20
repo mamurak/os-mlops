@@ -21,6 +21,25 @@ data:
       logLevel: debug
       retention: 15d
 ---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: aws-connection-text-generation-bucket
+  namespace: llm-demo
+  labels:
+    opendatahub.io/dashboard: 'true'
+    opendatahub.io/managed: 'true'
+  annotations:
+    opendatahub.io/connection-type: s3
+    openshift.io/display-name: text-generation-bucket
+stringData:
+  AWS_ACCESS_KEY_ID: minio
+  AWS_DEFAULT_REGION: us-east-1
+  AWS_S3_BUCKET: text-generation
+  AWS_S3_ENDPOINT: http://minio-service.minio.svc:9000
+  AWS_SECRET_ACCESS_KEY: minio123
+type: Opaque
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
