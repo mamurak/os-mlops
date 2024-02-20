@@ -31,30 +31,121 @@ kind: ImageStream
 apiVersion: image.openshift.io/v1
 metadata:
   annotations:
-    opendatahub.io/notebook-image-name: "Code Server CUDA Data Science"
-    opendatahub.io/notebook-image-desc: >-
-      Jupyter notebook image with VS Code application.
-  name: code-server-cuda-data-science
+    opendatahub.io/notebook-image-desc: ''
+    opendatahub.io/notebook-image-name: HF Codeflare
+    opendatahub.io/notebook-image-url: 'quay.io/mmurakam/workbenches:hf-codeflare-v0.3.0'
+  name: hf-codeflare
   namespace: redhat-ods-applications
   labels:
-    component.opendatahub.io/name: jupyterhub
-    opendatahub.io/component: "true"
-    opendatahub.io/notebook-image: "true"
+    app.kubernetes.io/created-by: byon
+    opendatahub.io/dashboard: 'true'
+    opendatahub.io/notebook-image: 'true'
 spec:
   lookupPolicy:
     local: true
   tags:
-    - name: "2023a"
+    - name: v0.3.0
+      annotations:
+        opendatahub.io/notebook-python-dependencies: '[{"name":"Codeflare","version":"0.12.0"}]'
+        opendatahub.io/notebook-software: '[{"name":"CUDA","version":"11.8"},{"name":"Python","version":"v3.9"},{"name":"PyTorch","version":"1.13"}]'
+        openshift.io/imported-from: 'quay.io/mmurakam/workbenches:hf-codeflare-v0.3.0'
       from:
         kind: DockerImage
-        name: quay.io/opendatahub-contrib/workbench-images:cuda-code-server-ubi9-py39_2023b_latest
-      importPolicy: {}
+        name: 'quay.io/mmurakam/workbenches:hf-codeflare-v0.3.0'
+      importPolicy:
+        importMode: Legacy
       referencePolicy:
-        type: Local
+        type: Source
+---
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  annotations:
+    opendatahub.io/notebook-image-desc: ''
+    opendatahub.io/notebook-image-name: Timeseries
+    opendatahub.io/notebook-image-url: 'quay.io/mmurakam/workbenches:timeseries-v0.2.0'
+  name: custom-timeseries
+  namespace: redhat-ods-applications
+  labels:
+    app.kubernetes.io/created-by: byon
+    opendatahub.io/dashboard: 'true'
+    opendatahub.io/notebook-image: 'true'
+spec:
+  lookupPolicy:
+    local: true
+  tags:
+    - name: v0.2.0
       annotations:
-        opendatahub.io/notebook-python-dependencies: >-
-          [{"name":"code-server","version":"4.9.0"},{"name":"cuda","version":"11.8.0"},{"name":"cudnn","version":"8.6.0"}]
-        opendatahub.io/notebook-software: '[{"name":"Python","version":"3.9"}]'
+        opendatahub.io/notebook-python-dependencies: '[{"name":"boto3","version":"v1.28.85"}]'
+        opendatahub.io/notebook-software: '[{"name":"Python","version":"v3.9"}]'
+        openshift.io/imported-from: 'quay.io/mmurakam/workbenches:timeseries-v0.2.0'
+      from:
+        kind: DockerImage
+        name: 'quay.io/mmurakam/workbenches:timeseries-v0.2.0'
+      importPolicy:
+        importMode: Legacy
+      referencePolicy:
+        type: Source
+---
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  annotations:
+    opendatahub.io/notebook-image-desc: ''
+    opendatahub.io/notebook-image-name: Caikit
+    opendatahub.io/notebook-image-url: 'quay.io/mmurakam/workbenches:caikit-v0.1.0'
+  name: custom-caikit
+  namespace: redhat-ods-applications
+  labels:
+    app.kubernetes.io/created-by: byon
+    opendatahub.io/dashboard: 'true'
+    opendatahub.io/notebook-image: 'true'
+spec:
+  lookupPolicy:
+    local: true
+  tags:
+    - name: caikit-v0.1.0
+      annotations:
+        opendatahub.io/notebook-python-dependencies: '[]'
+        opendatahub.io/notebook-software: '[]'
+        openshift.io/imported-from: 'quay.io/mmurakam/workbenches:caikit-v0.1.0'
+      from:
+        kind: DockerImage
+        name: 'quay.io/mmurakam/workbenches:caikit-v0.1.0'
+      importPolicy:
+        importMode: Legacy
+      referencePolicy:
+        type: Source
+---
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  annotations:
+    opendatahub.io/notebook-image-desc: ''
+    opendatahub.io/notebook-image-name: VS Code mit KFP SDK
+    opendatahub.io/notebook-image-url: 'quay.io/mmurakam/workbenches:vscode-kfp-v0.2.1'
+  name: custom-vs-code-mit-kfp-sdk
+  namespace: redhat-ods-applications
+  labels:
+    app.kubernetes.io/created-by: byon
+    opendatahub.io/dashboard: 'true'
+    opendatahub.io/notebook-image: 'true'
+spec:
+  lookupPolicy:
+    local: true
+  tags:
+    - name: vscode-kfp-v0.2.1
+      annotations:
+        opendatahub.io/notebook-python-dependencies: '[]'
+        opendatahub.io/notebook-software: '[]'
+        openshift.io/imported-from: 'quay.io/mmurakam/workbenches:vscode-kfp-v0.2.1'
+      from:
+        kind: DockerImage
+        name: 'quay.io/mmurakam/workbenches:vscode-kfp-v0.2.1'
+      importPolicy:
+        importMode: Legacy
+      referencePolicy:
+        type: Source
 ---
 kind: ImageStream
 apiVersion: image.openshift.io/v1
@@ -234,35 +325,6 @@ kind: ImageStream
 apiVersion: image.openshift.io/v1
 metadata:
   annotations:
-    opendatahub.io/notebook-image-name: "Codeflare notebook"
-    opendatahub.io/notebook-image-desc: >-
-      Jupyter notebook image enabling distributed model training with Codeflare.
-  name: codeflare
-  namespace: redhat-ods-applications
-  labels:
-    component.opendatahub.io/name: jupyterhub
-    opendatahub.io/component: "true"
-    opendatahub.io/notebook-image: "true"
-spec:
-  lookupPolicy:
-    local: true
-  tags:
-    - name: "0.1.0"
-      from:
-        kind: DockerImage
-        name: quay.io/mmurakam/workbenches:codeflare-v0.1.0
-      importPolicy: {}
-      referencePolicy:
-        type: Local
-      annotations:
-        opendatahub.io/notebook-python-dependencies: >-
-          [{"name":"codeflare-sdk","version":"0.10.1"},{"name":"torch","version":"1.13.1"},{"name":"ray","version":"2.7.0"},{"name":"scikit-learn","version":"1.1.1"}]
-        opendatahub.io/notebook-software: '[{"name":"Python","version":"3.8"}]'
----
-kind: ImageStream
-apiVersion: image.openshift.io/v1
-metadata:
-  annotations:
     opendatahub.io/notebook-image-name: "Fraud detection notebook"
     opendatahub.io/notebook-image-desc: >-
       Jupyter notebook image for running the fraud detection demo.
@@ -345,35 +407,6 @@ spec:
         opendatahub.io/notebook-python-dependencies: >-
           [{"name":"langflow","version":"0.4.18"},{"name":"langchain","version":"0.0.256"},{"name":"torch","version":"2.0.1"}]
         opendatahub.io/notebook-software: '[{"name":"Python","version":"3.8"}]'
----
-kind: ImageStream
-apiVersion: image.openshift.io/v1
-metadata:
-  annotations:
-    opendatahub.io/notebook-image-desc: ''
-    opendatahub.io/notebook-image-name: VS Code with KFP
-  name: vscode-kfp
-  namespace: redhat-ods-applications
-  labels:
-    app.kubernetes.io/created-by: byon
-    opendatahub.io/dashboard: 'true'
-    opendatahub.io/notebook-image: 'true'
-spec:
-  lookupPolicy:
-    local: true
-  tags:
-    - name: v0.1.2
-      annotations:
-        opendatahub.io/notebook-python-dependencies: '[]'
-        opendatahub.io/notebook-software: '[]'
-        openshift.io/imported-from: 'quay.io/mmurakam/workbenches:vscode-kfp-v0.1.2'
-      from:
-        kind: DockerImage
-        name: 'quay.io/mmurakam/workbenches:vscode-kfp-v0.1.2'
-      importPolicy:
-        importMode: Legacy
-      referencePolicy:
-        type: Source
 ---
 kind: ImageStream
 apiVersion: image.openshift.io/v1
