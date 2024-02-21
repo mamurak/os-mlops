@@ -16,7 +16,6 @@ s3_client = client(
 
 def upload_artifacts():
     print('Commencing upload.')
-    # for folder in ['finetuned', 'caikit']:
     for folder in ['finetuned']:
         upload_folder = f'{models_cache_folder}/{folder}'
         print(f'Uploading artifacts in {upload_folder} '

@@ -34,30 +34,21 @@ def cluster_login(server_url, token):
 
 
 def create_cluster():
-    print('creating framework cluster')
+    print('connecting to framework cluster')
 
     cluster = Cluster(
         ClusterConfiguration(
             name='llamafinetunelora',
             image='quay.io/mmurakam/runtimes:finetuning-ray-runtime-v0.2.1',
             num_workers=1,
-            min_cpus=2,  # 4 for llama-2
-            max_cpus=2,  # 4 for llama-2
-            min_memory=8,  # 96 for Llama-2
-            max_memory=8,  # 96 for Llama-2
+            min_cpus=4,
+            max_cpus=4,
+            min_memory=96,
+            max_memory=96,
             num_gpus=1,
             instascale=False,
         )
     )
-
-    cluster_running = cluster.status()[1]
-
-    #if not cluster_running:
-    #    cluster.up()
-    #    print('booting cluster')
-
-    #    cluster.wait_ready()
-    #    print('cluster is online')
 
     print('cluster details:\n')
     cluster.details()
@@ -71,7 +62,6 @@ def submit_job(cluster):
     jobdef = DDPJobDefinition(
         name="llamafinetunelora",
         script="finetune.py"
-        # scheduler_args={"requirements": "requirements.txt"},
     )
     job = jobdef.submit(cluster)
 
@@ -107,9 +97,8 @@ def wait_for_completion(job):
 
 
 def clean_up(cluster, auth):
-    print('shutting down cluster and logging out')
+    print('logging out')
 
-    # cluster.down()
     auth.logout()
 
     print('cleanup complete')

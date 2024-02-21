@@ -1,4 +1,5 @@
 from os import environ, listdir, path, unlink
+from pathlib import Path
 from shutil import rmtree
 
 from datasets import load_dataset
@@ -11,7 +12,7 @@ from transformers import (
     TrainingArguments, DataCollatorForLanguageModeling
 )
 
-models_cache_folder = '/models'
+models_cache_folder = Path('/models/')
 dataset_id = environ.get('dataset_id', 'Abirate/english_quotes')
 
 bnb_config = BitsAndBytesConfig(
@@ -38,34 +39,28 @@ lora_config = LoraConfig(
 def finetune():
     tokenizer, model = _load_artifacts(models_cache_folder)
     training_data = _load_training_data(dataset_id, tokenizer)
-    _run_training(model, training_data, tokenizer)
-    new_model = _merge_models(model, models_cache_folder)
-    _clean_folder(models_cache_folder)
+    adapter_location = _run_training(
+        model, training_data, tokenizer, models_cache_folder
+    )
+    new_model = _merge_models(model, models_cache_folder, adapter_location)
     _save_artifacts(tokenizer, new_model, models_cache_folder)
 
 
-def _clean_folder(folder):
-    print(f'Cleaning folder {folder}')
-
-    for filename in listdir(folder):
-        file_path = path.join(folder, filename)
-        try:
-            if path.isfile(file_path) or path.islink(file_path):
-                unlink(file_path)
-            elif path.isdir(file_path):
-                rmtree(file_path)
-        except Exception as e:
-            print(f'Failed to delete {file_path}. Reason: {e}')
-
-
 def _load_artifacts(models_cache_folder):
-    print(f'Loading artifacts from {models_cache_folder}.')
-    tokenizer = AutoTokenizer.from_pretrained(models_cache_folder)
-    tokenizer.pad_token = tokenizer.eos_token
+    raw_models_folder = f'{models_cache_folder}/raw'
+    print(f'Loading artifacts from {raw_models_folder}.')
+    print(f'Contents of {raw_models_folder}: {listdir(raw_models_folder)}')
 
-    model = AutoModelForCausalLM.from_pretrained(
-        models_cache_folder, quantization_config=bnb_config, device_map={"": 0}
+    tokenizer = AutoTokenizer.from_pretrained(
+        raw_models_folder, local_files_only=True
     )
+    model = AutoModelForCausalLM.from_pretrained(
+        raw_models_folder,
+        quantization_config=bnb_config,
+        device_map={"": 0}
+    )
+
+    tokenizer.pad_token = tokenizer.eos_token
     model.gradient_checkpointing_enable()
     model = prepare_model_for_kbit_training(model)
     model = get_peft_model(model, lora_config)
@@ -98,7 +93,7 @@ def _load_training_data(dataset_id, tokenizer):
     return data["train"]
 
 
-def _run_training(model, training_data, tokenizer):
+def _run_training(model, training_data, tokenizer, models_cache_folder):
     print('Setting up training.')
     trainer = Trainer(
         model=model,
@@ -107,7 +102,7 @@ def _run_training(model, training_data, tokenizer):
             per_device_train_batch_size=1,
             gradient_accumulation_steps=4,
             warmup_steps=2,
-            max_steps=10,
+            max_steps=50,
             learning_rate=2e-4,
             fp16=True,
             logging_steps=1,
@@ -119,29 +114,48 @@ def _run_training(model, training_data, tokenizer):
     )
     model.config.use_cache = False
     print('Running training.')
-    # This invokes distributed training on the Ray cluster through HF Trainer
     trainer.train()
+    adapter_location = f'{models_cache_folder}/adapter'
+    model.save_pretrained(adapter_location)
+    return adapter_location
 
 
-def _merge_models(model, models_cache_folder):
+def _merge_models(model, models_cache_folder, adapter_location):
     print('Merging models.')
+    raw_model_folder = f'{models_cache_folder}/raw'
+
     original_model = AutoModelForCausalLM.from_pretrained(
-        models_cache_folder,
+        raw_model_folder,
         device_map='cpu',
         trust_remote_code=True,
         torch_dtype=torch.float16,
         cache_dir="cache_dir"
     )
+
     model = PeftModel.from_pretrained(
-        original_model,
-        model,
+        original_model, adapter_location
     )
     model = model.merge_and_unload()
 
     return model
 
 
+def _clean_folder(folder):
+    print(f'Cleaning folder {folder}')
+
+    for filename in listdir(folder):
+        file_path = path.join(folder, filename)
+        try:
+            if path.isfile(file_path) or path.islink(file_path):
+                unlink(file_path)
+            elif path.isdir(file_path):
+                rmtree(file_path)
+        except Exception as e:
+            print(f'Failed to delete {file_path}. Reason: {e}')
+
+
 def _save_artifacts(tokenizer, model, folder_name):
+    folder_name = f'{folder_name}/finetuned'
     print(f'Serializing artifacts to {folder_name}.')
     model.save_pretrained(folder_name)
     tokenizer.save_pretrained(folder_name)
