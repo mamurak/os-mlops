@@ -31,7 +31,7 @@ spec:
             secretKeyRef:
               key: database-password
               name: redis
-        image: image-registry.openshift-image-registry.svc:5000/openshift/redis@sha256:0fe724c28eff3eac9e4f416fda660daa7d0402937b67f484f7b8cff5e77e5de3
+        image: registry.redhat.io/rhel8/redis-6
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
