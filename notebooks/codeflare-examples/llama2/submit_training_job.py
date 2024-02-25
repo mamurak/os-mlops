@@ -7,6 +7,9 @@ from codeflare_sdk.cluster.auth import TokenAuthentication
 from codeflare_sdk.job.jobs import DDPJobDefinition
 
 
+model_id = environ.get('hf_model_id', 'Trelis/Llama-2-7b-chat-hf-sharded-bf16')
+
+
 def submit_training_job(server_url='', token=''):
     auth = cluster_login(server_url, token)
     cluster = create_cluster()
@@ -31,31 +34,21 @@ def cluster_login(server_url, token):
 
 
 def create_cluster():
-    print('creating framework cluster')
+    print('connecting to framework cluster')
 
     cluster = Cluster(
         ClusterConfiguration(
             name='llamafinetunelora',
-            namespace='default',
-            image='quay.io/project-codeflare/ray:latest-py39-cu118',
+            image='quay.io/mmurakam/runtimes:finetuning-ray-runtime-v0.2.1',
             num_workers=1,
             min_cpus=4,
             max_cpus=4,
             min_memory=96,
             max_memory=96,
-            num_gpus=4,
+            num_gpus=1,
             instascale=False,
         )
     )
-
-    cluster_running = cluster.status()[1]
-
-    if not cluster_running:
-        cluster.up()
-        print('booting cluster')
-
-        cluster.wait_ready()
-        print('cluster is online')
 
     print('cluster details:\n')
     cluster.details()
@@ -68,8 +61,7 @@ def submit_job(cluster):
 
     jobdef = DDPJobDefinition(
         name="llamafinetunelora",
-        script="finetune.py",
-        scheduler_args={"requirements": "requirements.txt"},
+        script="finetune.py"
     )
     job = jobdef.submit(cluster)
 
@@ -84,21 +76,29 @@ def wait_for_completion(job):
     job_finished = False
     while not job_finished:
         sleep(5)
-        job_finished = job.status().is_terminal()
-        print(f'job is finished: {job_finished}')
+        try:
+            job_status = job.status()
+            job_finished = job.status().is_terminal()
+            print(f'job is finished: {job_finished}')
+        except Exception as e:
+            print(f'An error occurred while checking job status: {e}')
+    try:
+        job_status = job.status()
+        print(f'job finished with status: {job_status}')
+        print('job logs:\n')
+        pprint(job.logs())
+    except Exception as e:
+        print(f'An error occurred while fetching job logs or status: {e}')
+        raise
 
-    print(f'job finished with status: {job.status()}')
-
-    print('job logs:\n')
-    pprint(job.logs())
-
+    if job.status().state._name_ == 'FAILED':
+        raise Exception('Job failed!')
     return
 
 
 def clean_up(cluster, auth):
-    print('shutting down cluster and logging out')
+    print('logging out')
 
-    cluster.down()
     auth.logout()
 
     print('cleanup complete')
