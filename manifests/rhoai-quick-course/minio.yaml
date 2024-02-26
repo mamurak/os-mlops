@@ -1,0 +1,115 @@
+kind: Secret
+apiVersion: v1
+metadata:
+  name: minio-secret
+stringData:
+  accesskey: minio
+  secretkey: minio123
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: minio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minio
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: minio
+    spec:
+      containers:
+        - resources:
+            limits:
+              cpu: 250m
+              memory: 1Gi
+            requests:
+              cpu: 20m
+              memory: 100Mi
+          readinessProbe:
+            tcpSocket:
+              port: 9000
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: /dev/termination-log
+          name: minio
+          livenessProbe:
+            tcpSocket:
+              port: 9000
+            initialDelaySeconds: 30
+            timeoutSeconds: 1
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+          env:
+            - name: MINIO_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: minio-secret
+                  key: accesskey
+            - name: MINIO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: minio-secret
+                  key: secretkey
+          ports:
+            - containerPort: 9000
+              protocol: TCP
+            - containerPort: 9090
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          terminationMessagePolicy: File
+          image: quay.io/mmurakam/minio:minio-v0.5.0
+          args:
+            - server
+            - /data1
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+  strategy:
+    type: Recreate
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: minio-service
+spec:
+  ipFamilies:
+    - IPv4
+  ports:    
+    - name: http
+      protocol: TCP
+      port: 9000
+      targetPort: 9000
+  internalTrafficPolicy: Cluster
+  type: ClusterIP
+  ipFamilyPolicy: SingleStack
+  sessionAffinity: None
+  selector:
+    app: minio
+---
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: minio
+spec:
+  to:
+    kind: Service
+    name: minio-service
+    weight: 100
+  port:
+    targetPort: http
+  wildcardPolicy: None
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
