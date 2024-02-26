@@ -19,7 +19,9 @@
               ],
               "dependencies": [],
               "include_subdirectories": false,
-              "outputs": [],
+              "outputs": [
+                "raw_data.csv"
+              ],
               "env_vars": [],
               "kubernetes_pod_annotations": [],
               "kubernetes_pod_labels": [],
@@ -32,7 +34,7 @@
             "label": "",
             "ui_data": {
               "label": "data_ingestion.py",
-              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
+              "image": "/notebook/maxm/fraud-detection/static/elyra/python.svg",
               "x_pos": 199,
               "y_pos": 267,
               "description": "Run Python script"
@@ -94,7 +96,7 @@
             "label": "",
             "ui_data": {
               "label": "model_training.py",
-              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
+              "image": "/notebook/maxm/fraud-detection/static/elyra/python.svg",
               "x_pos": 671,
               "y_pos": 266,
               "description": "Run Python script"
@@ -144,7 +146,10 @@
             "component_parameters": {
               "dependencies": [],
               "include_subdirectories": false,
-              "outputs": [],
+              "outputs": [
+                "training_samples.npy",
+                "training_labels.npy"
+              ],
               "env_vars": [],
               "kubernetes_pod_annotations": [],
               "kubernetes_pod_labels": [],
@@ -157,7 +162,7 @@
             "label": "",
             "ui_data": {
               "label": "preprocessing.py",
-              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
+              "image": "/notebook/maxm/fraud-detection/static/elyra/python.svg",
               "x_pos": 428,
               "y_pos": 260,
               "description": "Run Python script"
@@ -220,7 +225,7 @@
             "label": "",
             "ui_data": {
               "label": "model_validation.py",
-              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
+              "image": "/notebook/maxm/fraud-detection/static/elyra/python.svg",
               "x_pos": 895,
               "y_pos": 267,
               "description": "Run Python script"
@@ -286,7 +291,7 @@
             "label": "",
             "ui_data": {
               "label": "model_upload.py",
-              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
+              "image": "/notebook/maxm/fraud-detection/static/elyra/python.svg",
               "x_pos": 1106,
               "y_pos": 269,
               "description": "Run Python script"
@@ -339,17 +344,11 @@
           "name": "model-training",
           "runtime": "Data Science Pipelines",
           "pipeline_defaults": {
-            "mounted_volumes": [
-              {
-                "path": "/data",
-                "pvc_name": "fraud-detection-training-pvc",
-                "read_only": false
-              }
-            ],
-            "kubernetes_pod_annotations": [],
             "kubernetes_shared_mem_size": {},
-            "kubernetes_pod_labels": [],
             "kubernetes_tolerations": [],
+            "mounted_volumes": [],
+            "kubernetes_pod_annotations": [],
+            "kubernetes_pod_labels": [],
             "env_vars": [],
             "kubernetes_secrets": [
               {

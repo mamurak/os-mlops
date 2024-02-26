@@ -15,7 +15,7 @@ def predict(data_folder='./data'):
     class_map_array = array(['no fraud', 'fraud'])
     mapped_results = class_map_array[results]
 
-    print(f'Scored data set. Writing report.')
+    print('Scored data set. Writing report.')
 
     column_names = [f'V{i}' for i in range(1, 31)]
     report = DataFrame(X, columns=column_names)
@@ -27,4 +27,4 @@ def predict(data_folder='./data'):
 
 
 if __name__ == '__main__':
-    predict(data_folder='/data')
+    predict(data_folder='.')

@@ -32,4 +32,4 @@ def ingest_data(data_object_name='', data_folder='./data'):
 
 
 if __name__ == '__main__':
-    ingest_data(data_folder='/data')
+    ingest_data(data_folder='.')

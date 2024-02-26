@@ -48,4 +48,4 @@ def preprocess_data(data_folder='./data'):
 
 
 if __name__ == '__main__':
-    preprocess_data(data_folder='/data')
+    preprocess_data(data_folder='.')

@@ -30,4 +30,4 @@ def preprocess(data_folder='./data'):
 
 
 if __name__ == '__main__':
-    preprocess(data_folder='/data')
+    preprocess(data_folder='.')

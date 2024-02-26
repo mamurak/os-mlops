@@ -34,7 +34,7 @@ def data_ingestion(data_object_name: str):
 
     s3_client.download_file(
         s3_bucket_name,
-        data_object_name,
+        f'data/{data_object_name}',
         raw_data_file_location
     )
     print('Finished data ingestion.')
@@ -165,7 +165,9 @@ def model_upload(model_object_prefix: str):
     def _do_upload(s3_client, object_name):
         print(f'uploading model to {object_name}')
         try:
-            s3_client.upload_file('/data/model.onnx', s3_bucket_name, object_name)
+            s3_client.upload_file(
+                '/data/model.onnx', s3_bucket_name, f'models/{object_name}'
+            )
         except:
             print(f'S3 upload to bucket {s3_bucket_name} at {s3_endpoint_url} failed!')
             raise
@@ -332,20 +334,35 @@ def model_training_pipeline(
     model_upload_task.after(model_validation_task)
 
 
-if __name__ == '__main__':
-    kubeflow_endpoint = 'http://ds-pipeline-pipelines-definition:8888'
+def submit(pipeline):
+    namespace_file_path =\
+        '/var/run/secrets/kubernetes.io/serviceaccount/namespace'
+    with open(namespace_file_path, 'r') as namespace_file:
+        namespace = namespace_file.read()
+
+    kubeflow_endpoint =\
+        f'https://ds-pipeline-pipelines-definition.{namespace}.svc:8443'
+
     sa_token_file_path = '/var/run/secrets/kubernetes.io/serviceaccount/token'
     with open(sa_token_file_path, 'r') as token_file:
         bearer_token = token_file.read()
 
+    ssl_ca_cert =\
+        '/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt'
+
     print(f'Connecting to Data Science Pipelines: {kubeflow_endpoint}')
     client = TektonClient(
         host=kubeflow_endpoint,
-        existing_token=bearer_token
+        existing_token=bearer_token,
+        ssl_ca_cert=ssl_ca_cert
     )
     result = client.create_run_from_pipeline_func(
-        model_training_pipeline,
+        pipeline,
         arguments={},
         experiment_name='model_training-kfp'
     )
     print(f'Starting pipeline run with run_id: {result.run_id}')
+
+
+if __name__ == '__main__':
+    submit(model_training_pipeline)

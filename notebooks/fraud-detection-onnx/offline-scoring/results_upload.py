@@ -32,4 +32,4 @@ def upload_results(data_folder='./data'):
 
 
 if __name__ == '__main__':
-    upload_results(data_folder='/data')
+    upload_results(data_folder='.')

@@ -19,26 +19,22 @@
               ],
               "dependencies": [],
               "include_subdirectories": false,
-              "outputs": [],
+              "outputs": [
+                "data.csv"
+              ],
               "env_vars": [],
               "kubernetes_pod_annotations": [],
               "kubernetes_pod_labels": [],
               "kubernetes_secrets": [],
               "kubernetes_shared_mem_size": {},
               "kubernetes_tolerations": [],
-              "mounted_volumes": [
-                {
-                  "path": "/data",
-                  "pvc_name": "fraud-detection-offline-scoring-pvc",
-                  "read_only": false
-                }
-              ],
+              "mounted_volumes": [],
               "filename": "data_ingestion.py"
             },
             "label": "",
             "ui_data": {
               "label": "data_ingestion.py",
-              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
+              "image": "/notebook/maxm/fraud-detection/static/elyra/python.svg",
               "x_pos": 97,
               "y_pos": 233,
               "description": "Run Python script"
@@ -81,26 +77,22 @@
             "component_parameters": {
               "dependencies": [],
               "include_subdirectories": false,
-              "outputs": [],
+              "outputs": [
+                "samples.npy"
+              ],
               "env_vars": [],
               "kubernetes_pod_annotations": [],
               "kubernetes_pod_labels": [],
               "kubernetes_secrets": [],
               "kubernetes_shared_mem_size": {},
               "kubernetes_tolerations": [],
-              "mounted_volumes": [
-                {
-                  "path": "/data",
-                  "pvc_name": "fraud-detection-offline-scoring-pvc",
-                  "read_only": false
-                }
-              ],
+              "mounted_volumes": [],
               "filename": "preprocessing.py"
             },
             "label": "",
             "ui_data": {
               "label": "preprocessing.py",
-              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
+              "image": "/notebook/maxm/fraud-detection/static/elyra/python.svg",
               "x_pos": 295,
               "y_pos": 233,
               "description": "Run Python script"
@@ -168,7 +160,7 @@
             "label": "",
             "ui_data": {
               "label": "model_loading.py",
-              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
+              "image": "/notebook/maxm/fraud-detection/static/elyra/python.svg",
               "x_pos": 205,
               "y_pos": 362,
               "description": "Run Python script"
@@ -211,26 +203,22 @@
             "component_parameters": {
               "dependencies": [],
               "include_subdirectories": false,
-              "outputs": [],
+              "outputs": [
+                "predictions.csv"
+              ],
               "env_vars": [],
               "kubernetes_pod_annotations": [],
               "kubernetes_pod_labels": [],
               "kubernetes_secrets": [],
               "kubernetes_shared_mem_size": {},
               "kubernetes_tolerations": [],
-              "mounted_volumes": [
-                {
-                  "path": "/data",
-                  "pvc_name": "fraud-detection-offline-scoring-pvc",
-                  "read_only": false
-                }
-              ],
+              "mounted_volumes": [],
               "filename": "scoring.py"
             },
             "label": "",
             "ui_data": {
               "label": "scoring.py",
-              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
+              "image": "/notebook/maxm/fraud-detection/static/elyra/python.svg",
               "x_pos": 475,
               "y_pos": 310,
               "description": "Run Python script"
@@ -292,19 +280,13 @@
               "kubernetes_secrets": [],
               "kubernetes_shared_mem_size": {},
               "kubernetes_tolerations": [],
-              "mounted_volumes": [
-                {
-                  "path": "/data",
-                  "pvc_name": "fraud-detection-offline-scoring-pvc",
-                  "read_only": false
-                }
-              ],
+              "mounted_volumes": [],
               "filename": "results_upload.py"
             },
             "label": "",
             "ui_data": {
               "label": "results_upload.py",
-              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
+              "image": "/notebook/maxm/fraud-detection/static/elyra/python.svg",
               "x_pos": 663,
               "y_pos": 309,
               "description": "Run Python script"
@@ -357,11 +339,11 @@
           "name": "offline-scoring",
           "runtime": "Data Science Pipelines",
           "pipeline_defaults": {
+            "kubernetes_shared_mem_size": {},
+            "kubernetes_tolerations": [],
             "mounted_volumes": [],
             "kubernetes_pod_annotations": [],
-            "kubernetes_shared_mem_size": {},
             "kubernetes_pod_labels": [],
-            "kubernetes_tolerations": [],
             "env_vars": [],
             "kubernetes_secrets": [
               {

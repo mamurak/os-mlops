@@ -23,9 +23,9 @@ def data_ingestion(data_object_name: str):
     s3_bucket_name = environ.get('AWS_S3_BUCKET')
 
     print(f'Downloading data "{data_object_name}" '
-        f'from bucket "{s3_bucket_name}" '
-        f'from S3 storage at {s3_endpoint_url}'
-        f'to {raw_data_file_location}')
+          f'from bucket "{s3_bucket_name}" '
+          f'from S3 storage at {s3_endpoint_url}'
+          f'to {raw_data_file_location}')
 
     s3_client = client(
         's3', endpoint_url=s3_endpoint_url,
@@ -34,7 +34,7 @@ def data_ingestion(data_object_name: str):
 
     s3_client.download_file(
         s3_bucket_name,
-        data_object_name,
+        f'data/{data_object_name}',
         raw_data_file_location
     )
     print('Finished data ingestion.')
@@ -44,7 +44,6 @@ def preprocessing():
     from numpy import save
     from pandas import read_csv
     from sklearn.preprocessing import RobustScaler
-
 
     print('Preprocessing data.')
 
@@ -96,7 +95,7 @@ def load_model(model_object_name: str):
     )
 
     s3_client.download_file(
-        s3_bucket_name, model_object_name, model_path
+        s3_bucket_name, f'models/{model_object_name}', model_path
     )
 
     print('Finished model loading.')
@@ -119,13 +118,13 @@ def predict():
     class_map_array = array(['no fraud', 'fraud'])
     mapped_results = class_map_array[results]
 
-    print(f'Scored data set. Writing report.')
+    print('Scored data set. Writing report.')
 
     column_names = [f'V{i}' for i in range(1, 31)]
     report = DataFrame(X, columns=column_names)
     report.insert(0, 'Prediction', mapped_results)
 
-    report.to_csv(f'/data/predictions.csv')
+    report.to_csv('/data/predictions.csv')
 
     print('Wrote report. Offline scoring complete.')
 
@@ -154,8 +153,10 @@ def upload_results():
         aws_access_key_id=s3_access_key, aws_secret_access_key=s3_secret_key
     )
 
-    with open(f'/data/predictions.csv', 'rb') as results_file:
-        s3_client.upload_fileobj(results_file, s3_bucket_name, results_name)
+    with open('/data/predictions.csv', 'rb') as results_file:
+        s3_client.upload_fileobj(
+            results_file, s3_bucket_name, f'data/{results_name}'
+        )
 
     print('Finished uploading results.')
 
@@ -243,20 +244,35 @@ def _mount_data_connection(task):
         )
 
 
-if __name__ == '__main__':
-    kubeflow_endpoint = 'http://ds-pipeline-pipelines-definition:8888'
+def submit(pipeline):
+    namespace_file_path =\
+        '/var/run/secrets/kubernetes.io/serviceaccount/namespace'
+    with open(namespace_file_path, 'r') as namespace_file:
+        namespace = namespace_file.read()
+
+    kubeflow_endpoint =\
+        f'https://ds-pipeline-pipelines-definition.{namespace}.svc:8443'
+
     sa_token_file_path = '/var/run/secrets/kubernetes.io/serviceaccount/token'
     with open(sa_token_file_path, 'r') as token_file:
         bearer_token = token_file.read()
 
+    ssl_ca_cert =\
+        '/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt'
+
     print(f'Connecting to Data Science Pipelines: {kubeflow_endpoint}')
     client = TektonClient(
         host=kubeflow_endpoint,
-        existing_token=bearer_token
+        existing_token=bearer_token,
+        ssl_ca_cert=ssl_ca_cert
     )
     result = client.create_run_from_pipeline_func(
-        offline_scoring_pipeline,
+        pipeline,
         arguments={},
         experiment_name='offline-scoring-kfp'
     )
     print(f'Starting pipeline run with run_id: {result.run_id}')
+
+
+if __name__ == '__main__':
+    submit(offline_scoring_pipeline)
