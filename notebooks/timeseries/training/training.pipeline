@@ -1,0 +1,580 @@
+{
+  "doc_type": "pipeline",
+  "version": "3.0",
+  "json_schema": "http://api.dataplatform.ibm.com/schemas/common-pipeline/pipeline-flow/pipeline-flow-v3-schema.json",
+  "id": "elyra-auto-generated-pipeline",
+  "primary_pipeline": "primary",
+  "pipelines": [
+    {
+      "id": "primary",
+      "nodes": [
+        {
+          "id": "8740898a-a811-4eeb-b7c1-e9ca27d50fd7",
+          "type": "execution_node",
+          "op": "execute-python-node",
+          "app_data": {
+            "component_parameters": {
+              "dependencies": [],
+              "include_subdirectories": false,
+              "outputs": [
+                "sensor-training-data.csv"
+              ],
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [],
+              "kubernetes_shared_mem_size": {},
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "preprocessing.py"
+            },
+            "label": "",
+            "ui_data": {
+              "label": "preprocessing.py",
+              "image": "/notebook/timeseries-project/jupyter/static/elyra/python.svg",
+              "x_pos": 216,
+              "y_pos": 285,
+              "description": "Run Python script"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              },
+              "links": [
+                {
+                  "id": "2969e14d-aca1-4833-b43b-66205af16d2c",
+                  "node_id_ref": "fb579808-3c78-4119-b489-33d9af81b647",
+                  "port_id_ref": "outPort"
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "b30fc9dc-c7fa-4868-a3ac-ca7e84477cad",
+          "type": "execution_node",
+          "op": "execute-python-node",
+          "app_data": {
+            "component_parameters": {
+              "dependencies": [],
+              "include_subdirectories": false,
+              "outputs": [
+                "features.pickle",
+                "labels.pickle"
+              ],
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [],
+              "kubernetes_shared_mem_size": {},
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "feature_extraction.py"
+            },
+            "label": "",
+            "ui_data": {
+              "label": "feature_extraction.py",
+              "image": "/notebook/timeseries-project/jupyter/static/elyra/python.svg",
+              "x_pos": 479,
+              "y_pos": 284,
+              "description": "Run Python script"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              },
+              "links": [
+                {
+                  "id": "d8002555-53d5-464b-ae30-3c273fa44b3c",
+                  "node_id_ref": "8740898a-a811-4eeb-b7c1-e9ca27d50fd7",
+                  "port_id_ref": "outPort"
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "384fb260-d2a1-43bc-9ce7-88d174e73ed2",
+          "type": "execution_node",
+          "op": "execute-python-node",
+          "app_data": {
+            "component_parameters": {
+              "pipeline_parameters": [
+                "mlflow_experiment",
+                "tree_depth"
+              ],
+              "dependencies": [],
+              "include_subdirectories": false,
+              "outputs": [
+                "model.joblib"
+              ],
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [
+                {
+                  "env_var": "mlflow-s3-access-key",
+                  "name": "mlflow-secret",
+                  "key": "AWS_ACCESS_KEY_ID"
+                },
+                {
+                  "env_var": "mlflow-s3-endpoint-url",
+                  "name": "mlflow-secret",
+                  "key": "AWS_S3_ENDPOINT"
+                },
+                {
+                  "env_var": "mlflow-s3-secret-key",
+                  "name": "mlflow-secret",
+                  "key": "AWS_SECRET_ACCESS_KEY"
+                },
+                {
+                  "env_var": "mlflow-tracking-uri",
+                  "name": "mlflow-secret",
+                  "key": "MLFLOW_TRACKING_URI"
+                }
+              ],
+              "kubernetes_shared_mem_size": {},
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "training.py"
+            },
+            "label": "",
+            "ui_data": {
+              "label": "training.py",
+              "image": "/notebook/timeseries-project/jupyter/static/elyra/python.svg",
+              "x_pos": 744,
+              "y_pos": 286,
+              "description": "Run Python script"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              },
+              "links": [
+                {
+                  "id": "99c78748-2d68-46ba-8835-d0ba4ed84eb4",
+                  "node_id_ref": "b30fc9dc-c7fa-4868-a3ac-ca7e84477cad",
+                  "port_id_ref": "outPort"
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "91f20909-91d6-445f-b1ac-e3605818209f",
+          "type": "execution_node",
+          "op": "execute-python-node",
+          "app_data": {
+            "component_parameters": {
+              "dependencies": [],
+              "include_subdirectories": false,
+              "outputs": [],
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [],
+              "kubernetes_shared_mem_size": {},
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "verification.py"
+            },
+            "label": "",
+            "ui_data": {
+              "label": "verification.py",
+              "image": "/notebook/timeseries-project/jupyter/static/elyra/python.svg",
+              "x_pos": 197,
+              "y_pos": 458,
+              "description": "Run Python script"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              },
+              "links": [
+                {
+                  "id": "b88e36d0-9652-49a2-9a11-35b265876526",
+                  "node_id_ref": "384fb260-d2a1-43bc-9ce7-88d174e73ed2",
+                  "port_id_ref": "outPort"
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "b3ca4f79-27ea-462f-a481-12418f815673",
+          "type": "execution_node",
+          "op": "execute-python-node",
+          "app_data": {
+            "component_parameters": {
+              "dependencies": [],
+              "include_subdirectories": false,
+              "outputs": [
+                "model_object_name"
+              ],
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [
+                {
+                  "env_var": "S3_ENDPOINT_URL",
+                  "name": "aws-connection-user-bucket",
+                  "key": "AWS_S3_ENDPOINT"
+                },
+                {
+                  "env_var": "S3_ACCESS_KEY",
+                  "name": "aws-connection-user-bucket",
+                  "key": "AWS_ACCESS_KEY_ID"
+                },
+                {
+                  "env_var": "S3_SECRET_KEY",
+                  "name": "aws-connection-user-bucket",
+                  "key": "AWS_SECRET_ACCESS_KEY"
+                },
+                {
+                  "env_var": "S3_BUCKET_NAME",
+                  "name": "aws-connection-user-bucket",
+                  "key": "AWS_S3_BUCKET"
+                }
+              ],
+              "kubernetes_shared_mem_size": {},
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "push-model.py"
+            },
+            "label": "",
+            "ui_data": {
+              "label": "push-model.py",
+              "image": "/notebook/timeseries-project/jupyter/static/elyra/python.svg",
+              "x_pos": 426,
+              "y_pos": 453,
+              "description": "Run Python script"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              },
+              "links": [
+                {
+                  "id": "fed63043-04b3-42ab-b4ea-bf416abcf858",
+                  "node_id_ref": "91f20909-91d6-445f-b1ac-e3605818209f",
+                  "port_id_ref": "outPort"
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "fb579808-3c78-4119-b489-33d9af81b647",
+          "type": "execution_node",
+          "op": "execute-python-node",
+          "app_data": {
+            "component_parameters": {
+              "dependencies": [],
+              "include_subdirectories": false,
+              "outputs": [
+                "raw-data.csv"
+              ],
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [
+                {
+                  "env_var": "S3_ENDPOINT_URL",
+                  "name": "aws-connection-user-bucket",
+                  "key": "AWS_S3_ENDPOINT"
+                },
+                {
+                  "env_var": "S3_ACCESS_KEY_ID",
+                  "name": "aws-connection-user-bucket",
+                  "key": "AWS_ACCESS_KEY_ID"
+                },
+                {
+                  "env_var": "S3_SECRET_ACCESS_KEY",
+                  "name": "aws-connection-user-bucket",
+                  "key": "AWS_SECRET_ACCESS_KEY"
+                },
+                {
+                  "env_var": "S3_BUCKET_NAME",
+                  "name": "aws-connection-user-bucket",
+                  "key": "AWS_S3_BUCKET"
+                }
+              ],
+              "kubernetes_shared_mem_size": {},
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "data_ingestion.py"
+            },
+            "label": "",
+            "ui_data": {
+              "label": "data_ingestion.py",
+              "image": "/notebook/timeseries-project/jupyter/static/elyra/python.svg",
+              "x_pos": 9,
+              "y_pos": 288,
+              "description": "Run Python script"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              }
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "e7ffefa9-c4a1-4889-b72b-9868d555470c",
+          "type": "execution_node",
+          "op": "execute-python-node",
+          "app_data": {
+            "component_parameters": {
+              "dependencies": [],
+              "include_subdirectories": false,
+              "outputs": [],
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [
+                {
+                  "env_var": "GIT_TOKEN",
+                  "name": "git-manifests-secret",
+                  "key": "GIT_TOKEN"
+                },
+                {
+                  "env_var": "REPO_URL",
+                  "name": "git-manifests-secret",
+                  "key": "REPO_URL"
+                }
+              ],
+              "kubernetes_shared_mem_size": {},
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "update_repo.py"
+            },
+            "label": "",
+            "ui_data": {
+              "label": "update_repo.py",
+              "image": "/notebook/timeseries-project/jupyter/static/elyra/python.svg",
+              "x_pos": 662,
+              "y_pos": 456,
+              "description": "Run Python script"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              },
+              "links": [
+                {
+                  "id": "45841bd4-62f4-4d4e-af46-e95c02b5faa6",
+                  "node_id_ref": "b3ca4f79-27ea-462f-a481-12418f815673",
+                  "port_id_ref": "outPort"
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "app_data": {
+        "ui_data": {
+          "comments": []
+        },
+        "version": 8,
+        "runtime_type": "KUBEFLOW_PIPELINES",
+        "properties": {
+          "pipeline_defaults": {
+            "kubernetes_shared_mem_size": {},
+            "mounted_volumes": [],
+            "kubernetes_tolerations": [],
+            "kubernetes_pod_labels": [],
+            "kubernetes_pod_annotations": [],
+            "env_vars": [],
+            "kubernetes_secrets": [],
+            "runtime_image": "quay.io/mmurakam/runtimes:timeseries-v0.2.0"
+          },
+          "name": "training",
+          "runtime": "Data Science Pipelines",
+          "pipeline_parameters": [
+            {
+              "name": "mlflow_experiment",
+              "description": "",
+              "default_value": {
+                "type": "String",
+                "value": "timeseries"
+              },
+              "required": false
+            },
+            {
+              "name": "tree_depth",
+              "description": "",
+              "default_value": {
+                "type": "Integer",
+                "value": 2
+              },
+              "required": false
+            }
+          ]
+        }
+      },
+      "runtime_ref": ""
+    }
+  ],
+  "schemas": []
+}

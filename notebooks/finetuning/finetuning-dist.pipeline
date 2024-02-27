@@ -1,0 +1,280 @@
+{
+  "doc_type": "pipeline",
+  "version": "3.0",
+  "json_schema": "http://api.dataplatform.ibm.com/schemas/common-pipeline/pipeline-flow/pipeline-flow-v3-schema.json",
+  "id": "elyra-auto-generated-pipeline",
+  "primary_pipeline": "primary",
+  "pipelines": [
+    {
+      "id": "primary",
+      "nodes": [
+        {
+          "id": "3e0518c3-5b82-476b-a529-f3bfd236322e",
+          "type": "execution_node",
+          "op": "execute-python-node",
+          "app_data": {
+            "component_parameters": {
+              "pipeline_parameters": [
+                "hf_model_id"
+              ],
+              "dependencies": [],
+              "include_subdirectories": false,
+              "outputs": [],
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [],
+              "kubernetes_shared_mem_size": {},
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [
+                {
+                  "path": "/models",
+                  "pvc_name": "models-cache",
+                  "read_only": false
+                }
+              ],
+              "filename": "load_artifacts.py"
+            },
+            "label": "",
+            "ui_data": {
+              "label": "load_artifacts.py",
+              "image": "/notebook/llm-project/jupyter/static/elyra/python.svg",
+              "x_pos": 51,
+              "y_pos": 315,
+              "description": "Run Python script"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              }
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "dd2dc334-da93-4dae-b52d-67fd200f871d",
+          "type": "execution_node",
+          "op": "execute-python-node",
+          "app_data": {
+            "component_parameters": {
+              "pipeline_parameters": [],
+              "dependencies": [
+                "finetune.py"
+              ],
+              "include_subdirectories": false,
+              "outputs": [],
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [
+                {
+                  "env_var": "OCP_API_SERVER_URL",
+                  "name": "ocp-login-secret",
+                  "key": "OCP_API_SERVER_URL"
+                },
+                {
+                  "env_var": "OCP_TOKEN",
+                  "name": "ocp-login-secret",
+                  "key": "OCP_TOKEN"
+                }
+              ],
+              "kubernetes_shared_mem_size": {},
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "submit_training_job.py"
+            },
+            "label": "",
+            "ui_data": {
+              "label": "submit_training_job.py",
+              "image": "/notebook/llm-project/jupyter/static/elyra/python.svg",
+              "x_pos": 296.0000305175781,
+              "y_pos": 316,
+              "description": "Run Python script"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              },
+              "links": [
+                {
+                  "id": "037e3f75-3883-41f5-b92f-55f3825932b5",
+                  "node_id_ref": "3e0518c3-5b82-476b-a529-f3bfd236322e",
+                  "port_id_ref": "outPort"
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "3c589f28-a972-40a0-b564-e540454a98bf",
+          "type": "execution_node",
+          "op": "execute-python-node",
+          "app_data": {
+            "component_parameters": {
+              "dependencies": [],
+              "include_subdirectories": false,
+              "outputs": [],
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [],
+              "kubernetes_shared_mem_size": {},
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [
+                {
+                  "path": "/models",
+                  "pvc_name": "models-cache",
+                  "read_only": false
+                }
+              ],
+              "filename": "upload_artifacts.py"
+            },
+            "label": "",
+            "ui_data": {
+              "label": "upload_artifacts.py",
+              "image": "/notebook/llm-project/jupyter/static/elyra/python.svg",
+              "x_pos": 532,
+              "y_pos": 316,
+              "description": "Run Python script"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              },
+              "links": [
+                {
+                  "id": "79d3a324-7509-44c6-94a3-f3bae0049ff1",
+                  "node_id_ref": "dd2dc334-da93-4dae-b52d-67fd200f871d",
+                  "port_id_ref": "outPort"
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "app_data": {
+        "ui_data": {
+          "comments": []
+        },
+        "version": 8,
+        "runtime_type": "KUBEFLOW_PIPELINES",
+        "properties": {
+          "name": "finetuning-dist",
+          "runtime": "Data Science Pipelines",
+          "pipeline_defaults": {
+            "kubernetes_tolerations": [],
+            "kubernetes_pod_annotations": [],
+            "kubernetes_pod_labels": [],
+            "mounted_volumes": [],
+            "kubernetes_shared_mem_size": {},
+            "env_vars": [],
+            "kubernetes_secrets": [
+              {
+                "env_var": "S3_ENDPOINT",
+                "name": "aws-connection-minio-bucket",
+                "key": "AWS_S3_ENDPOINT"
+              },
+              {
+                "env_var": "S3_ACCESS_KEY_ID",
+                "name": "aws-connection-minio-bucket",
+                "key": "AWS_ACCESS_KEY_ID"
+              },
+              {
+                "env_var": "S3_SECRET_ACCESS_KEY",
+                "name": "aws-connection-minio-bucket",
+                "key": "AWS_SECRET_ACCESS_KEY"
+              },
+              {
+                "env_var": "S3_BUCKET",
+                "name": "aws-connection-minio-bucket",
+                "key": "AWS_S3_BUCKET"
+              }
+            ],
+            "runtime_image": "quay.io/mmurakam/runtimes:hf-codeflare-v0.5.0"
+          },
+          "pipeline_parameters": [
+            {
+              "name": "hf_model_id",
+              "description": "",
+              "default_value": {
+                "type": "String",
+                "value": "Trelis/Llama-2-7b-chat-hf-sharded-bf16"
+              },
+              "required": false
+            }
+          ]
+        }
+      },
+      "runtime_ref": ""
+    }
+  ],
+  "schemas": []
+}
