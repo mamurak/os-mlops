@@ -1,3 +1,4 @@
+from os import environ
 from pprint import pformat
 from time import sleep
 
@@ -7,32 +8,30 @@ from kubernetes.dynamic import DynamicClient
 from kubernetes.dynamic.exceptions import NotFoundError
 
 
-namespace = 'user2'
-sleep_time = 5
+namespace = environ('NAMESPACE')
+sleep_time = int(environ('SLEEP_TIME', '5'))
 access_key = 'AWS_ACCESS_KEY_ID'
 secret_key = 'AWS_SECRET_ACCESS_KEY'
-source_secret_name = 'pipeline-bucket'
-target_secret_name = 'aws-connection-pipelines2'
+source_secret_name = environ('SOURCE_SECRET_NAME')
+target_secret_name = environ('TARGET_SECRET_NAME')
+bucket_name = environ('BUCKET_NAME')
 
 load_incluster_config()
 k8s_client = DynamicClient(ApiClient())
 secret_api = k8s_client.resources.get(api_version='v1', kind='Secret')
 
 
-def transfer_s3_credentials(
-        source_secret_name, target_secret_name, namespace, sleep_time=5):
-
+def transfer_s3_credentials():
     print(f'Transfering S3 credentials from {source_secret_name} to '
           f'{target_secret_name} in namespace {namespace}')
-    access_key_id, secret_key_id = _read_s3_credentials(
-        source_secret_name, namespace, sleep_time
+    s3_credentials = _read_s3_credentials(
+        source_secret_name, namespace
     )
-    _write_s3_to_target(
-        access_key_id, secret_key_id, target_secret_name, namespace
-    )
+    data_connection_definition = _generate_data_connection(*s3_credentials)
+    _deploy(data_connection_definition)
 
 
-def _read_s3_credentials(source_secret_name, namespace, sleep_time=5):
+def _read_s3_credentials(source_secret_name, namespace):
 
     print(f'Reading secret {source_secret_name} in namespace {namespace}')
     source_secret_exists = False
@@ -58,31 +57,42 @@ def _read_s3_credentials(source_secret_name, namespace, sleep_time=5):
     return access_key_id, secret_key_id
 
 
-def _write_s3_to_target(
-        access_key_id, secret_key_id, target_secret_name, namespace):
-
-    print(f'Writing S3 credentials to secret {target_secret_name} '
-          f'in namespace {namespace}')
-    target_secret_patch = {
+def _generate_data_connection(access_key_id, secret_key_id):
+    data_connection_definition = {
         'apiVersion': 'v1',
         'kind': 'Secret',
         'metadata': {
             'name': target_secret_name,
             'namespace': namespace,
+            'labels': {
+                'opendatahub.io/dashboard': 'true',
+                'opendatahub.io/managed': 'true',
+            },
+            'annotations': {
+                'opendatahub.io/connection-type': 's3',
+            },
         },
-        'data': {
+        'stringData': {
             access_key: access_key_id,
             secret_key: secret_key_id,
+            'AWS_S3_BUCKET': bucket_name,
+            'AWS_S3_ENDPOINT': 'http://s3.openshift-storage.svc',
+            'AWS_DEFAULT_REGION': 'none',
         }
     }
-    target_secret = secret_api.patch(
-        body=target_secret_patch,
-        content_type='application/merge-patch+json'
+    return data_connection_definition
+
+
+def _deploy(data_connection_definition):
+
+    print(f'Writing S3 credentials to secret {target_secret_name} '
+          f'in namespace {namespace}')
+    target_secret = secret_api.create(
+        body=data_connection_definition,
+        namespace=namespace,
     )
     print(f'Patched secret. Current state: {pformat(target_secret)}')
 
 
 if __name__ == '__main__':
-    transfer_s3_credentials(
-        source_secret_name, target_secret_name, namespace, sleep_time
-    )
+    transfer_s3_credentials()
