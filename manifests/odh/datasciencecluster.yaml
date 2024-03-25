@@ -12,23 +12,25 @@ spec:
   components:
     codeflare:
       managementState: Managed
-    dashboard:
-      managementState: Managed
-    datasciencepipelines:
-      managementState: Managed
     kserve:
+      managementState: Managed
       serving:
         ingressGateway:
           certificate:
             type: SelfSigned
         managementState: Managed
         name: knative-serving
-      managementState: Managed
-    modelmeshserving:
+    trustyai:
       managementState: Managed
     ray:
       managementState: Managed
-    trustyai:
+    kueue:
       managementState: Managed
     workbenches:
+      managementState: Managed
+    dashboard:
+      managementState: Managed
+    modelmeshserving:
+      managementState: Managed
+    datasciencepipelines:
       managementState: Managed
