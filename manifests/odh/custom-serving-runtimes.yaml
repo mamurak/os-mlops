@@ -212,3 +212,43 @@ objects:
         runtimeManagementPort: 7071
         memBufferBytes: 134217728
         modelLoadingTimeoutMillis: 90000
+---
+kind: Template
+apiVersion: template.openshift.io/v1
+metadata:
+  name: vllm
+  namespace: redhat-ods-applications
+  labels:
+    opendatahub.io/dashboard: 'true'
+  annotations:
+    opendatahub.io/modelServingSupport: '["single"]'
+objects:
+  - apiVersion: serving.kserve.io/v1alpha1
+    kind: ServingRuntime
+    labels:
+      opendatahub.io/dashboard: 'true'
+    metadata:
+      annotations:
+        openshift.io/display-name: vLLM
+      name: vllm
+    spec:
+      builtInAdapter:
+        modelLoadingTimeoutMillis: 90000
+      containers:
+        - args:
+            - '--model'
+            - /mnt/models/
+            - '--download-dir'
+            - /models-cache
+            - '--port'
+            - '8080'
+          image: 'quay.io/rh-aiservices-bu/vllm-openai-ubi9:0.3.1'
+          name: kserve-container
+          ports:
+            - containerPort: 8080
+              name: http1
+              protocol: TCP
+      multiModel: false
+      supportedModelFormats:
+        - autoSelect: true
+          name: pytorch
