@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: bootstrap
+  namespace: openshift-gitops
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: in-cluster
+        name: ic-shared-database-app
+        repoURL: https://github.com/mamurak/insurance-claim-processing.git
+        targetRevision: mamurak/dev
+        path: bootstrap/ic-shared-database
+      - cluster: in-cluster
+        name: ic-rhoai-configuration
+        repoURL: https://github.com/mamurak/insurance-claim-processing.git
+        targetRevision: mamurak/dev
+        path: bootstrap/ic-rhoai-configuration
+  template:
+    metadata:
+      name: 'insurance-claims-app'
+      namespace: openshift-gitops
+      labels:
+        component: bootstrap
+        purpose: 'insurance-claims-app'
+    spec:
+      project: default
+      source:
+        repoURL: 'https://github.com/mamurak/insurance-claim-processing.git'
+        targetRevision: 'mamurak/dev'
+        path: ''
+      destination:
+        server: 'https://kubernetes.default.svc'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - RespectIgnoreDifferences=true
