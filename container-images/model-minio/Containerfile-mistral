@@ -1,0 +1,20 @@
+FROM quay.io/cloudservices/minio:RELEASE.2021-06-17T00-10-46Z.hotfix.35a0912ff
+
+EXPOSE 9000
+
+USER root
+
+RUN useradd -u 1000 -g 0 modelmesh && \
+    microdnf install -y git git-lfs && \
+    microdnf clean all && \
+    mkdir /data1
+
+WORKDIR /data1
+
+RUN git clone https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2 .
+
+RUN chown -R 1000:0 /data1 && \
+    chgrp -R 0 /data1 && \
+    chmod -R g=u /data1
+
+USER 1000
