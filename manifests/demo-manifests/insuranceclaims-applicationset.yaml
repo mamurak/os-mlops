@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: bootstrap
+  name: insurance-claims-bootstrap
   namespace: openshift-gitops
 spec:
   generators:
@@ -19,17 +19,17 @@ spec:
         path: bootstrap/ic-rhoai-configuration
   template:
     metadata:
-      name: 'insurance-claims-app'
+      name: '{{name}}'
       namespace: openshift-gitops
       labels:
         component: bootstrap
-        purpose: 'insurance-claims-app'
+        purpose: '{{name}}'
     spec:
       project: default
       source:
-        repoURL: 'https://github.com/mamurak/insurance-claim-processing.git'
-        targetRevision: 'mamurak/dev'
-        path: ''
+        repoURL: '{{repoURL}}'
+        targetRevision: '{{targetRevision}}'
+        path: '{{path}}'
       destination:
         server: 'https://kubernetes.default.svc'
       syncPolicy:
