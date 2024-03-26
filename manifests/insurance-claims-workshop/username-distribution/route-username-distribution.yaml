@@ -1,0 +1,26 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  annotations:
+    app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"redis"}]'
+    openshift.io/host.generated: "true"
+  labels:
+    app: username-distribution
+    app.kubernetes.io/component: username-distribution
+    app.kubernetes.io/instance: username-distribution
+    app.kubernetes.io/name: ""
+    app.kubernetes.io/part-of: username-distribution-app
+    app.openshift.io/runtime: ""
+    app.openshift.io/runtime-version: latest
+  name: username-distribution
+spec:
+  port:
+    targetPort: 8080-tcp
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+  to:
+    kind: Service
+    name: username-distribution
+    weight: 100
+  wildcardPolicy: None
