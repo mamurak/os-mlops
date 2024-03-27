@@ -242,7 +242,11 @@ objects:
             - /models-cache
             - '--port'
             - '8080'
-          image: 'quay.io/rh-aiservices-bu/vllm-openai-ubi9:0.3.1'
+            - '--dtype'
+            - half
+            - '--max-model-len'
+            - '4096'
+          image: 'quay.io/rh-aiservices-bu/vllm-openai-ubi9@sha256:c12e1e2a2a22a05e776c0e5330ff5a6f17bc319085acfb4a0af2239883b69920'
           name: kserve-container
           ports:
             - containerPort: 8080
