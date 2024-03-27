@@ -10,8 +10,8 @@ from kubernetes.dynamic.exceptions import NotFoundError
 
 namespace = environ('NAMESPACE')
 sleep_time = int(environ('SLEEP_TIME', '5'))
-access_key = 'AWS_ACCESS_KEY_ID'
-secret_key = 'AWS_SECRET_ACCESS_KEY'
+access_key_name = 'AWS_ACCESS_KEY_ID'
+secret_key_name = 'AWS_SECRET_ACCESS_KEY'
 source_secret_name = environ('SOURCE_SECRET_NAME')
 target_secret_name = environ('TARGET_SECRET_NAME')
 bucket_name = environ('BUCKET_NAME')
@@ -51,8 +51,8 @@ def _read_s3_credentials(source_secret_name, namespace):
             )
             sleep(sleep_time)
 
-    access_key_id = pipeline_bucket_secret['data'][access_key]
-    secret_key_id = pipeline_bucket_secret['data'][secret_key]
+    access_key_id = pipeline_bucket_secret['data'][access_key_name]
+    secret_key_id = pipeline_bucket_secret['data'][secret_key_name]
 
     return access_key_id, secret_key_id
 
@@ -73,8 +73,8 @@ def _generate_data_connection(access_key_id, secret_key_id):
             },
         },
         'stringData': {
-            access_key: access_key_id,
-            secret_key: secret_key_id,
+            access_key_name: access_key_id,
+            secret_key_name: secret_key_id,
             'AWS_S3_BUCKET': bucket_name,
             'AWS_S3_ENDPOINT': 'http://s3.openshift-storage.svc',
             'AWS_DEFAULT_REGION': 'none',
