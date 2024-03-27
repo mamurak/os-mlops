@@ -1,6 +1,6 @@
 onnx==1.14.0
 onnxruntime-gpu==1.14.0
 openimages==0.0.1
-ultralytics==8.0.130
+ultralytics==8.0.237
 seaborn==0.12.2
 boto3==1.28.2
