@@ -1,0 +1,11 @@
+FROM quay.io/modh/odh-pytorch-notebook:v2-2023b-20240301-6560116
+
+RUN pip install pip==22.3.1 setuptools==65.3.0
+
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt && \
+    pip uninstall -y opencv-python && \
+    pip uninstall -y opencv-python-headless && \
+    pip install opencv-python-headless==4.9.0.80 && \
+    chmod -R g+w /opt/app-root/lib/python3.9/site-packages && \
+    fix-permissions /opt/app-root -P
