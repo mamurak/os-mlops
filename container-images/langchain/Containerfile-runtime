@@ -1,4 +1,4 @@
-FROM quay.io/modh/runtime-images:runtime-minimal-ubi9-python-3.9-2023b-20240301-c6843aa
+FROM quay.io/modh/runtime-images:runtime-pytorch-ubi9-python-3.9-2023b-20240301-6560116
 
 RUN pip install pip==22.3.1 setuptools==65.3.0
 
