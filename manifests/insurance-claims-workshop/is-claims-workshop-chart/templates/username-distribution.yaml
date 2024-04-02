@@ -1,0 +1,323 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: username-distribution
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "1"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    template.alpha.openshift.io/wait-for-ready: "true"
+  labels:
+    app.kubernetes.io/part-of: username-distribution-app
+  name: redis
+  namespace: username-distribution
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      name: redis
+  strategy:
+    activeDeadlineSeconds: 21600
+    recreateParams:
+      timeoutSeconds: 600
+    resources: {}
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        name: redis
+    spec:
+      containers:
+      - env:
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: database-password
+              name: redis
+        image: registry.redhat.io/rhel8/redis-6
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: 6379
+          timeoutSeconds: 1
+        name: redis
+        ports:
+        - containerPort: 6379
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -i
+            - -c
+            - test "$(redis-cli -h 127.0.0.1 -a $REDIS_PASSWORD ping)" == "PONG"
+          failureThreshold: 3
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            memory: 512Mi
+        securityContext:
+          capabilities: {}
+          privileged: false
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /var/lib/redis/data
+          name: redis-data
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: redis-data
+        persistentVolumeClaim:
+          claimName: redis
+  test: false
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"redis"}]'
+  labels:
+    app: username-distribution
+    app.kubernetes.io/component: username-distribution
+    app.kubernetes.io/instance: username-distribution
+    app.kubernetes.io/part-of: username-distribution-app
+  name: username-distribution
+  namespace: username-distribution
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: username-distribution
+      deploymentconfig: username-distribution
+  strategy:
+    activeDeadlineSeconds: 21600
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        openshift.io/generated-by: OpenShiftWebConsole
+      creationTimestamp: null
+      labels:
+        app: username-distribution
+        deploymentconfig: username-distribution
+    spec:
+      containers:
+      - env:
+        - name: LAB_REDIS_HOST
+          value: redis.username-distribution.svc.cluster.local
+        - name: LAB_REDIS_PASS
+          valueFrom:
+            secretKeyRef:
+              key: database-password
+              name: redis
+        - name: LAB_TITLE
+          value: OpenShift AI Object Detection Workshop
+        - name: LAB_USER_COUNT
+          value: "50"
+        - name: LAB_USER_PASS
+          value: openshift
+        - name: LAB_USER_ACCESS_TOKEN
+          value: openshift
+        - name: LAB_MODULE_URLS
+          value: https://mamurak.github.io/rhods-od-workshop/rhods-od-workshop/index.html;Object
+            Detection Workshop
+        - name: LAB_USER_PREFIX
+          value: user
+        - name: LAB_USER_PAD_ZERO
+          value: "false"
+        - name: LAB_ADMIN_PASS	
+          value: "r3dh4t1!"
+        image: quay.io/evanshortiss/username-distribution
+        imagePullPolicy: IfNotPresent
+        name: username-distribution
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  test: false
+---
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  annotations:
+    openshift.io/image.dockerRepositoryCheck: "2024-02-07T21:43:07Z"
+  name: username-distribution
+  namespace: username-distribution
+spec:
+  lookupPolicy:
+    local: false
+  tags:
+  - annotations: null
+    from:
+      kind: DockerImage
+      name: quay.io/evanshortiss/username-distribution
+    generation: 2
+    importPolicy:
+      importMode: Legacy
+    name: latest
+    referencePolicy:
+      type: Source
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+    volume.beta.kubernetes.io/storage-provisioner: ebs.csi.aws.com
+    volume.kubernetes.io/storage-provisioner: ebs.csi.aws.com
+  finalizers:
+  - kubernetes.io/pvc-protection
+  name: redis
+  namespace: username-distribution
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: gp3-csi
+  volumeMode: Filesystem
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  annotations:
+    app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"redis"}]'
+    openshift.io/host.generated: "true"
+  labels:
+    app: username-distribution
+    app.kubernetes.io/component: username-distribution
+    app.kubernetes.io/instance: username-distribution
+    app.kubernetes.io/name: ""
+    app.kubernetes.io/part-of: username-distribution-app
+    app.openshift.io/runtime: ""
+    app.openshift.io/runtime-version: latest
+  name: username-distribution
+  namespace: username-distribution
+spec:
+  port:
+    targetPort: 8080-tcp
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+  to:
+    kind: Service
+    name: username-distribution
+    weight: 100
+  wildcardPolicy: None
+---
+apiVersion: v1
+data:
+  DATABASE_SERVICE_NAME: cmVkaXM=
+  MEMORY_LIMIT: NTEyTWk=
+  NAMESPACE: b3BlbnNoaWZ0
+  REDIS_VERSION: My4y
+  VOLUME_CAPACITY: MUdp
+kind: Secret
+metadata:
+  annotations: {}
+  generateName: redis-persistent-parameters-
+  name: redis-persistent-parameters-pjqwp
+  namespace: username-distribution
+type: Opaque
+---
+apiVersion: v1
+data:
+  database-password: VXI4dXlFS1V3WWs1RTdncA==
+kind: Secret
+metadata:
+  annotations:
+    template.openshift.io/expose-password: '{.data[''database-password'']}'
+  labels:
+    template: redis-persistent-template
+    template.openshift.io/template-instance-owner: b2fb4875-bb9e-48b8-a56b-a478c7a325d8
+  name: redis
+  namespace: username-distribution
+type: Opaque
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    template.openshift.io/expose-uri: redis://{.spec.clusterIP}:{.spec.ports[?(.name=="redis")].port}
+  labels:
+    template: redis-persistent-template
+    template.openshift.io/template-instance-owner: b2fb4875-bb9e-48b8-a56b-a478c7a325d8
+  name: redis
+  namespace: username-distribution
+spec:
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: redis
+    port: 6379
+    protocol: TCP
+    targetPort: 6379
+  selector:
+    name: redis
+  sessionAffinity: None
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"redis"}]'
+  labels:
+    app: username-distribution
+    app.kubernetes.io/component: username-distribution
+    app.kubernetes.io/instance: username-distribution
+    app.kubernetes.io/name: ""
+    app.kubernetes.io/part-of: username-distribution-app
+    app.openshift.io/runtime: ""
+    app.openshift.io/runtime-version: latest
+  name: username-distribution
+  namespace: username-distribution
+spec:
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: 8080-tcp
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: username-distribution
+    deploymentconfig: username-distribution
+  sessionAffinity: None
+  type: ClusterIP
