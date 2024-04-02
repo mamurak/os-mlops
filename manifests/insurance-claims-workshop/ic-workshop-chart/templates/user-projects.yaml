@@ -367,7 +367,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: INFERENCE_SERVER_URL
-              value: {{ .Values.llm_inference_url }}
+              value: {{ $.Values.llm_inference_url }}
             - name: MAX_NEW_TOKENS
               value: '1024'
             - name: TOP_K
