@@ -1,7 +1,7 @@
 # Insurance Claims Workshop Helm Chart
 
 This chart deploys:
-- an HTPasswd identity provider for 100 workshop participants,
+- an HTPasswd identity provider for 50 workshop participants,
 - the object detection workshop imagestream,
 - a variable number of data science projects,
 - individual Minio instances with prepopulated S3 buckets.
@@ -29,14 +29,14 @@ cd ~
 1. Clone this repository and navigate to this folder:
 ```
 git clone https://github.com/mamurak/os-mlops.git
-cd os-mlops/manifests/object-detection-workshop/od-workshop-chart
+cd os-mlops/manifests/insurance-claims-workshop/ic-workshop-chart
 ```
 
 2. Update the number of workshop participants in the `values.yaml` file.
 
 3. Install the chart:
 ```
-helm install od-workshop .
+helm install ic-workshop .
 ```
 
 4. Update the cluster's `OAuth` CR to consume the htpasswd file that was deployed through the chart. It should contain the following identity provider entry:

@@ -367,7 +367,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: INFERENCE_SERVER_URL
-              value: http://llm.ic-shared-llm.svc.cluster.local:3000/
+              value: {{ .Values.llm_inference_url }}
             - name: MAX_NEW_TOKENS
               value: '1024'
             - name: TOP_K
@@ -381,7 +381,7 @@ spec:
             - name: REPETITION_PENALTY
               value: '1.03'
             - name: POSTGRES_HOST
-              value: claimdb.$(NAMESPACE).svc.cluster.local
+              value: claimdb
             - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
@@ -400,19 +400,19 @@ spec:
             - name: POSTGRES_PORT
               value: '5432'
             - name: S3_ENDPOINT_URL
-              value: http://minio.ic-shared-minio.svc.cluster.local:9000
+              value: http://minio-service:9000
             - name: IMAGES_BUCKET
-              value: $(NAMESPACE)
+              value: claim-images
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:
-                  name: secret-minio
-                  key: aws_access_key_id
+                  name: minio-secret
+                  key: accesskey
             - name: AWS_SECRET_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: secret-minio
-                  key: aws_secret_access_key
+                  name: minio-secret
+                  key: secretkey
           resources: {}
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
