@@ -8,3 +8,4 @@ resources:
 - demo-manifests/llm-demo.yaml
 - demo-manifests/ray-demo.yaml
 - demo-manifests/insuranceclaims-applicationset.yaml
+- odh/user-workload-monitoring.yaml
