@@ -9,3 +9,4 @@ resources:
 - demo-manifests/ray-demo.yaml
 - demo-manifests/insuranceclaims-applicationset.yaml
 - odh/user-workload-monitoring.yaml
+- odh/gpu-dashboard.yaml
