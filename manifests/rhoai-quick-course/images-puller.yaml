@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: image-puller
+  namespace: rhods-notebooks
+  labels:
+    k8s-app: image-puller
+spec:
+  selector:
+    matchLabels:
+      name: image-puller
+  template:
+    metadata:
+      labels:
+        name: image-puller
+    spec:
+      containers:
+        - name: minimal-python-workbench
+          image: quay.io/modh/odh-minimal-notebook-container@sha256:03b10a8b90de4bdee0fdf7b4d11fe867f99149fe72f2b7fcd438e0a1f29db3e2
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: standard-datascience-workbench
+          image: quay.io/modh/odh-generic-data-science-notebook@sha256:6e10eaeb233fb7a3d5c2832906a47042ba83149f5912b8a88af5de4b3b19af41
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: fraud-detection-workbench
+          image: http://quay.io/mmurakam/workbenches:fraud-detection-v1.0.1
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: vscode-kfp-workbench
+          image: http://quay.io/mmurakam/workbenches:vscode-kfp-v0.2.1
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
