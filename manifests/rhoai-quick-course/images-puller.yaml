@@ -36,7 +36,7 @@ spec:
               cpu: 10m
               memory: 10Mi
         - name: fraud-detection-workbench
-          image: http://quay.io/mmurakam/workbenches:fraud-detection-v1.0.1
+          image: quay.io/mmurakam/workbenches:fraud-detection-v1.0.1
           command: ["tail"]
           args: ["-f", "/dev/null"]
           resources:
@@ -46,7 +46,7 @@ spec:
               cpu: 10m
               memory: 10Mi
         - name: vscode-kfp-workbench
-          image: http://quay.io/mmurakam/workbenches:vscode-kfp-v0.2.1
+          image: quay.io/mmurakam/workbenches:vscode-kfp-v0.2.1
           command: ["tail"]
           args: ["-f", "/dev/null"]
           resources:
