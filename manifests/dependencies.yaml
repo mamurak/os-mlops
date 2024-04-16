@@ -118,6 +118,8 @@ spec:
       managementState: Managed
     ray:
       managementState: Managed
+    kueue:
+      managementState: Managed
     trustyai:
       managementState: Managed
     workbenches:
