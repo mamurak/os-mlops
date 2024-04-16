@@ -266,7 +266,7 @@ spec:
               protocol: TCP
           imagePullPolicy: IfNotPresent
           terminationMessagePolicy: File
-          image: quay.io/mmurakam/minio:minio-v0.4.2
+          image: quay.io/mmurakam/minio:minio-v1.3.0
           args:
             - server
             - /data1
