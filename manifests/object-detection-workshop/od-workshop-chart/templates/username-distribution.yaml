@@ -144,7 +144,7 @@ spec:
         - name: LAB_USER_ACCESS_TOKEN
           value: openshift
         - name: LAB_MODULE_URLS
-          value: https://mamurak.github.io/rhods-od-workshop/rhods-od-workshop/index.html;Object Detection Workshop
+          value: https://rhods-dashboard-redhat-ods-applications.apps.{{ .Values.cluster_domain_url }};OpenShift AI Dashboard,https://mamurak.github.io/rhods-od-workshop/rhods-od-workshop/index.html;Lab Guide
         - name: LAB_USER_PREFIX
           value: user
         - name: LAB_USER_PAD_ZERO
