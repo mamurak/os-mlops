@@ -8,13 +8,13 @@ from kubernetes.dynamic import DynamicClient
 from kubernetes.dynamic.exceptions import NotFoundError
 
 
-namespace = environ('NAMESPACE')
-sleep_time = int(environ('SLEEP_TIME', '5'))
+namespace = environ.get('NAMESPACE')
+sleep_time = int(environ.get('SLEEP_TIME', '5'))
 access_key_name = 'AWS_ACCESS_KEY_ID'
 secret_key_name = 'AWS_SECRET_ACCESS_KEY'
-source_secret_name = environ('SOURCE_SECRET_NAME')
-target_secret_name = environ('TARGET_SECRET_NAME')
-bucket_name = environ('BUCKET_NAME')
+source_secret_name = environ.get('SOURCE_SECRET_NAME')
+target_secret_name = environ.get('TARGET_SECRET_NAME')
+bucket_name = environ.get('BUCKET_NAME')
 
 load_incluster_config()
 k8s_client = DynamicClient(ApiClient())
