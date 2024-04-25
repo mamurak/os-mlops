@@ -21,14 +21,14 @@
               "kubernetes_pod_annotations": [],
               "kubernetes_pod_labels": [],
               "kubernetes_secrets": [],
+              "kubernetes_shared_mem_size": {},
               "kubernetes_tolerations": [],
               "mounted_volumes": [],
-              "filename": "metrics.ipynb",
-              "runtime_image": "quay.io/mmurakam/elyra-kfp-runtime-base:elyra-kfp-runtime-base-v0.2.0"
+              "filename": "metrics.ipynb"
             },
             "ui_data": {
               "label": "metrics.ipynb",
-              "image": "/notebook/rhods-notebooks/jupyter-nb-opentlc-2dmgr/static/elyra/notebook.svg",
+              "image": "/notebook/fraud-detection/development/static/elyra/notebook.svg",
               "x_pos": 223.99998474121094,
               "y_pos": 189.50000762939453,
               "description": "Run notebook file"
@@ -77,6 +77,7 @@
               "content": "This notebook produces metadata that is visualized in the Kubeflow Pipelines Central Dashboard.",
               "associated_id_refs": [
                 {
+                  "id": "4002a85c-1a3f-4cc4-b4b3-fc1ac8372987",
                   "node_ref": "d3665f88-7fb5-411f-bbed-8455a11b608a"
                 }
               ]
@@ -86,8 +87,18 @@
         "version": 8,
         "properties": {
           "name": "visualize_metrics",
-          "runtime": "Kubeflow Pipelines",
-          "description": "This pipeline illustrates how to generate and visualize metrics in Kubeflow Pipelines."
+          "runtime": "Data Science Pipelines",
+          "description": "This pipeline illustrates how to generate and visualize metrics in Kubeflow Pipelines.",
+          "pipeline_defaults": {
+            "kubernetes_shared_mem_size": {},
+            "kubernetes_pod_annotations": [],
+            "kubernetes_pod_labels": [],
+            "kubernetes_tolerations": [],
+            "mounted_volumes": [],
+            "env_vars": [],
+            "kubernetes_secrets": [],
+            "runtime_image": "quay.io/modh/runtime-images@sha256:27f12a510a034212ce4d579a970cce7aeeb33ffa32044fe88a262ae15d34e763"
+          }
         },
         "runtime_type": "KUBEFLOW_PIPELINES"
       },
