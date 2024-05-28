@@ -1,5 +1,6 @@
 resources:
-- minio/minio.yaml
+- minio/minio-default.yaml
+- minio/minio-models.yaml
 - odh/custom-notebooks.yaml
 - demo-manifests/fraud-detection.yaml
 - demo-manifests/object-detection.yaml
