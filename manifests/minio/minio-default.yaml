@@ -15,7 +15,7 @@ spec:
 kind: Secret
 apiVersion: v1
 metadata:
-  name: minio-secret
+  name: minio-default-secret
   namespace: minio
 stringData:
   # change the username and password to your own values.
@@ -73,12 +73,12 @@ spec:
             - name: MINIO_ROOT_USER
               valueFrom:
                 secretKeyRef:
-                  name: minio-secret
+                  name: minio-default-secret
                   key: minio_root_user
             - name: MINIO_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: minio-secret
+                  name: minio-default-secret
                   key: minio_root_password
           ports:
             - containerPort: 9000

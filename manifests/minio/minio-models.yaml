@@ -1,3 +1,12 @@
+kind: Secret
+apiVersion: v1
+metadata:
+  name: minio-models-secret
+  namespace: minio
+stringData:
+  accesskey: minio
+  secretkey: minio123
+---
 kind: Deployment
 apiVersion: apps/v1
 metadata:
@@ -44,12 +53,12 @@ spec:
             - name: MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: minio-secret
+                  name: minio-models-secret
                   key: accesskey
             - name: MINIO_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: minio-secret
+                  name: minio-models-secret
                   key: secretkey
           ports:
             - containerPort: 9000
