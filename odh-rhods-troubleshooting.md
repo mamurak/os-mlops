@@ -36,3 +36,7 @@
 - Verify KFP-S3 integration:
     - `mlpipeline-minio-artifact` secret for S3 credentials and endpoint config.
     - `ds-pipeline-config` config map for S3 endpoint.
+
+### Single-model serving / KServe is not installed automatically
+
+- RHOAI 2.9.1 is incompatible with Service Mesh 2.5.1. Use Service Mesh 2.5.0 instead.
