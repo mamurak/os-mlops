@@ -13,7 +13,7 @@ stringData:
   AWS_ACCESS_KEY_ID: minio
   AWS_DEFAULT_REGION: us-east-1
   AWS_S3_BUCKET: fraud-detection-pipelines
-  AWS_S3_ENDPOINT: http://minio-service.minio.svc:9000
+  AWS_S3_ENDPOINT: http://minio-default-service.minio.svc:9000
   AWS_SECRET_ACCESS_KEY: minio123
 type: Opaque
 ---
@@ -32,7 +32,7 @@ stringData:
   AWS_ACCESS_KEY_ID: minio
   AWS_DEFAULT_REGION: us-east-1
   AWS_S3_BUCKET: fraud-detection
-  AWS_S3_ENDPOINT: http://minio-service.minio.svc:9000
+  AWS_S3_ENDPOINT: http://minio-models-service.minio.svc:9000
   AWS_SECRET_ACCESS_KEY: minio123
 type: Opaque
 ---
@@ -86,7 +86,7 @@ spec:
   objectStorage:
     externalStorage:
       bucket: fraud-detection-pipelines
-      host: minio-service.minio.svc:9000
+      host: minio-default-service.minio.svc:9000
       port: ''
       s3CredentialsSecret:
         accessKey: AWS_ACCESS_KEY_ID
