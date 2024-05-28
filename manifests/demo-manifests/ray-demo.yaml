@@ -78,22 +78,27 @@ spec:
     collectMetrics: true
     injectDefaultScript: true
   database:
+    disableHealthCheck: false
     mariaDB:
       deploy: true
       pipelineDBName: mlpipeline
       pvcSize: 10Gi
       username: mlpipeline
+  dspVersion: v2
   objectStorage:
+    disableHealthCheck: false
+    enableExternalRoute: false
     externalStorage:
+      basePath: ''
       bucket: ray-demo-pipelines
       host: minio-default-service.minio.svc:9000
       port: ''
+      region: none
       s3CredentialsSecret:
         accessKey: AWS_ACCESS_KEY_ID
         secretKey: AWS_SECRET_ACCESS_KEY
         secretName: aws-connection-pipelines
       scheme: http
-      secure: false
   persistenceAgent:
     deploy: true
     numWorkers: 2
