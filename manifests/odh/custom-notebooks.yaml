@@ -438,3 +438,65 @@ spec:
         importMode: Legacy
       referencePolicy:
         type: Source
+---
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  annotations:
+    opendatahub.io/notebook-image-desc: JupyterLab based workbench with InstructLab
+    opendatahub.io/notebook-image-name: InstructLab Jupyter workbench
+    opendatahub.io/notebook-image-url: 'quay.io/rh-aiservices-bu/instructlab-workbench-jupyter-cuda:0.1'
+  name: instructlab-jupyter
+  namespace: redhat-ods-applications
+  labels:
+    app.kubernetes.io/created-by: byon
+    opendatahub.io/dashboard: 'true'
+    opendatahub.io/notebook-image: 'true'
+spec:
+  lookupPolicy:
+    local: true
+  tags:
+    - name: v0.1
+      annotations:
+        opendatahub.io/notebook-python-dependencies: >-
+          [{"name":"PyTorch","version":"1.8","visible":true},{"name":"CUDA","version":"11.4","visible":true}]
+        opendatahub.io/notebook-software: '[{"name":"Python","version":"3.9","visible":true}]'
+        openshift.io/imported-from: 'quay.io/rh-aiservices-bu/instructlab-workbench-jupyter-cuda:0.1'
+      from:
+        kind: DockerImage
+        name: 'quay.io/rh-aiservices-bu/instructlab-workbench-jupyter-cuda:0.1'
+      importPolicy:
+        importMode: Legacy
+      referencePolicy:
+        type: Source
+---
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  annotations:
+    opendatahub.io/notebook-image-desc: VS Code based workbench with InstructLab
+    opendatahub.io/notebook-image-name: InstructLab VS Code workbench
+    opendatahub.io/notebook-image-url: 'quay.io/rh-aiservices-bu/instructlab-workbench-code-server-cuda:0.1'
+  name: instructlab-vscode
+  namespace: redhat-ods-applications
+  labels:
+    app.kubernetes.io/created-by: byon
+    opendatahub.io/dashboard: 'true'
+    opendatahub.io/notebook-image: 'true'
+spec:
+  lookupPolicy:
+    local: true
+  tags:
+    - name: v0.1
+      annotations:
+        opendatahub.io/notebook-python-dependencies: >-
+          [{"name":"PyTorch","version":"1.8","visible":true},{"name":"CUDA","version":"11.4","visible":true}]
+        opendatahub.io/notebook-software: '[{"name":"Python","version":"3.9","visible":true}]'
+        openshift.io/imported-from: 'quay.io/rh-aiservices-bu/instructlab-workbench-code-server-cuda:0.1'
+      from:
+        kind: DockerImage
+        name: 'quay.io/rh-aiservices-bu/instructlab-workbench-code-server-cuda:0.1'
+      importPolicy:
+        importMode: Legacy
+      referencePolicy:
+        type: Source

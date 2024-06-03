@@ -6,6 +6,9 @@
     - Refer to `manifests/odh/pipelines-definition.yaml` for reference.
 - If the S3 storage provider is not available while the pipeline CR has been instantiated, the pipeline server is unable to start.
     - Restart the `data-science-pipelines-operator-controller-manager` pod in `redhat-ods-applications`.
+- The pipeline server istio sidecar route URL could be too long.
+    - Check the pipelines operator controller manager logs for errors.
+    - The character length of the project name cannot exceed 15.
 
 ### Pipeline Run request in Elyra fails
 
@@ -39,4 +42,4 @@
 
 ### Single-model serving / KServe is not installed automatically
 
-- RHOAI 2.9.1 is incompatible with Service Mesh 2.5.1. Use Service Mesh 2.5.0 instead.
+- RHOAI 2.9.1 is incompatible with Service Mesh 2.5.1-1. Use Service Mesh 2.5.1-0 instead.
