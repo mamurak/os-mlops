@@ -400,7 +400,7 @@
               }
             ],
             "env_vars": [],
-            "runtime_image": "quay.io/mmurakam/runtimes:object-detection-v2.0.0"
+            "runtime_image": "quay.io/mmurakam/runtimes:object-detection-v2.0.1"
           },
           "pipeline_parameters": [
             {
