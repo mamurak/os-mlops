@@ -35,7 +35,7 @@
             "label": "",
             "ui_data": {
               "label": "data_ingestion.py",
-              "image": "/notebook/object-detection/development/static/elyra/python.svg",
+              "image": "/notebook/od-project/development/static/elyra/python.svg",
               "x_pos": 97,
               "y_pos": 233,
               "description": "Run Python script"
@@ -97,7 +97,7 @@
             "label": "",
             "ui_data": {
               "label": "preprocessing.py",
-              "image": "/notebook/object-detection/development/static/elyra/python.svg",
+              "image": "/notebook/od-project/development/static/elyra/python.svg",
               "x_pos": 295,
               "y_pos": 233,
               "description": "Run Python script"
@@ -173,7 +173,7 @@
             "label": "",
             "ui_data": {
               "label": "scoring.py",
-              "image": "/notebook/object-detection/development/static/elyra/python.svg",
+              "image": "/notebook/od-project/development/static/elyra/python.svg",
               "x_pos": 475,
               "y_pos": 310,
               "description": "Run Python script"
@@ -247,7 +247,7 @@
             "label": "",
             "ui_data": {
               "label": "results_upload.py",
-              "image": "/notebook/object-detection/development/static/elyra/python.svg",
+              "image": "/notebook/od-project/development/static/elyra/python.svg",
               "x_pos": 666,
               "y_pos": 309,
               "description": "Run Python script"
@@ -315,7 +315,7 @@
             "label": "",
             "ui_data": {
               "label": "model_loading.py",
-              "image": "/notebook/object-detection/development/static/elyra/python.svg",
+              "image": "/notebook/od-project/development/static/elyra/python.svg",
               "x_pos": 192,
               "y_pos": 378,
               "description": "Run Python script"
@@ -361,11 +361,12 @@
           "name": "offline-scoring",
           "runtime": "Data Science Pipelines",
           "pipeline_defaults": {
-            "kubernetes_pod_annotations": [],
-            "kubernetes_pod_labels": [],
-            "kubernetes_tolerations": [],
             "kubernetes_shared_mem_size": {},
             "mounted_volumes": [],
+            "kubernetes_pod_labels": [],
+            "kubernetes_tolerations": [],
+            "kubernetes_pod_annotations": [],
+            "env_vars": [],
             "kubernetes_secrets": [
               {
                 "env_var": "AWS_SECRET_ACCESS_KEY",
@@ -388,8 +389,7 @@
                 "key": "AWS_S3_ENDPOINT"
               }
             ],
-            "env_vars": [],
-            "runtime_image": "quay.io/mmurakam/runtimes:object-detection-v1.0.5"
+            "runtime_image": "quay.io/mmurakam/runtimes:object-detection-v2.0.0"
           },
           "pipeline_parameters": [
             {

@@ -20,7 +20,9 @@ def predict(data_folder='./data', gpu_mode=True):
     with open(f'{data_folder}/images.pickle', 'rb') as inputfile:
         image_names, images = load(inputfile)
 
-    session = InferenceSession('model.onnx')
+    session = InferenceSession(
+        'model.onnx', providers=['CPUExecutionProvider']
+    )
 
     raw_results = np.array([
         session.run([], {'images': image_data})[0]
