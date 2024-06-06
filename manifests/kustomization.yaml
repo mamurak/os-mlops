@@ -12,3 +12,4 @@ resources:
 # - ocp/user-workload-monitoring.yaml
 - ocp/gpu-dashboard.yaml
 - ocp/rbac.yaml
+- odh/dist-workloads.yaml
