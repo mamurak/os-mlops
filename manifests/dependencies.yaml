@@ -58,6 +58,22 @@ spec:
   finalizers:
     - kubernetes
 ---
+kind: Project
+apiVersion: project.openshift.io/v1
+metadata:
+  name: llm-demo
+  labels:
+    kubernetes.io/metadata.name: llm-demo
+    maistra.io/member-of: istio-system
+    modelmesh-enabled: 'false'
+    opendatahub.io/dashboard: 'true'
+  annotations:
+    openshift.io/description: ''
+    openshift.io/display-name: llm-demo
+spec:
+  finalizers:
+    - kubernetes
+---
 apiVersion: project.openshift.io/v1
 kind: Project
 metadata:
