@@ -1,0 +1,6 @@
+pyspark==3.3.2
+fsspec==2024.6.1
+s3fs==2024.6.1
+grpcio==1.64.1
+grpcio-status==1.64.1
+pyarrow==16.1.0

@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=quay.io/modh/odh-generic-data-science-notebook:v2-2023a-20230817-5873c3d
+ARG BASE_IMAGE=quay.io/modh/odh-generic-data-science-notebook:v2-2024a-20240523-70df141
 FROM ${BASE_IMAGE} as builder
 
 ARG UBI_VERSION
@@ -142,7 +142,7 @@ ENV IPYTHONDIR=/opt/app-root/.ipython
 
 
 # Install PySpark and cleanup
-RUN pip install --no-cache-dir pyspark~=3.3.1 jupyterlab-sparkmonitor && \
+RUN pip install --no-cache-dir -r requirements.txt && \
     fix-permissions /opt/app-root -P
 
 ENTRYPOINT ["start-notebook.sh"] 
