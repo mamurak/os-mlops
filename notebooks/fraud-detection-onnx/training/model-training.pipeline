@@ -34,7 +34,7 @@
             "label": "",
             "ui_data": {
               "label": "data_ingestion.py",
-              "image": "/notebook/maxm/fraud-detection/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
               "x_pos": 199,
               "y_pos": 267,
               "description": "Run Python script"
@@ -96,7 +96,7 @@
             "label": "",
             "ui_data": {
               "label": "model_training.py",
-              "image": "/notebook/maxm/fraud-detection/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
               "x_pos": 671,
               "y_pos": 266,
               "description": "Run Python script"
@@ -162,7 +162,7 @@
             "label": "",
             "ui_data": {
               "label": "preprocessing.py",
-              "image": "/notebook/maxm/fraud-detection/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
               "x_pos": 428,
               "y_pos": 260,
               "description": "Run Python script"
@@ -225,7 +225,7 @@
             "label": "",
             "ui_data": {
               "label": "model_validation.py",
-              "image": "/notebook/maxm/fraud-detection/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
               "x_pos": 895,
               "y_pos": 267,
               "description": "Run Python script"
@@ -291,7 +291,7 @@
             "label": "",
             "ui_data": {
               "label": "model_upload.py",
-              "image": "/notebook/maxm/fraud-detection/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
               "x_pos": 1106,
               "y_pos": 269,
               "description": "Run Python script"
@@ -345,9 +345,9 @@
           "runtime": "Data Science Pipelines",
           "pipeline_defaults": {
             "kubernetes_shared_mem_size": {},
-            "kubernetes_tolerations": [],
             "mounted_volumes": [],
             "kubernetes_pod_annotations": [],
+            "kubernetes_tolerations": [],
             "kubernetes_pod_labels": [],
             "env_vars": [],
             "kubernetes_secrets": [
@@ -372,7 +372,7 @@
                 "key": "AWS_S3_BUCKET"
               }
             ],
-            "runtime_image": "quay.io/mmurakam/runtimes:fraud-detection-v0.1.0"
+            "runtime_image": "quay.io/mmurakam/runtimes:fraud-detection-v2.0.1"
           },
           "pipeline_parameters": [
             {
