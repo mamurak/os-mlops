@@ -3,7 +3,7 @@ from os import environ
 environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
 from keras.models import Sequential
-from keras.layers.core import Dense
+from keras.layers import Dense
 from keras.optimizers import Adam
 from numpy import load
 from onnx import save
