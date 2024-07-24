@@ -122,9 +122,9 @@ apiVersion: image.openshift.io/v1
 metadata:
   annotations:
     opendatahub.io/notebook-image-desc: ''
-    opendatahub.io/notebook-image-name: VS Code mit KFP SDK
+    opendatahub.io/notebook-image-name: VS Code with KFP SDK
     opendatahub.io/notebook-image-url: 'quay.io/mmurakam/workbenches:vscode-kfp-v0.2.1'
-  name: custom-vs-code-mit-kfp-sdk
+  name: custom-vs-code-with-kfp-sdk
   namespace: redhat-ods-applications
   labels:
     app.kubernetes.io/created-by: byon
@@ -134,7 +134,7 @@ spec:
   lookupPolicy:
     local: true
   tags:
-    - name: vscode-kfp-v0.2.1
+    - name: '0.2.1'
       annotations:
         opendatahub.io/notebook-python-dependencies: '[]'
         opendatahub.io/notebook-software: '[]'
@@ -142,6 +142,18 @@ spec:
       from:
         kind: DockerImage
         name: 'quay.io/mmurakam/workbenches:vscode-kfp-v0.2.1'
+      importPolicy:
+        importMode: Legacy
+      referencePolicy:
+        type: Source
+    - name: '1.0.0'
+      annotations:
+        opendatahub.io/notebook-python-dependencies: '[]'
+        opendatahub.io/notebook-software: '[]'
+        openshift.io/imported-from: 'quay.io/mmurakam/workbenches:vscode-kfp-v1.0.0'
+      from:
+        kind: DockerImage
+        name: 'quay.io/mmurakam/workbenches:vscode-kfp-v1.0.0'
       importPolicy:
         importMode: Legacy
       referencePolicy:
@@ -338,10 +350,21 @@ spec:
   lookupPolicy:
     local: true
   tags:
-    - name: "2.0.1"
+    - name: "1.0.1"
       from:
         kind: DockerImage
-        name: quay.io/mmurakam/workbenches:fraud-detection-v2.0.1
+        name: quay.io/mmurakam/workbenches:fraud-detection-v1.0.1
+      importPolicy: {}
+      referencePolicy:
+        type: Local
+      annotations:
+        opendatahub.io/notebook-python-dependencies: >-
+          [{"name":"tensorflow","version":"2.11.1"},{"name":"scikit-learn","version":"1.2.2"},{"name":"trino","version":"0.323.0"}]
+        opendatahub.io/notebook-software: '[{"name":"Python","version":"3.8"}]'
+    - name: "2.1.0"
+      from:
+        kind: DockerImage
+        name: quay.io/mmurakam/workbenches:fraud-detection-v2.1.0
       importPolicy: {}
       referencePolicy:
         type: Local
