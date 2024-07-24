@@ -1,4 +1,4 @@
-FROM quay.io/modh/cuda-notebooks:cuda-jupyter-tensorflow-ubi9-python-3.9-2024a-20240423-db8bd76
+FROM quay.io/modh/cuda-notebooks:cuda-jupyter-tensorflow-ubi9-python-3.9-2024a-20240628-ac07414
 
 RUN pip install pip==22.3.1 setuptools==65.3.0
 
