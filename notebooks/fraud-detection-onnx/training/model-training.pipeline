@@ -344,12 +344,11 @@
           "name": "model-training",
           "runtime": "Data Science Pipelines",
           "pipeline_defaults": {
-            "kubernetes_shared_mem_size": {},
-            "mounted_volumes": [],
             "kubernetes_pod_annotations": [],
-            "kubernetes_tolerations": [],
+            "mounted_volumes": [],
             "kubernetes_pod_labels": [],
-            "env_vars": [],
+            "kubernetes_tolerations": [],
+            "kubernetes_shared_mem_size": {},
             "kubernetes_secrets": [
               {
                 "env_var": "AWS_S3_ENDPOINT",
@@ -372,7 +371,8 @@
                 "key": "AWS_S3_BUCKET"
               }
             ],
-            "runtime_image": "quay.io/mmurakam/runtimes:fraud-detection-v2.0.1"
+            "env_vars": [],
+            "runtime_image": "quay.io/mmurakam/runtimes:fraud-detection-v2.1.0"
           },
           "pipeline_parameters": [
             {

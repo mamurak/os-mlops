@@ -367,7 +367,7 @@
                 "key": "AWS_S3_BUCKET"
               }
             ],
-            "runtime_image": "quay.io/mmurakam/runtimes:fraud-detection-v2.0.1",
+            "runtime_image": "quay.io/mmurakam/runtimes:fraud-detection-v2.1.0",
             "disable_node_caching": "False"
           },
           "pipeline_parameters": [
