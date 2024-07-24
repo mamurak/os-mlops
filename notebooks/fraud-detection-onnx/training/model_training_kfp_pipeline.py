@@ -1,13 +1,12 @@
-from kfp.components import create_component_from_func
-from kfp.dsl import pipeline
-from kfp_tekton import TektonClient
-from kubernetes.client import V1Volume, V1PersistentVolumeClaimVolumeSource, \
-    V1EnvVar, V1EnvVarSource, V1SecretKeySelector
+from kfp.client import Client
+from kfp.dsl import component, pipeline
+from kfp.kubernetes import CreatePVC, DeletePVC, mount_pvc, use_secret_as_env
 
 
-runtime_image = 'quay.io/mmurakam/runtimes:fraud-detection-v0.1.0'
+runtime_image = 'quay.io/mmurakam/runtimes:fraud-detection-v2.1.0'
 
 
+@component(base_image=runtime_image)
 def data_ingestion(data_object_name: str):
     from os import environ
 
@@ -40,6 +39,7 @@ def data_ingestion(data_object_name: str):
     print('Finished data ingestion.')
 
 
+@component(base_image=runtime_image)
 def preprocessing():
     from imblearn.over_sampling import SMOTE
     from numpy import save
@@ -90,13 +90,14 @@ def preprocessing():
     print('data processing done')
 
 
+@component(base_image=runtime_image)
 def model_training(epoch_count: int, learning_rate: float):
     from os import environ
 
     environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
     from keras.models import Sequential
-    from keras.layers.core import Dense
+    from keras.layers import Dense
     from keras.optimizers import Adam
     from numpy import load
     from onnx import save
@@ -131,6 +132,7 @@ def model_training(epoch_count: int, learning_rate: float):
     save(onnx_model, '/data/model.onnx')
 
 
+@component(base_image=runtime_image)
 def model_validation():
     from time import sleep
 
@@ -139,6 +141,7 @@ def model_validation():
     print('model validated')
 
 
+@component(base_image=runtime_image)
 def model_upload(model_object_prefix: str):
     from os import environ
     from datetime import datetime
@@ -192,23 +195,6 @@ def model_upload(model_object_prefix: str):
     _do_upload(s3_client, model_object_name_latest)
 
 
-data_ingestion_op = create_component_from_func(
-    data_ingestion, base_image=runtime_image
-)
-preprocessing_op = create_component_from_func(
-    preprocessing, base_image=runtime_image
-)
-model_training_op = create_component_from_func(
-    model_training, base_image=runtime_image
-)
-model_validation_op = create_component_from_func(
-    model_validation, base_image=runtime_image
-)
-model_upload_op = create_component_from_func(
-    model_upload, base_image=runtime_image
-)
-
-
 @pipeline(name='model-training-kfp')
 def model_training_pipeline(
     data_object_name: str = 'training-data.csv',
@@ -217,121 +203,78 @@ def model_training_pipeline(
     model_object_prefix: str = 'model'
         ):
 
-    data_volume = V1Volume(
-        name='model-training-data-volume',
-        persistent_volume_claim=V1PersistentVolumeClaimVolumeSource(
-            claim_name='model-training-data-volume'
-        )
+    data_connection_secret_name = 'aws-connection-fraud-detection'
+    data_volume = CreatePVC(
+        pvc_name_suffix='-model-training-data-volume',
+        access_modes=['ReadWriteOnce'],
+        size='2Gi',
+        storage_class_name='standard',
     )
 
-    data_ingestion_task = data_ingestion_op(data_object_name)
-    data_ingestion_task.add_pvolumes({'/data': data_volume})
-    data_ingestion_task.add_env_variable(
-        V1EnvVar(
-            name='AWS_S3_ENDPOINT',
-            value_from=V1EnvVarSource(
-                secret_key_ref=V1SecretKeySelector(
-                    name='aws-connection-fraud-detection',
-                    key='AWS_S3_ENDPOINT'
-                )
-            )
-        )
+    data_ingestion_task = data_ingestion(data_object_name=data_object_name)
+    mount_pvc(
+        data_ingestion_task,
+        pvc_name=data_volume.outputs['name'],
+        mount_path='/data',
     )
-    data_ingestion_task.add_env_variable(
-        V1EnvVar(
-            name='AWS_ACCESS_KEY_ID',
-            value_from=V1EnvVarSource(
-                secret_key_ref=V1SecretKeySelector(
-                    name='aws-connection-fraud-detection',
-                    key='AWS_ACCESS_KEY_ID'
-                )
-            )
-        )
+    use_secret_as_env(
+        data_ingestion_task,
+        secret_name=data_connection_secret_name,
+        secret_key_to_env={
+            'AWS_S3_ENDPOINT': 'AWS_S3_ENDPOINT',
+            'AWS_ACCESS_KEY_ID': 'AWS_ACCESS_KEY_ID',
+            'AWS_SECRET_ACCESS_KEY': 'AWS_SECRET_ACCESS_KEY',
+            'AWS_S3_BUCKET': 'AWS_S3_BUCKET',
+        },
     )
-    data_ingestion_task.add_env_variable(
-        V1EnvVar(
-            name='AWS_SECRET_ACCESS_KEY',
-            value_from=V1EnvVarSource(
-                secret_key_ref=V1SecretKeySelector(
-                    name='aws-connection-fraud-detection',
-                    key='AWS_SECRET_ACCESS_KEY'
-                )
-            )
-        )
-    )
-    data_ingestion_task.add_env_variable(
-        V1EnvVar(
-            name='AWS_S3_BUCKET',
-            value_from=V1EnvVarSource(
-                secret_key_ref=V1SecretKeySelector(
-                    name='aws-connection-fraud-detection',
-                    key='AWS_S3_BUCKET'
-                )
-            )
-        )
-    )
+    data_ingestion_task.after(data_volume).set_caching_options(False)
 
-    preprocessing_task = preprocessing_op()
-    preprocessing_task.add_pvolumes({'/data': data_volume})
-    preprocessing_task.after(data_ingestion_task)
+    preprocessing_task = preprocessing()
+    mount_pvc(
+        preprocessing_task,
+        pvc_name=data_volume.outputs['name'],
+        mount_path='/data',
+    )
+    preprocessing_task.after(data_ingestion_task).set_caching_options(False)
 
-    model_training_task = model_training_op(
-        epoch_count, learning_rate
+    model_training_task = model_training(
+        epoch_count=epoch_count, learning_rate=learning_rate
     )
-    model_training_task.add_pvolumes({'/data': data_volume})
-    model_training_task.after(preprocessing_task)
+    mount_pvc(
+        model_training_task,
+        pvc_name=data_volume.outputs['name'],
+        mount_path='/data',
+    )
+    model_training_task.after(preprocessing_task).set_caching_options(False)
 
-    model_validation_task = model_validation_op()
-    model_validation_task.add_pvolumes({'/data': data_volume})
-    model_validation_task.after(model_training_task)
+    model_validation_task = model_validation()
+    mount_pvc(
+        model_validation_task,
+        pvc_name=data_volume.outputs['name'],
+        mount_path='/data',
+    )
+    model_validation_task.after(model_training_task).set_caching_options(False)
 
-    model_upload_task = model_upload_op(model_object_prefix)
-    model_upload_task.add_pvolumes({'/data': data_volume})
-    model_upload_task.add_env_variable(
-        V1EnvVar(
-            name='AWS_S3_ENDPOINT',
-            value_from=V1EnvVarSource(
-                secret_key_ref=V1SecretKeySelector(
-                    name='aws-connection-fraud-detection',
-                    key='AWS_S3_ENDPOINT'
-                )
-            )
-        )
+    model_upload_task = model_upload(model_object_prefix=model_object_prefix)
+    mount_pvc(
+        model_upload_task,
+        pvc_name=data_volume.outputs['name'],
+        mount_path='/data',
     )
-    model_upload_task.add_env_variable(
-        V1EnvVar(
-            name='AWS_ACCESS_KEY_ID',
-            value_from=V1EnvVarSource(
-                secret_key_ref=V1SecretKeySelector(
-                    name='aws-connection-fraud-detection',
-                    key='AWS_ACCESS_KEY_ID'
-                )
-            )
-        )
+    use_secret_as_env(
+        model_upload_task,
+        secret_name=data_connection_secret_name,
+        secret_key_to_env={
+            'AWS_S3_ENDPOINT': 'AWS_S3_ENDPOINT',
+            'AWS_ACCESS_KEY_ID': 'AWS_ACCESS_KEY_ID',
+            'AWS_SECRET_ACCESS_KEY': 'AWS_SECRET_ACCESS_KEY',
+            'AWS_S3_BUCKET': 'AWS_S3_BUCKET',
+        },
     )
-    model_upload_task.add_env_variable(
-        V1EnvVar(
-            name='AWS_SECRET_ACCESS_KEY',
-            value_from=V1EnvVarSource(
-                secret_key_ref=V1SecretKeySelector(
-                    name='aws-connection-fraud-detection',
-                    key='AWS_SECRET_ACCESS_KEY'
-                )
-            )
-        )
-    )
-    model_upload_task.add_env_variable(
-        V1EnvVar(
-            name='AWS_S3_BUCKET',
-            value_from=V1EnvVarSource(
-                secret_key_ref=V1SecretKeySelector(
-                    name='aws-connection-fraud-detection',
-                    key='AWS_S3_BUCKET'
-                )
-            )
-        )
-    )
-    model_upload_task.after(model_validation_task)
+    model_upload_task.after(model_validation_task).set_caching_options(False)
+
+    delete_pvc_task = DeletePVC(pvc_name=data_volume.outputs['name'])
+    delete_pvc_task.after(model_upload_task)
 
 
 def submit(pipeline):
@@ -341,7 +284,7 @@ def submit(pipeline):
         namespace = namespace_file.read()
 
     kubeflow_endpoint =\
-        f'https://ds-pipeline-pipelines-definition.{namespace}.svc:8443'
+        f'https://ds-pipeline-dspa.{namespace}.svc:8443'
 
     sa_token_file_path = '/var/run/secrets/kubernetes.io/serviceaccount/token'
     with open(sa_token_file_path, 'r') as token_file:
@@ -351,7 +294,7 @@ def submit(pipeline):
         '/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt'
 
     print(f'Connecting to Data Science Pipelines: {kubeflow_endpoint}')
-    client = TektonClient(
+    client = Client(
         host=kubeflow_endpoint,
         existing_token=bearer_token,
         ssl_ca_cert=ssl_ca_cert
@@ -359,7 +302,7 @@ def submit(pipeline):
     result = client.create_run_from_pipeline_func(
         pipeline,
         arguments={},
-        experiment_name='model_training-kfp'
+        experiment_name='model_training-kfp',
     )
     print(f'Starting pipeline run with run_id: {result.run_id}')
 
