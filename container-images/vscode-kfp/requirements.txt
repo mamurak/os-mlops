@@ -6,5 +6,4 @@ onnx==1.14.1
 tf2onnx==1.13.0
 onnxruntime==1.15.1
 pyarrow==13.0.0
-kfp==1.8.22
-kfp-tekton==1.5.9
+kfp==2.5.0
