@@ -29,7 +29,9 @@
               "kubernetes_shared_mem_size": {},
               "kubernetes_tolerations": [],
               "mounted_volumes": [],
-              "filename": "data_ingestion.py"
+              "filename": "data_ingestion.py",
+              "cpu": 1,
+              "cpu_limit": 1.42
             },
             "label": "",
             "ui_data": {

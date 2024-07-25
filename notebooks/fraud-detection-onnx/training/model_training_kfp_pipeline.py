@@ -1,18 +1,17 @@
 from kfp.client import Client
-from kfp.dsl import component, pipeline
+from kfp.dsl import component, Dataset, Input, Model, Output, pipeline
 from kfp.kubernetes import CreatePVC, DeletePVC, mount_pvc, use_secret_as_env
 
 
 runtime_image = 'quay.io/mmurakam/runtimes:fraud-detection-v2.1.0'
+storage_class_name = 'gp3-csi'
 
 
 @component(base_image=runtime_image)
-def data_ingestion(data_object_name: str):
+def data_ingestion(data_object_name: str, raw_data: Output[Dataset]):
     from os import environ
 
     import boto3
-
-    raw_data_file_location = '/data/raw_data.csv'
 
     print('Commencing data ingestion.')
 
@@ -24,23 +23,24 @@ def data_ingestion(data_object_name: str):
     print(f'Downloading data "{data_object_name}" '
           f'from bucket "{s3_bucket_name}" '
           f'from S3 storage at {s3_endpoint_url}'
-          f'to {raw_data_file_location}')
+          f'to {raw_data.path}')
 
     s3_client = boto3.client(
         's3', endpoint_url=s3_endpoint_url,
         aws_access_key_id=s3_access_key, aws_secret_access_key=s3_secret_key
     )
-
     s3_client.download_file(
         s3_bucket_name,
         f'data/{data_object_name}',
-        raw_data_file_location
+        raw_data.path
     )
     print('Finished data ingestion.')
 
 
 @component(base_image=runtime_image)
-def preprocessing():
+def preprocessing(
+        raw_data: Input[Dataset], training_samples: Output[Dataset],
+        training_labels: Output[Dataset]):
     from imblearn.over_sampling import SMOTE
     from numpy import save
     from pandas import read_csv
@@ -49,9 +49,7 @@ def preprocessing():
 
     print('Preprocessing data.')
 
-    raw_data_file_location = '/data/raw_data.csv'
-    training_data_folder = '/data'
-    df = read_csv(raw_data_file_location)
+    df = read_csv(raw_data.path)
 
     rob_scaler = RobustScaler()
 
@@ -84,14 +82,17 @@ def preprocessing():
     sm = SMOTE(sampling_strategy='minority', random_state=42)
     Xsm_train, ysm_train = sm.fit_resample(original_Xtrain, original_ytrain)
 
-    save(f'{training_data_folder}/training_samples.npy', Xsm_train)
-    save(f'{training_data_folder}/training_labels.npy', ysm_train)
+    save('/data/samples.npy', Xsm_train)
+    save('/data/labels.npy', ysm_train)
+    save(training_samples.path, Xsm_train)
+    save(training_labels.path, ysm_train)
 
     print('data processing done')
 
 
 @component(base_image=runtime_image)
-def model_training(epoch_count: int, learning_rate: float):
+def model_training(
+        epoch_count: int, learning_rate: float, model: Output[Model]):
     from os import environ
 
     environ['CUDA_VISIBLE_DEVICES'] = '-1'
@@ -105,8 +106,8 @@ def model_training(epoch_count: int, learning_rate: float):
 
     print('training model')
 
-    Xsm_train = load('/data/training_samples.npy')
-    ysm_train = load('/data/training_labels.npy')
+    Xsm_train = load('/data/samples.npy')
+    ysm_train = load('/data/labels.npy')
     n_inputs = Xsm_train.shape[1]
 
     oversample_model = Sequential([
@@ -130,10 +131,11 @@ def model_training(epoch_count: int, learning_rate: float):
     )
     onnx_model, _ = convert.from_keras(oversample_model)
     save(onnx_model, '/data/model.onnx')
+    save(onnx_model, model.path)
 
 
 @component(base_image=runtime_image)
-def model_validation():
+def model_validation(model: Input[Model]):
     from time import sleep
 
     print('validating model using group fairness scores, for instance')
@@ -142,7 +144,7 @@ def model_validation():
 
 
 @component(base_image=runtime_image)
-def model_upload(model_object_prefix: str):
+def model_upload(model_object_prefix: str, model: Input[Model]):
     from os import environ
     from datetime import datetime
 
@@ -169,7 +171,7 @@ def model_upload(model_object_prefix: str):
         print(f'uploading model to {object_name}')
         try:
             s3_client.upload_file(
-                '/data/model.onnx', s3_bucket_name, f'models/{object_name}'
+                model.path, s3_bucket_name, f'models/{object_name}'
             )
         except:
             print(f'S3 upload to bucket {s3_bucket_name} at {s3_endpoint_url} failed!')
@@ -208,7 +210,7 @@ def model_training_pipeline(
         pvc_name_suffix='-model-training-data-volume',
         access_modes=['ReadWriteOnce'],
         size='2Gi',
-        storage_class_name='standard',
+        storage_class_name=storage_class_name,
     )
 
     data_ingestion_task = data_ingestion(data_object_name=data_object_name)
@@ -229,13 +231,13 @@ def model_training_pipeline(
     )
     data_ingestion_task.after(data_volume).set_caching_options(False)
 
-    preprocessing_task = preprocessing()
+    preprocessing_task = preprocessing(raw_data=data_ingestion_task.output)
     mount_pvc(
         preprocessing_task,
         pvc_name=data_volume.outputs['name'],
         mount_path='/data',
     )
-    preprocessing_task.after(data_ingestion_task).set_caching_options(False)
+    preprocessing_task.set_caching_options(False)
 
     model_training_task = model_training(
         epoch_count=epoch_count, learning_rate=learning_rate
@@ -247,15 +249,18 @@ def model_training_pipeline(
     )
     model_training_task.after(preprocessing_task).set_caching_options(False)
 
-    model_validation_task = model_validation()
+    model_validation_task = model_validation(model=model_training_task.output)
     mount_pvc(
         model_validation_task,
         pvc_name=data_volume.outputs['name'],
         mount_path='/data',
     )
-    model_validation_task.after(model_training_task).set_caching_options(False)
+    model_validation_task.set_caching_options(False)
 
-    model_upload_task = model_upload(model_object_prefix=model_object_prefix)
+    model_upload_task = model_upload(
+        model_object_prefix=model_object_prefix,
+        model=model_training_task.output
+    )
     mount_pvc(
         model_upload_task,
         pvc_name=data_volume.outputs['name'],
