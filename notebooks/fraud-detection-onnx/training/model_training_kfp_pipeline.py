@@ -309,7 +309,12 @@ def submit(pipeline):
     )
     result = client.create_run_from_pipeline_func(
         pipeline,
-        arguments={},
+        arguments={
+            'data_object_name': 'training-data.csv',
+            'epoch_count': 20,
+            'learning_rate': 0.001,
+            'model_object_prefix': 'model',
+        },
         experiment_name='model_training-kfp',
     )
     print(f'Starting pipeline run with run_id: {result.run_id}')
