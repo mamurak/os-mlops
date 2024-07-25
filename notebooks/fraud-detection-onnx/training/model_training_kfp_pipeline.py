@@ -44,7 +44,6 @@ def preprocessing(
     from pickle import dump
 
     from imblearn.over_sampling import SMOTE
-    from numpy import save
     from pandas import read_csv
     from sklearn.model_selection import StratifiedKFold
     from sklearn.preprocessing import RobustScaler
