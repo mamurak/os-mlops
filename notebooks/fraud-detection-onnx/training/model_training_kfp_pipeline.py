@@ -1,5 +1,5 @@
 from kfp.client import Client
-from kfp.dsl import component, Dataset, Input, Model, Output, pipeline
+from kfp.dsl import component, Dataset, Input, Metrics, Model, Output, pipeline
 from kfp.kubernetes import CreatePVC, DeletePVC, mount_pvc, use_secret_as_env
 
 
@@ -92,7 +92,8 @@ def preprocessing(
 
 @component(base_image=runtime_image)
 def model_training(
-        epoch_count: int, learning_rate: float, model: Output[Model]):
+        epoch_count: int, learning_rate: float, model: Output[Model],
+        metrics: Output[Metrics]):
     from os import environ
 
     environ['CUDA_VISIBLE_DEVICES'] = '-1'
@@ -129,6 +130,7 @@ def model_training(
         shuffle=True,
         verbose=2,
     )
+    metrics.log_metric('accuracy', 88)
     onnx_model, _ = convert.from_keras(oversample_model)
     save(onnx_model, '/data/model.onnx')
     save(onnx_model, model.path)
@@ -249,7 +251,8 @@ def model_training_pipeline(
     )
     model_training_task.after(preprocessing_task).set_caching_options(False)
 
-    model_validation_task = model_validation(model=model_training_task.output)
+    model_validation_task = model_validation(
+        model=model_training_task.outputs['model'])
     mount_pvc(
         model_validation_task,
         pvc_name=data_volume.outputs['name'],
@@ -259,7 +262,7 @@ def model_training_pipeline(
 
     model_upload_task = model_upload(
         model_object_prefix=model_object_prefix,
-        model=model_training_task.output
+        model=model_training_task.outputs['model']
     )
     mount_pvc(
         model_upload_task,
