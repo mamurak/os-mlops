@@ -1,10 +1,10 @@
 from kfp.client import Client
 from kfp.dsl import component, Dataset, Input, Metrics, Model, Output, pipeline
-from kfp.kubernetes import CreatePVC, DeletePVC, mount_pvc, use_secret_as_env
+from kfp.kubernetes import use_secret_as_env
 
 
 runtime_image = 'quay.io/mmurakam/runtimes:fraud-detection-v2.1.0'
-storage_class_name = 'gp3-csi'
+data_connection_secret_name = 'aws-connection-fraud-detection'
 
 
 @component(base_image=runtime_image)
@@ -41,6 +41,8 @@ def data_ingestion(data_object_name: str, raw_data: Output[Dataset]):
 def preprocessing(
         raw_data: Input[Dataset], training_samples: Output[Dataset],
         training_labels: Output[Dataset]):
+    from pickle import dump
+
     from imblearn.over_sampling import SMOTE
     from numpy import save
     from pandas import read_csv
@@ -82,33 +84,37 @@ def preprocessing(
     sm = SMOTE(sampling_strategy='minority', random_state=42)
     Xsm_train, ysm_train = sm.fit_resample(original_Xtrain, original_ytrain)
 
-    save('/data/samples.npy', Xsm_train)
-    save('/data/labels.npy', ysm_train)
-    save(training_samples.path, Xsm_train)
-    save(training_labels.path, ysm_train)
+    with open(training_samples.path, 'wb') as samples_file:
+        dump(Xsm_train, samples_file)
+    with open(training_labels.path, 'wb') as labels_file:
+        dump(ysm_train, labels_file)
 
     print('data processing done')
 
 
 @component(base_image=runtime_image)
 def model_training(
-        epoch_count: int, learning_rate: float, model: Output[Model],
-        metrics: Output[Metrics]):
+        epoch_count: int, learning_rate: float,
+        training_samples: Input[Dataset], training_labels: Input[Dataset],
+        model: Output[Model], metrics: Output[Metrics]):
     from os import environ
+    from pickle import load
 
     environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
     from keras.models import Sequential
     from keras.layers import Dense
     from keras.optimizers import Adam
-    from numpy import load
     from onnx import save
     from tf2onnx import convert
 
     print('training model')
 
-    Xsm_train = load('/data/samples.npy')
-    ysm_train = load('/data/labels.npy')
+    with open(training_samples.path, 'rb') as samples_file:
+        Xsm_train = load(samples_file)
+    with open(training_labels.path, 'rb') as labels_file:
+        ysm_train = load(labels_file)
+
     n_inputs = Xsm_train.shape[1]
 
     oversample_model = Sequential([
@@ -132,7 +138,6 @@ def model_training(
     )
     metrics.log_metric('accuracy', 88)
     onnx_model, _ = convert.from_keras(oversample_model)
-    save(onnx_model, '/data/model.onnx')
     save(onnx_model, model.path)
 
 
@@ -207,20 +212,7 @@ def model_training_pipeline(
     model_object_prefix: str = 'model'
         ):
 
-    data_connection_secret_name = 'aws-connection-fraud-detection'
-    data_volume = CreatePVC(
-        pvc_name_suffix='-model-training-data-volume',
-        access_modes=['ReadWriteOnce'],
-        size='2Gi',
-        storage_class_name=storage_class_name,
-    )
-
     data_ingestion_task = data_ingestion(data_object_name=data_object_name)
-    mount_pvc(
-        data_ingestion_task,
-        pvc_name=data_volume.outputs['name'],
-        mount_path='/data',
-    )
     use_secret_as_env(
         data_ingestion_task,
         secret_name=data_connection_secret_name,
@@ -231,44 +223,23 @@ def model_training_pipeline(
             'AWS_S3_BUCKET': 'AWS_S3_BUCKET',
         },
     )
-    data_ingestion_task.after(data_volume).set_caching_options(False)
 
     preprocessing_task = preprocessing(raw_data=data_ingestion_task.output)
-    mount_pvc(
-        preprocessing_task,
-        pvc_name=data_volume.outputs['name'],
-        mount_path='/data',
-    )
-    preprocessing_task.set_caching_options(False)
 
     model_training_task = model_training(
-        epoch_count=epoch_count, learning_rate=learning_rate
+        epoch_count=epoch_count,
+        learning_rate=learning_rate,
+        training_samples=preprocessing_task.outputs['training_samples'],
+        training_labels=preprocessing_task.outputs['training_labels'],
     )
-    mount_pvc(
-        model_training_task,
-        pvc_name=data_volume.outputs['name'],
-        mount_path='/data',
-    )
-    model_training_task.after(preprocessing_task).set_caching_options(False)
 
     model_validation_task = model_validation(
         model=model_training_task.outputs['model'])
-    mount_pvc(
-        model_validation_task,
-        pvc_name=data_volume.outputs['name'],
-        mount_path='/data',
-    )
-    model_validation_task.set_caching_options(False)
 
     model_upload_task = model_upload(
         model_object_prefix=model_object_prefix,
         model=model_training_task.outputs['model']
     )
-    mount_pvc(
-        model_upload_task,
-        pvc_name=data_volume.outputs['name'],
-        mount_path='/data',
-    )
     use_secret_as_env(
         model_upload_task,
         secret_name=data_connection_secret_name,
@@ -279,10 +250,7 @@ def model_training_pipeline(
             'AWS_S3_BUCKET': 'AWS_S3_BUCKET',
         },
     )
-    model_upload_task.after(model_validation_task).set_caching_options(False)
-
-    delete_pvc_task = DeletePVC(pvc_name=data_volume.outputs['name'])
-    delete_pvc_task.after(model_upload_task)
+    model_upload_task.after(model_validation_task)
 
 
 def submit(pipeline):
@@ -316,6 +284,7 @@ def submit(pipeline):
             'model_object_prefix': 'model',
         },
         experiment_name='model_training-kfp',
+        enable_caching=False,
     )
     print(f'Starting pipeline run with run_id: {result.run_id}')
 
