@@ -17,7 +17,7 @@ spec:
       serving:
         ingressGateway:
           certificate:
-            type: SelfSigned
+            type: OpenshiftDefaultIngress
         managementState: Managed
         name: knative-serving
     trustyai:
@@ -33,4 +33,6 @@ spec:
     modelmeshserving:
       managementState: Managed
     datasciencepipelines:
+      managementState: Managed
+    trainingoperator:
       managementState: Managed

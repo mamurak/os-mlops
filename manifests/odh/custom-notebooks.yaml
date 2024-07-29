@@ -146,14 +146,14 @@ spec:
         importMode: Legacy
       referencePolicy:
         type: Source
-    - name: '1.0.0'
+    - name: '1.0.1'
       annotations:
         opendatahub.io/notebook-python-dependencies: '[]'
         opendatahub.io/notebook-software: '[]'
-        openshift.io/imported-from: 'quay.io/mmurakam/workbenches:vscode-kfp-v1.0.0'
+        openshift.io/imported-from: 'quay.io/mmurakam/workbenches:vscode-kfp-v1.0.1'
       from:
         kind: DockerImage
-        name: 'quay.io/mmurakam/workbenches:vscode-kfp-v1.0.0'
+        name: 'quay.io/mmurakam/workbenches:vscode-kfp-v1.0.1'
       importPolicy:
         importMode: Legacy
       referencePolicy:
