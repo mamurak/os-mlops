@@ -89,13 +89,15 @@ kind: DataSciencePipelinesApplication
 metadata:
   finalizers:
     - datasciencepipelinesapplications.opendatahub.io/finalizer
-  name: pipelines-definition
+  name: dspa
   namespace: object-detection
 spec:
   apiServer:
+    caBundleFileMountPath: ''
     stripEOF: true
     dbConfigConMaxLifetimeSec: 120
     applyTektonCustomResource: true
+    caBundleFileName: ''
     deploy: true
     enableSamplePipeline: false
     autoUpdatePipelineDefaultVersion: true
