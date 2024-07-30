@@ -1,3 +1,3 @@
-FROM registry.access.redhat.com/ubi9/python-311
+FROM quay.io/modh/runtime-images:runtime-datascience-ubi9-python-3.9-2024a-20240628-ac07414
 
 RUN pip install --no-cache-dir kfp==2.5.0
