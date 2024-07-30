@@ -553,3 +553,33 @@ spec:
         importMode: Legacy
       referencePolicy:
         type: Source
+---
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  annotations:
+    opendatahub.io/notebook-image-desc: Insurance claims workbench
+    opendatahub.io/notebook-image-name: IC
+    opendatahub.io/notebook-image-url: 'quay.io/mmurakam/workbenches:insurance-claims-v0.1.0'
+  name: insurance-claims
+  namespace: redhat-ods-applications
+  labels:
+    app.kubernetes.io/created-by: byon
+    opendatahub.io/dashboard: 'true'
+    opendatahub.io/notebook-image: 'true'
+spec:
+  lookupPolicy:
+    local: true
+  tags:
+    - name: '0.1.0'
+      annotations:
+        opendatahub.io/notebook-python-dependencies: ''
+        opendatahub.io/notebook-software: ''
+        openshift.io/imported-from: 'quay.io/mmurakam/workbenches:insurance-claims-v0.1.0'
+      from:
+        kind: DockerImage
+        name: 'quay.io/mmurakam/workbenches:insurance-claims-v0.1.0'
+      importPolicy:
+        importMode: Legacy
+      referencePolicy:
+        type: Source
