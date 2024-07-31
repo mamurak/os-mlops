@@ -33,8 +33,10 @@ def model_training_pipeline(
             'AWS_S3_BUCKET': 'AWS_S3_BUCKET',
         },
     )
+    data_ingestion_task.set_caching_options(False)
 
     preprocessing_task = preprocess(raw_data=data_ingestion_task.output)
+    preprocessing_task.set_caching_options(False)
 
     model_training_task = train_model(
         epoch_count=epoch_count,
@@ -42,9 +44,11 @@ def model_training_pipeline(
         training_samples=preprocessing_task.outputs['training_samples'],
         training_labels=preprocessing_task.outputs['training_labels'],
     )
+    model_training_task.set_caching_options(False)
 
     model_validation_task = validate_model(
         model=model_training_task.outputs['model'])
+    model_validation_task.set_caching_options(False)
 
     model_upload_task = upload_model(
         model_object_prefix=model_object_prefix,
@@ -60,14 +64,14 @@ def model_training_pipeline(
             'AWS_S3_BUCKET': 'AWS_S3_BUCKET',
         },
     )
-    model_upload_task.after(model_validation_task)
+    model_upload_task.after(model_validation_task).set_caching_options(False)
 
 
 def run_experiment():
     uploaded_pipeline = KfpPipeline(
         model_training_pipeline, 'model-training-sdk-pipeline'
     )
-    for epoch_count in [15, 20]:
+    for epoch_count in [5, 10]:
         for learning_rate in [0.001, 0.002]:
             uploaded_pipeline.run_with_parameters(
                 pipeline_parameters={
