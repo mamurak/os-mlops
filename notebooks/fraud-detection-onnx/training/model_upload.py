@@ -1,5 +1,5 @@
-from os import environ
 from datetime import datetime
+from os import environ
 
 from boto3 import client
 
