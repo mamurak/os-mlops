@@ -1,3 +1,4 @@
+from base64 import b64decode
 from os import environ
 from pprint import pformat
 from time import sleep
@@ -51,8 +52,12 @@ def _read_s3_credentials(source_secret_name, namespace):
             )
             sleep(sleep_time)
 
-    access_key_id = pipeline_bucket_secret['data'][access_key_name]
-    secret_key_id = pipeline_bucket_secret['data'][secret_key_name]
+    access_key_id = b64decode(
+        pipeline_bucket_secret['data'][access_key_name]
+    ).decode()
+    secret_key_id = b64decode(
+        pipeline_bucket_secret['data'][secret_key_name]
+    ).decode()
 
     return access_key_id, secret_key_id
 
