@@ -29,17 +29,17 @@ def validate_model(
     )
     fpr = array([
         0, 0, 0, 0, 0,
-        normalvariate(0.01, 0.01),
+        normalvariate(0.01, 0.001),
         normalvariate(0.07, 0.001),
         normalvariate(0.08, 0.001),
-        normalvariate(0.2, 0.1),
-        normalvariate(0.5, 0.2),
+        normalvariate(0.2, 0.01),
+        normalvariate(0.5, 0.1),
         1
     ])
     tpr = array([
         0,
-        normalvariate(0.3, 0.1),
-        normalvariate(0.6, 0.1),
+        normalvariate(0.3, 0.01),
+        normalvariate(0.6, 0.01),
         normalvariate(0.85, 0.001),
         normalvariate(0.89, 0.001),
         normalvariate(0.92, 0.001),
