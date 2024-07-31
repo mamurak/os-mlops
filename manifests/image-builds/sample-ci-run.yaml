@@ -1,0 +1,33 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  name: workbench-ci-pipeline-sample
+  labels:
+    tekton.dev/pipeline: workbench-ci-pipeline
+spec:
+  params:
+    - name: git-source-url
+      value: 'https://github.com/mamurak/os-mlops.git'
+    - name: git-source-revision
+      value: tags/kfp-runtime-v1.0.1
+    - name: short-commit-id
+      value: kfp-runtime-v1.0.1
+    - name: REMOTE_IMAGE_URL
+      value: quay.io/mmurakam/runtimes
+    - name: containerfile-location
+      value: ./container-images/kfp-runtime/Containerfile
+    - name: build-context
+      value: ./container-images/kfp-runtime
+  pipelineRef:
+    name: workbench-ci-pipeline
+  taskRunTemplate:
+    serviceAccountName: pipeline
+  timeouts:
+    pipeline: 1h0m0s
+  workspaces:
+    - name: app-source
+      persistentVolumeClaim:
+        claimName: local-repository
+    - name: dockersecret
+      secret:
+        secretName: quay-push-secret
