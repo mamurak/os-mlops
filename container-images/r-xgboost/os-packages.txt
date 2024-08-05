@@ -1,5 +1,4 @@
 compat-openssl11
-fribidi-devel
 harfbuzz-devel
 openssl-libs
 R-core
