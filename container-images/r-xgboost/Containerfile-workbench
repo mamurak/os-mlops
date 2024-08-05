@@ -9,7 +9,9 @@ COPY mssql-2022.repo-x86_64 /etc/yum.repos.d/mssql-2022.repo
 
 ENV PATH="$PATH:/opt/mssql-tools18/bin"
 
-RUN ACCEPT_EULA=Y yum install -y mssql-tools18 unixODBC-devel && \
+RUN yum remove unixODBC-utf16 unixODBC-utf16-devel && \
+    ACCEPT_EULA=Y yum install -y msodbcsql18 && \
+    ACCEPT_EULA=Y yum install -y mssql-tools18 unixODBC-devel && \
     echo "tsflags=nodocs" | tee -a /etc/yum.conf && \
     yum -y update && \
     yum install -y yum-utils && \
