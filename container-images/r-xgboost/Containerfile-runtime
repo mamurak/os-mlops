@@ -1,0 +1,10 @@
+FROM quay.io/modh/runtime-images:runtime-datascience-ubi9-python-3.9-2024a-20240628-ac07414
+
+USER root
+
+RUN  R -e 'install.packages("Rcpp")' && \
+     dnf install -y fribidi-devel libsodium-devel cmake && \
+     R -e 'install.packages(c("tidyverse", "tidymodels", "vetiver", "plumber", "skimr", "xgboost", "aws.s3"))' && \
+     R -e 'install.packages("caret")'
+
+USER 1001
