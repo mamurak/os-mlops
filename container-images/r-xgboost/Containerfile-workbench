@@ -1,4 +1,4 @@
-FROM quay.io/opendatahub-contrib/workbench-images:cuda-jupyter-datascience-rstudio-c9s-py39_2023a_latest
+FROM quay.io/modh/odh-generic-data-science-notebook:v2-2024a-20240628-ac07414
 
 USER root
 
