@@ -10,7 +10,7 @@ timestamp <- format(current_time, "%Y%m%d_%H%M%S")
 
 object_name <- paste0("model_", timestamp, ".bst")
 print('Uploading model to: ')
-print(filename)
+print(object_name)
 
 put_object(file = "model.bst", object = object_name, bucket = s3_bucket, region = "")
 

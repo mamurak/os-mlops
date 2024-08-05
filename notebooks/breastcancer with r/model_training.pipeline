@@ -341,11 +341,12 @@
           "name": "model_training",
           "runtime": "Data Science Pipelines",
           "pipeline_defaults": {
-            "kubernetes_pod_annotations": [],
             "kubernetes_pod_labels": [],
-            "mounted_volumes": [],
             "kubernetes_tolerations": [],
+            "kubernetes_pod_annotations": [],
+            "mounted_volumes": [],
             "kubernetes_shared_mem_size": {},
+            "env_vars": [],
             "kubernetes_secrets": [
               {
                 "env_var": "AWS_ACCESS_KEY_ID",
@@ -368,7 +369,6 @@
                 "key": "AWS_S3_BUCKET"
               }
             ],
-            "env_vars": [],
             "runtime_image": "quay.io/mmurakam/runtimes:r-xgboost-v0.3.17"
           },
           "pipeline_parameters": [
@@ -386,7 +386,7 @@
               "description": "number of rounds",
               "default_value": {
                 "type": "Integer",
-                "value": ""
+                "value": 21
               },
               "required": false
             },
