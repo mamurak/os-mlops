@@ -5,8 +5,17 @@ USER root
 WORKDIR /opt/app-root/bin/
 
 COPY --chown=1001:0 os-packages.txt ./
+COPY mssql-2022.repo-x86_64 /etc/yum.repos.d/mssql-2022.repo
 
-RUN yum install -y $(cat os-packages.txt) && \
+ENV PATH="$PATH:/opt/mssql-tools18/bin"
+
+RUN ACCEPT_EULA=Y yum install -y mssql-tools18 unixODBC-devel && \
+    echo "tsflags=nodocs" | tee -a /etc/yum.conf && \
+    yum -y update && \
+    yum install -y yum-utils && \
+    yum-config-manager --enable crb && \
+    yum install -y https://download.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
+    yum install -y $(cat os-packages.txt) && \
     rm -f ./os-packages.txt && \
     yum -y clean all --enablerepo='*' && \
     rm -rf /var/cache/dnf && \
