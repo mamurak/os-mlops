@@ -1,4 +1,4 @@
-FROM FROM quay.io/opendatahub-contrib/runtime-images:r-c9s-py39_2023b_20230216
+FROM quay.io/opendatahub-contrib/runtime-images:r-c9s-py39_2023b_20230216
 
 LABEL name="odh-notebook-runtime-minimal-ubi9-python-3.9" \
     summary="Runtime minimal image for ODH notebooks" \
