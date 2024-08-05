@@ -2,12 +2,11 @@ library(tidyverse)
 library(skimr)
 library(dplyr)
 
-getwd()
-data <- read.csv("BreastCancerWisconsinDataSet.csv", header = TRUE)
+print("Loading raw data.")
 
+data <- read.csv("raw_data.csv", header = TRUE)
 skim(data)
 
-###ta bort dubplicata IDs, kolumner vi inte använder, kolla numeriska värden
 print("Cleaning data...")
 
 data <- data %>%
@@ -20,9 +19,7 @@ data <- data %>%
                   perimeter_worst,
                   perimeter_mean)) %>%
   dplyr::mutate(across(-c(diagnosis), as.numeric)) #%>%
-#dplyr::select(-X)
 
 print("Data cleaning done, saving file.")
 
-###spara ny fil
-write.csv(data, file = "data_cleaned.csv", row.names = FALSE)
+write.csv(data, file = "cleaned_data.csv", row.names = FALSE)

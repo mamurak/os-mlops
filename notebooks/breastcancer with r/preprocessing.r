@@ -2,8 +2,9 @@ library(dplyr)
 
 set.seed(1)
 print("Set seed 1")
+print("Load cleaned data")
 
-data_cleaned <- read.csv("data_cleaned.csv", header = TRUE)
+data_cleaned <- read.csv("cleaned_data.csv", header = TRUE)
 
 model_data <- data_cleaned %>%
   mutate_if(is.numeric, scale) %>%

@@ -1,0 +1,409 @@
+{
+  "doc_type": "pipeline",
+  "version": "3.0",
+  "json_schema": "http://api.dataplatform.ibm.com/schemas/common-pipeline/pipeline-flow/pipeline-flow-v3-schema.json",
+  "id": "elyra-auto-generated-pipeline",
+  "primary_pipeline": "primary",
+  "pipelines": [
+    {
+      "id": "primary",
+      "nodes": [
+        {
+          "id": "69020a5e-d731-4415-932b-8bb9944c0ce5",
+          "type": "execution_node",
+          "op": "execute-r-node",
+          "app_data": {
+            "component_parameters": {
+              "dependencies": [],
+              "include_subdirectories": false,
+              "outputs": [
+                "raw_data.csv"
+              ],
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [],
+              "kubernetes_shared_mem_size": {},
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "data_ingestion.r"
+            },
+            "label": "",
+            "ui_data": {
+              "label": "data_ingestion.r",
+              "image": "/notebook/r-demo/jupyterlab/static/elyra/r-logo.svg",
+              "x_pos": 131,
+              "y_pos": 258,
+              "description": "Run R script"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              }
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "bc0ce0de-2a90-4dd5-ac0d-6fe689ee2756",
+          "type": "execution_node",
+          "op": "execute-r-node",
+          "app_data": {
+            "component_parameters": {
+              "dependencies": [],
+              "include_subdirectories": false,
+              "outputs": [
+                "cleaned_data.csv"
+              ],
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [],
+              "kubernetes_shared_mem_size": {},
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "datacleaning.r"
+            },
+            "label": "",
+            "ui_data": {
+              "label": "datacleaning.r",
+              "image": "/notebook/r-demo/jupyterlab/static/elyra/r-logo.svg",
+              "x_pos": 367,
+              "y_pos": 257,
+              "description": "Run R script"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              },
+              "links": [
+                {
+                  "id": "a92b4b0f-7fba-431e-ac01-870bac9f0735",
+                  "node_id_ref": "69020a5e-d731-4415-932b-8bb9944c0ce5",
+                  "port_id_ref": "outPort"
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "3c5ef6bf-3e2e-4ce9-81e4-39d21bf857a0",
+          "type": "execution_node",
+          "op": "execute-r-node",
+          "app_data": {
+            "component_parameters": {
+              "dependencies": [],
+              "include_subdirectories": false,
+              "outputs": [
+                "train.csv",
+                "test.csv"
+              ],
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [],
+              "kubernetes_shared_mem_size": {},
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "preprocessing.r"
+            },
+            "label": "",
+            "ui_data": {
+              "label": "preprocessing.r",
+              "image": "/notebook/r-demo/jupyterlab/static/elyra/r-logo.svg",
+              "x_pos": 584,
+              "y_pos": 256,
+              "description": "Run R script"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              },
+              "links": [
+                {
+                  "id": "ebe86bba-46cd-4cd6-9fab-2b5013798169",
+                  "node_id_ref": "bc0ce0de-2a90-4dd5-ac0d-6fe689ee2756",
+                  "port_id_ref": "outPort"
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "b9eedf34-08e2-459d-a3b4-6adc631ae7eb",
+          "type": "execution_node",
+          "op": "execute-r-node",
+          "app_data": {
+            "component_parameters": {
+              "pipeline_parameters": [
+                "max_depth",
+                "n_round",
+                "early_stopping_rounds"
+              ],
+              "dependencies": [],
+              "include_subdirectories": false,
+              "outputs": [
+                "model.bst"
+              ],
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [],
+              "kubernetes_shared_mem_size": {},
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "model_training.r"
+            },
+            "label": "",
+            "ui_data": {
+              "label": "model_training.r",
+              "image": "/notebook/r-demo/jupyterlab/static/elyra/r-logo.svg",
+              "x_pos": 802,
+              "y_pos": 257,
+              "description": "Run R script"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              },
+              "links": [
+                {
+                  "id": "3d921676-922f-438a-8ad1-79296a2f192d",
+                  "node_id_ref": "3c5ef6bf-3e2e-4ce9-81e4-39d21bf857a0",
+                  "port_id_ref": "outPort"
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "94bfbda7-311e-4a2d-8682-89998d5f8776",
+          "type": "execution_node",
+          "op": "execute-r-node",
+          "app_data": {
+            "component_parameters": {
+              "dependencies": [],
+              "include_subdirectories": false,
+              "outputs": [],
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [],
+              "kubernetes_shared_mem_size": {},
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "model_upload.r"
+            },
+            "label": "",
+            "ui_data": {
+              "label": "model_upload.r",
+              "image": "/notebook/r-demo/jupyterlab/static/elyra/r-logo.svg",
+              "x_pos": 1026,
+              "y_pos": 256,
+              "description": "Run R script"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              },
+              "links": [
+                {
+                  "id": "ad0c3ebf-211e-40b1-8c2e-f366eebd0257",
+                  "node_id_ref": "b9eedf34-08e2-459d-a3b4-6adc631ae7eb",
+                  "port_id_ref": "outPort"
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "app_data": {
+        "ui_data": {
+          "comments": []
+        },
+        "version": 8,
+        "runtime_type": "KUBEFLOW_PIPELINES",
+        "properties": {
+          "name": "model_training",
+          "runtime": "Data Science Pipelines",
+          "pipeline_defaults": {
+            "kubernetes_pod_annotations": [],
+            "kubernetes_pod_labels": [],
+            "mounted_volumes": [],
+            "kubernetes_tolerations": [],
+            "kubernetes_shared_mem_size": {},
+            "kubernetes_secrets": [
+              {
+                "env_var": "AWS_ACCESS_KEY_ID",
+                "name": "aws-connection-breastcancer-bucket",
+                "key": "AWS_ACCESS_KEY_ID"
+              },
+              {
+                "env_var": "AWS_SECRET_ACCESS_KEY",
+                "name": "aws-connection-breastcancer-bucket",
+                "key": "AWS_SECRET_ACCESS_KEY"
+              },
+              {
+                "env_var": "AWS_S3_ENDPOINT",
+                "name": "aws-connection-breastcancer-bucket",
+                "key": "AWS_S3_ENDPOINT"
+              },
+              {
+                "env_var": "AWS_S3_BUCKET",
+                "name": "aws-connection-breastcancer-bucket",
+                "key": "AWS_S3_BUCKET"
+              }
+            ],
+            "env_vars": [],
+            "runtime_image": "quay.io/mmurakam/runtimes:r-xgboost-v0.3.17"
+          },
+          "pipeline_parameters": [
+            {
+              "name": "max_depth",
+              "description": "maximum boosting depth",
+              "default_value": {
+                "type": "Integer",
+                "value": 10
+              },
+              "required": false
+            },
+            {
+              "name": "n_round",
+              "description": "number of rounds",
+              "default_value": {
+                "type": "Integer",
+                "value": ""
+              },
+              "required": false
+            },
+            {
+              "name": "early_stopping_rounds",
+              "description": "number of rounds for early stopping",
+              "default_value": {
+                "type": "Integer",
+                "value": 3
+              },
+              "required": false
+            }
+          ]
+        }
+      },
+      "runtime_ref": ""
+    }
+  ],
+  "schemas": []
+}
