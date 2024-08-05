@@ -24,4 +24,12 @@ RUN echo "Installing softwares and packages" && \
     chmod -R g+w /opt/app-root/lib/python3.9/site-packages && \
     fix-permissions /opt/app-root -P
 
+USER root
+
+RUN R -e 'install.packages("Rcpp")' && \
+    R -e 'install.packages(c("tidyverse", "tidymodels", "vetiver", "plumber", "skimr", "xgboost", "aws.s3"))' && \
+    R -e 'install.packages("caret")'
+
+USER 1001
+
 WORKDIR /opt/app-root/src
