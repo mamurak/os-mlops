@@ -71,7 +71,11 @@ RUN mkdir /opt/app-root/runtimes && \
     rm /opt/app-root/share/jupyter/metadata/runtime-images/*.json && \
     # Fix permissions to support pip in Openshift environments \
     chmod -R g+w /opt/app-root/lib/python3.9/site-packages && \
-    fix-permissions /opt/app-root -P
+    fix-permissions /opt/app-root -P && \
+    # Add custom R packages
+    R -e 'install.packages("Rcpp")' && \
+    R -e 'install.packages(c("tidyverse", "tidymodels", "vetiver", "plumber", "skimr", "xgboost", "aws.s3"))' && \
+    R -e 'install.packages("caret")'
 
 # Copy Elyra runtime-images definitions and set the version
 COPY runtime-images/ /opt/app-root/share/jupyter/metadata/runtime-images/
