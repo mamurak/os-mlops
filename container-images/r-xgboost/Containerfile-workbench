@@ -7,6 +7,11 @@ WORKDIR /opt/app-root/bin/
 COPY --chown=1001:0 os-packages.txt ./
 COPY mssql-2022.repo-x86_64 /etc/yum.repos.d/mssql-2022.repo
 
+ENV R_VERSION=4.3.1
+# set R library to default (used in install.r from littler)
+ENV LIBLOC /usr/lib64/R/library
+# set User R Library path
+ENV R_LIBS_USER /opt/app-root/src/Rpackages/4.3
 ENV PATH="$PATH:/opt/mssql-tools18/bin"
 
 RUN yum remove unixODBC-utf16 unixODBC-utf16-devel && \
@@ -15,13 +20,15 @@ RUN yum remove unixODBC-utf16 unixODBC-utf16-devel && \
     echo "tsflags=nodocs" | tee -a /etc/yum.conf && \
     yum -y update && \
     yum install -y yum-utils && \
-    yum install -y https://download.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
     /usr/bin/crb enable && \
+    yum install -y https://download.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
     yum install -y $(cat os-packages.txt) && \
     rm -f ./os-packages.txt && \
     yum -y clean all --enablerepo='*' && \
     rm -rf /var/cache/dnf && \
     find /var/log -type f -name "*.log" -exec rm -f {} \; && \
+    echo 'options(repos = c(CRAN = "https://cran.rstudio.com/"), download.file.method = "libcurl")' >> /usr/lib64/R/etc/Rprofile.site && \
+    (umask 002;touch /usr/lib64/R/etc/Renviron.site) && \
     R -e 'install.packages("Rcpp")' && \
     dnf install -y fribidi-devel libsodium-devel cmake && \
     R -e 'install.packages(c("tidyverse", "tidymodels", "vetiver", "plumber", "skimr", "xgboost", "aws.s3"))' && \
