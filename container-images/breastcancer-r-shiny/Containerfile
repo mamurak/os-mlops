@@ -1,0 +1,14 @@
+FROM quay.io/sara_banderby/rhel9-r4:shiny
+LABEL maintainer="abanderb@redhat.com"
+LABEL description="R and RHEL9 image with breastcancer predictor."
+LABEL version= "1.0"
+USER root
+RUN dnf -y install glibc-langpack-en
+ENV LANG en_US.UTF-8
+RUN mkdir /application
+RUN R -q -e 'install.packages(c("dplyr", "rpart","utf8", "generics", "bslib", "tibble", "parsnip","xgboost", "httr", "jsonlite"), repos = "https://cran.rstudio.com/")'
+COPY app.r /application
+WORKDIR /application
+EXPOSE 8080
+USER 1001
+ENTRYPOINT R -s -e 'library("shiny"); runApp(host = "0.0.0.0", port = 8080)
