@@ -1,0 +1,7 @@
+FROM quay.io/opendatahub-contrib/workbench-images:cuda-jupyter-datascience-rstudio-c9s-py39_2023a_latest
+
+USER root
+
+RUN R -e '"install.packages(c("tidyverse", "tidymodels", "vetiver", "plumber", "skimr", "xgboost"))"'
+
+USER 1001
