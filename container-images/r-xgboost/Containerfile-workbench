@@ -2,6 +2,9 @@ FROM quay.io/opendatahub-contrib/workbench-images:cuda-jupyter-datascience-rstud
 
 USER root
 
-RUN R -e 'install.packages(c("tidyverse", "tidymodels", "vetiver", "plumber", "skimr", "xgboost"))'
+RUN  R -e 'install.packages("Rcpp")' && \
+     dnf install -y fribidi-devel libsodium-devel cmake && \
+     R -e 'install.packages(c("tidyverse", "tidymodels", "vetiver", "plumber", "skimr", "xgboost", "aws.s3"))' && \
+     R -e 'install.packages("caret")'
 
 USER 1001
