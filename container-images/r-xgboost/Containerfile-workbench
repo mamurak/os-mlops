@@ -1,40 +1,79 @@
-FROM quay.io/modh/odh-generic-data-science-notebook:v2-2024a-20240628-ac07414
+FROM quay.io/opendatahub-contrib/runtime-images:r-c9s-py39_2023b_20230216
 
+LABEL name="odh-notebook-jupyter-datascience-ubi9-python-3.9" \
+    summary="Jupyter data science notebook image for ODH notebooks" \
+    description="Jupyter data science notebook image with base Python 3.9 builder image based on UBI9 for ODH notebooks" \
+    io.k8s.display-name="Jupyter data science notebook image for ODH notebooks" \
+    io.k8s.description="Jupyter data science notebook image with base Python 3.9 builder image based on UBI9 for ODH notebooks" \
+    authoritative-source-url="https://github.com/opendatahub-io/notebooks" \
+    io.openshift.build.commit.ref="main" \
+    io.openshift.build.source-location="https://github.com/opendatahub-io/notebooks/tree/main/jupyter/datascience/ubi9-python-3.9" \
+    io.openshift.build.image="quay.io/opendatahub/workbench-images:jupyter-datascience-ubi9-python-3.9"
+
+WORKDIR /opt/app-root/bin
+
+# Install Python packages and Jupyterlab extensions from Pipfile.lock
+COPY Pipfile.lock ./
+# Copy Elyra setup to utils so that it's sourced at startup
+COPY setup-elyra.sh ./utils/
+
+RUN echo "Installing softwares and packages" && \
+    micropipenv install && \
+    rm -f ./Pipfile.lock
+
+COPY utils ./utils/
+
+# OS Packages needs to be installed as root
 USER root
 
-WORKDIR /opt/app-root/bin/
+# Install usefull OS packages
+RUN dnf install -y jq unixODBC postgresql git-lfs libsndfile && dnf clean all && rm -rf /var/cache/yum
 
-COPY --chown=1001:0 os-packages.txt ./
+# Disable announcement plugin of jupyterlab
+RUN jupyter labextension disable "@jupyterlab/apputils-extension:announcements"
+
+# Install MongoDB Client, We need a special repo for MongoDB as they do their own distribution
+COPY mongodb-org-6.0.repo-x86_64 /etc/yum.repos.d/mongodb-org-6.0.repo
+
+RUN dnf install -y mongocli && dnf clean all && rm -rf /var/cache/yum
+
+# Install MSSQL Client, We need a special repo for MSSQL as they do their own distribution
 COPY mssql-2022.repo-x86_64 /etc/yum.repos.d/mssql-2022.repo
 
-ENV R_VERSION=4.3.1
-# set R library to default (used in install.r from littler)
-ENV LIBLOC /usr/lib64/R/library
-# set User R Library path
-ENV R_LIBS_USER /opt/app-root/src/Rpackages/4.3
+RUN ACCEPT_EULA=Y dnf install -y mssql-tools18 unixODBC-devel && dnf clean all && rm -rf /var/cache/yum
+
 ENV PATH="$PATH:/opt/mssql-tools18/bin"
 
-RUN yum remove unixODBC-utf16 unixODBC-utf16-devel && \
-    ACCEPT_EULA=Y yum install -y msodbcsql18 && \
-    ACCEPT_EULA=Y yum install -y mssql-tools18 unixODBC-devel && \
-    echo "tsflags=nodocs" | tee -a /etc/yum.conf && \
-    yum -y update && \
-    yum install -y yum-utils && \
-    yum install -y https://download.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
-    /usr/bin/crb enable && \
-    yum install -y $(cat os-packages.txt) && \
-    rm -f ./os-packages.txt && \
-    yum -y clean all --enablerepo='*' && \
-    rm -rf /var/cache/dnf && \
-    find /var/log -type f -name "*.log" -exec rm -f {} \; && \
-    echo 'options(repos = c(CRAN = "https://cran.rstudio.com/"), download.file.method = "libcurl")' >> /usr/lib64/R/etc/Rprofile.site && \
-    (umask 002;touch /usr/lib64/R/etc/Renviron.site) && \
-    R -e 'install.packages("Rcpp")' && \
-    yum -y update && \
-    yum install -y fribidi-devel libsodium-devel cmake && \
-    R -e 'install.packages(c("tidyverse", "tidymodels", "vetiver", "plumber", "skimr", "xgboost", "aws.s3"))' && \
-    R -e 'install.packages("caret")'
+# Other apps and tools installed as default user
+USER 1001
+
+# setup path for runtime configuration
+RUN mkdir /opt/app-root/runtimes && \
+    # switch to Data Science Pipeline \
+    cp utils/pipeline-flow.svg /opt/app-root/lib/python3.9/site-packages/elyra/static/icons/kubeflow.svg && \
+    sed -i "s/Kubeflow Pipelines/Data Science/g" /opt/app-root/lib/python3.9/site-packages/elyra/pipeline/runtime_type.py && \
+    sed -i "s/Kubeflow Pipelines/Data Science Pipelines/g" /opt/app-root/lib/python3.9/site-packages/elyra/metadata/schemas/kfp.json && \
+    sed -i "s/kubeflow-service/data-science-pipeline-service/g" /opt/app-root/lib/python3.9/site-packages/elyra/metadata/schemas/kfp.json && \
+    # switch to Data Science Pipeline in component catalog \
+    DIR_COMPONENT="/opt/app-root/lib/python3.9/site-packages/elyra/metadata/schemas/local-directory-catalog.json" && \
+    FILE_COMPONENT="/opt/app-root/lib/python3.9/site-packages/elyra/metadata/schemas/local-file-catalog.json" && \
+    URL_COMPONENT="/opt/app-root/lib/python3.9/site-packages/elyra/metadata/schemas/url-catalog.json" && \
+    tmp=$(mktemp) && \
+    jq '.properties.metadata.properties.runtime_type = input' $DIR_COMPONENT utils/component_runtime.json > "$tmp" && mv "$tmp" $DIR_COMPONENT && \
+    jq '.properties.metadata.properties.runtime_type = input' $FILE_COMPONENT utils/component_runtime.json > "$tmp" && mv "$tmp" $FILE_COMPONENT && \
+    jq '.properties.metadata.properties.runtime_type = input' $URL_COMPONENT utils/component_runtime.json > "$tmp" && mv "$tmp" $URL_COMPONENT && \
+    sed -i "s/metadata.metadata.runtime_type/\"DATA_SCIENCE_PIPELINES\"/g" /opt/app-root/share/jupyter/labextensions/@elyra/pipeline-editor-extension/static/lib_index_js.*.js && \
+    # Remove Elyra logo from JupyterLab because this is not a pure Elyra image \
+    sed -i 's/widget\.id === \x27jp-MainLogo\x27/widget\.id === \x27jp-MainLogo\x27 \&\& false/' /opt/app-root/share/jupyter/labextensions/@elyra/theme-extension/static/lib_index_js.*.js && \
+    # Replace Notebook's launcher, "(ipykernel)" with Python's version 3.x.y \
+    sed -i -e "s/Python.*/$(python --version | cut -d '.' -f-2)\",/" /opt/app-root/share/jupyter/kernels/python3/kernel.json && \
+    # Remove default Elyra runtime-images \
+    rm /opt/app-root/share/jupyter/metadata/runtime-images/*.json && \
+    # Fix permissions to support pip in Openshift environments \
+    chmod -R g+w /opt/app-root/lib/python3.9/site-packages && \
+    fix-permissions /opt/app-root -P
+
+# Copy Elyra runtime-images definitions and set the version
+COPY runtime-images/ /opt/app-root/share/jupyter/metadata/runtime-images/
 
 WORKDIR /opt/app-root/src
-
-USER 1001
