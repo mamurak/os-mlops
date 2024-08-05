@@ -15,8 +15,8 @@ RUN yum remove unixODBC-utf16 unixODBC-utf16-devel && \
     echo "tsflags=nodocs" | tee -a /etc/yum.conf && \
     yum -y update && \
     yum install -y yum-utils && \
-    yum-config-manager --enable crb && \
     yum install -y https://download.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
+    /usr/bin/crb enable && \
     yum install -y $(cat os-packages.txt) && \
     rm -f ./os-packages.txt && \
     yum -y clean all --enablerepo='*' && \
