@@ -583,3 +583,33 @@ spec:
         importMode: Legacy
       referencePolicy:
         type: Source
+---
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  annotations:
+    opendatahub.io/notebook-image-desc: JupyterLab with R and xgboost
+    opendatahub.io/notebook-image-name: R-xgboost
+    opendatahub.io/notebook-image-url: 'quay.io/mmurakam/workbenches:r-xgboost-v0.3.17'
+  name: R-xgboost
+  namespace: redhat-ods-applications
+  labels:
+    app.kubernetes.io/created-by: byon
+    opendatahub.io/dashboard: 'true'
+    opendatahub.io/notebook-image: 'true'
+spec:
+  lookupPolicy:
+    local: true
+  tags:
+    - name: '0.3.17'
+      annotations:
+        opendatahub.io/notebook-python-dependencies: '[{"name":"xgboost","version":"3.9","visible":true}]'
+        opendatahub.io/notebook-software: '[{"name":"Python","version":"3.9","visible":true},{"name":"R","version":"4.2.2","visible":true}]'
+        openshift.io/imported-from: 'quay.io/mmurakam/workbenches:r-xgboost-v0.3.17'
+      from:
+        kind: DockerImage
+        name: 'quay.io/mmurakam/workbenches:r-xgboost-v0.3.17'
+      importPolicy:
+        importMode: Legacy
+      referencePolicy:
+        type: Source
