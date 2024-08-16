@@ -303,10 +303,10 @@ spec:
         opendatahub.io/notebook-python-dependencies: >-
           [{"name":"opencv","version":"4.8.0.74"},{"name":"ultralytics","version":"8.0.130"},{"name":"onnxruntime","version":"1.15.1"}]
         opendatahub.io/notebook-software: '[{"name":"Python","version":"3.9"}]'
-    - name: "2.0.1"
+    - name: "2.1.0"
       from:
         kind: DockerImage
-        name: quay.io/mmurakam/workbenches:object-detection-v2.0.1
+        name: quay.io/mmurakam/workbenches:object-detection-v2.1.0
       importPolicy: {}
       referencePolicy:
         type: Local
