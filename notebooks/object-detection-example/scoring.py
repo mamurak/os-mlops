@@ -1,6 +1,7 @@
 from csv import writer
 from os import environ
 from pickle import load
+from pprint import pformat
 
 import numpy as np
 from onnxruntime import InferenceSession
@@ -10,10 +11,13 @@ import torchvision
 from classes import classes
 
 
-def predict(data_folder='./data', gpu_mode=True):
+def predict(class_labels=None, data_folder='./data'):
     print('Commencing offline scoring.')
 
     class_labels_type = environ.get('class_labels_type', 'coco')
+    class_labels = classes[class_labels_type]
+    print(f'Class labels are: {pformat(class_labels)}')
+
     confidence_threshold = float(environ.get('confidence_threshold', '0.2'))
     iou_threshold = float(environ.get('iou_threshold', '0.6'))
 
@@ -28,8 +32,6 @@ def predict(data_folder='./data', gpu_mode=True):
         session.run([], {'images': image_data})[0]
         for image_data in images
     ])
-
-    class_labels = classes[class_labels_type]
 
     results = _postprocess(
         raw_results, confidence_threshold, iou_threshold, class_labels

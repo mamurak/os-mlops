@@ -23,19 +23,13 @@
               "kubernetes_secrets": [],
               "kubernetes_shared_mem_size": {},
               "kubernetes_tolerations": [],
-              "mounted_volumes": [
-                {
-                  "path": "/data",
-                  "pvc_name": "offline-scoring-pvc",
-                  "read_only": false
-                }
-              ],
+              "mounted_volumes": [],
               "filename": "data_ingestion.py"
             },
             "label": "",
             "ui_data": {
               "label": "data_ingestion.py",
-              "image": "/notebook/od-project/development/static/elyra/python.svg",
+              "image": "/notebook/object-detection/development/static/elyra/python.svg",
               "x_pos": 97,
               "y_pos": 233,
               "description": "Run Python script"
@@ -85,19 +79,13 @@
               "kubernetes_secrets": [],
               "kubernetes_shared_mem_size": {},
               "kubernetes_tolerations": [],
-              "mounted_volumes": [
-                {
-                  "path": "/data",
-                  "pvc_name": "offline-scoring-pvc",
-                  "read_only": false
-                }
-              ],
+              "mounted_volumes": [],
               "filename": "preprocessing.py"
             },
             "label": "",
             "ui_data": {
               "label": "preprocessing.py",
-              "image": "/notebook/od-project/development/static/elyra/python.svg",
+              "image": "/notebook/object-detection/development/static/elyra/python.svg",
               "x_pos": 295,
               "y_pos": 233,
               "description": "Run Python script"
@@ -146,9 +134,7 @@
           "app_data": {
             "component_parameters": {
               "pipeline_parameters": [
-                "class_labels_type",
-                "confidence_threshold",
-                "iou_threshold"
+                "class_labels_type"
               ],
               "dependencies": [
                 "classes.py"
@@ -161,19 +147,13 @@
               "kubernetes_secrets": [],
               "kubernetes_shared_mem_size": {},
               "kubernetes_tolerations": [],
-              "mounted_volumes": [
-                {
-                  "path": "/data",
-                  "pvc_name": "offline-scoring-pvc",
-                  "read_only": false
-                }
-              ],
+              "mounted_volumes": [],
               "filename": "scoring.py"
             },
             "label": "",
             "ui_data": {
               "label": "scoring.py",
-              "image": "/notebook/od-project/development/static/elyra/python.svg",
+              "image": "/notebook/object-detection/development/static/elyra/python.svg",
               "x_pos": 475,
               "y_pos": 310,
               "description": "Run Python script"
@@ -235,19 +215,13 @@
               "kubernetes_secrets": [],
               "kubernetes_shared_mem_size": {},
               "kubernetes_tolerations": [],
-              "mounted_volumes": [
-                {
-                  "path": "/data",
-                  "pvc_name": "offline-scoring-pvc",
-                  "read_only": false
-                }
-              ],
+              "mounted_volumes": [],
               "filename": "results_upload.py"
             },
             "label": "",
             "ui_data": {
               "label": "results_upload.py",
-              "image": "/notebook/od-project/development/static/elyra/python.svg",
+              "image": "/notebook/object-detection/development/static/elyra/python.svg",
               "x_pos": 666,
               "y_pos": 309,
               "description": "Run Python script"
@@ -295,9 +269,6 @@
           "op": "execute-python-node",
           "app_data": {
             "component_parameters": {
-              "pipeline_parameters": [
-                "model_object_name"
-              ],
               "dependencies": [],
               "include_subdirectories": false,
               "outputs": [
@@ -315,7 +286,7 @@
             "label": "",
             "ui_data": {
               "label": "model_loading.py",
-              "image": "/notebook/od-project/development/static/elyra/python.svg",
+              "image": "/notebook/object-detection/development/static/elyra/python.svg",
               "x_pos": 192,
               "y_pos": 378,
               "description": "Run Python script"
@@ -362,10 +333,16 @@
           "runtime": "Data Science Pipelines",
           "pipeline_defaults": {
             "kubernetes_shared_mem_size": {},
-            "mounted_volumes": [],
-            "kubernetes_pod_labels": [],
-            "kubernetes_tolerations": [],
             "kubernetes_pod_annotations": [],
+            "kubernetes_pod_labels": [],
+            "mounted_volumes": [
+              {
+                "path": "/data",
+                "pvc_name": "offline-scoring-pvc",
+                "read_only": false
+              }
+            ],
+            "kubernetes_tolerations": [],
             "env_vars": [],
             "kubernetes_secrets": [
               {
@@ -389,42 +366,15 @@
                 "key": "AWS_S3_ENDPOINT"
               }
             ],
-            "runtime_image": "quay.io/mmurakam/runtimes:object-detection-v2.0.0"
+            "runtime_image": "quay.io/mmurakam/runtimes:object-detection-v2.1.0"
           },
           "pipeline_parameters": [
-            {
-              "name": "model_object_name",
-              "description": "",
-              "default_value": {
-                "type": "String",
-                "value": "model-latest.onnx"
-              },
-              "required": false
-            },
             {
               "name": "class_labels_type",
               "description": "",
               "default_value": {
                 "type": "String",
-                "value": "traffic"
-              },
-              "required": false
-            },
-            {
-              "name": "confidence_threshold",
-              "description": "",
-              "default_value": {
-                "type": "Float",
-                "value": 0.2
-              },
-              "required": false
-            },
-            {
-              "name": "iou_threshold",
-              "description": "",
-              "default_value": {
-                "type": "Float",
-                "value": 0.6
+                "value": "coco"
               },
               "required": false
             }

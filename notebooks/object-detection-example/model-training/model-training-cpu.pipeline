@@ -33,12 +33,13 @@
               "kubernetes_shared_mem_size": {},
               "kubernetes_tolerations": [],
               "mounted_volumes": [],
-              "filename": "data_ingestion.py"
+              "filename": "data_ingestion.py",
+              "memory": 7
             },
             "label": "",
             "ui_data": {
               "label": "data_ingestion.py",
-              "image": "/notebook/od-project/development/static/elyra/python.svg",
+              "image": "/notebook/object-detection/development/static/elyra/python.svg",
               "x_pos": 199,
               "y_pos": 267,
               "description": "Run Python script"
@@ -100,15 +101,21 @@
                 "size": 10
               },
               "kubernetes_tolerations": [],
-              "mounted_volumes": [],
+              "mounted_volumes": [
+                {
+                  "path": "/dev/shm",
+                  "pvc_name": "shared-memory-pvc",
+                  "read_only": false
+                }
+              ],
               "filename": "model_training.py",
               "gpu": 0,
-              "memory": 8
+              "memory": 13
             },
             "label": "",
             "ui_data": {
               "label": "model_training.py",
-              "image": "/notebook/od-project/development/static/elyra/python.svg",
+              "image": "/notebook/object-detection/development/static/elyra/python.svg",
               "x_pos": 671,
               "y_pos": 266,
               "description": "Run Python script"
@@ -173,7 +180,7 @@
             "label": "",
             "ui_data": {
               "label": "preprocessing.py",
-              "image": "/notebook/od-project/development/static/elyra/python.svg",
+              "image": "/notebook/object-detection/development/static/elyra/python.svg",
               "x_pos": 428,
               "y_pos": 260,
               "description": "Run Python script"
@@ -240,7 +247,7 @@
             "label": "",
             "ui_data": {
               "label": "model_conversion.py",
-              "image": "/notebook/od-project/development/static/elyra/python.svg",
+              "image": "/notebook/object-detection/development/static/elyra/python.svg",
               "x_pos": 895,
               "y_pos": 267,
               "description": "Run Python script"
@@ -311,7 +318,7 @@
             "label": "",
             "ui_data": {
               "label": "model_upload.py",
-              "image": "/notebook/od-project/development/static/elyra/python.svg",
+              "image": "/notebook/object-detection/development/static/elyra/python.svg",
               "x_pos": 1106,
               "y_pos": 269,
               "description": "Run Python script"
@@ -361,12 +368,14 @@
         "version": 8,
         "runtime_type": "KUBEFLOW_PIPELINES",
         "properties": {
-          "name": "model-training-cpu",
+          "name": "model-training",
           "runtime": "Data Science Pipelines",
           "pipeline_defaults": {
             "kubernetes_shared_mem_size": {
               "size": 10
             },
+            "kubernetes_pod_annotations": [],
+            "kubernetes_pod_labels": [],
             "mounted_volumes": [
               {
                 "path": "/data",
@@ -374,9 +383,7 @@
                 "read_only": false
               }
             ],
-            "kubernetes_pod_labels": [],
             "kubernetes_tolerations": [],
-            "kubernetes_pod_annotations": [],
             "env_vars": [],
             "kubernetes_secrets": [
               {
@@ -400,7 +407,7 @@
                 "key": "AWS_S3_ENDPOINT"
               }
             ],
-            "runtime_image": "quay.io/mmurakam/runtimes:object-detection-v2.0.1"
+            "runtime_image": "quay.io/mmurakam/runtimes:object-detection-v2.1.0"
           },
           "pipeline_parameters": [
             {
@@ -408,7 +415,7 @@
               "description": "",
               "default_value": {
                 "type": "Integer",
-                "value": 500
+                "value": 100
               },
               "required": false
             },
@@ -426,7 +433,7 @@
               "description": "",
               "default_value": {
                 "type": "Integer",
-                "value": 2
+                "value": 1
               },
               "required": false
             },
