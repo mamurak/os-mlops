@@ -4,6 +4,6 @@ RUN pip install pip==22.3.1 setuptools==65.3.0
 
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt && \
-    pip uninstall ray && \
+    pip uninstall -y ray && \
     chmod -R g+w /opt/app-root/lib/python3.9/site-packages && \
     fix-permissions /opt/app-root -P
