@@ -7,7 +7,8 @@ import yaml
 from numpy import random
 
 
-def preprocess_data(data_folder='./data'):
+def preprocess_data(data_folder='./data',
+                    configuration_path='configuration-local.yaml'):
     print('preprocessing data')
 
     for folder in ['images', 'labels']:
@@ -17,21 +18,13 @@ def preprocess_data(data_folder='./data'):
                 makedirs(local_folder)
 
     download_folder = f'{data_folder}/download'
-    class_labels = _read_class_labels('configuration.yaml')
+    class_labels = _read_class_labels(configuration_path)
 
     folder_names = [class_name.lower() for class_name in class_labels]
     images = [
         _get_filenames(f'{download_folder}/{folder_name}/images')
         for folder_name in folder_names
     ]
-
-    duplicates_0_1 = images[0] & images[1]
-    duplicates_1_2 = images[1] & images[2]
-    duplicates_2_0 = images[2] & images[0]
-
-    images[0] -= duplicates_0_1
-    images[1] -= duplicates_1_2
-    images[2] -= duplicates_2_0
 
     random.seed(42)
     train_ratio = 0.75
@@ -100,4 +93,6 @@ def _split_dataset(
 
 
 if __name__ == '__main__':
-    preprocess_data(data_folder='/data')
+    preprocess_data(
+        data_folder='/data', configuration_path='configuration-pipeline.yaml'
+    )

@@ -3,5 +3,6 @@
 *-checkpoint.ipynb
 *-checkpoint.pipeline
 *-checkpoint.md
-notebooks/object-detection-example/model.onnx
-notebooks/object-detection-example/model-training/yolov5/runs/train
+notebooks/object-detection-example/*.onnx
+notebooks/object-detection-example/model-training/data
+notebooks/object-detection-example/model-training/runs

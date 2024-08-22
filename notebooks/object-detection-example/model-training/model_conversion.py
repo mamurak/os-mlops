@@ -1,15 +1,12 @@
-from yolov5.export import run
+from ultralytics import YOLO
 
 
 def convert_model(model_file_path='model.pt'):
     print('converting model')
 
-    run(
-        weights=model_file_path,
-        include=['onnx'],
-        imgsz=(640, 640),
-        opset=13,
-    )
+    model = YOLO(model_file_path)
+    model.export(format='onnx', imgsz=640, opset=13)
+    model.save('model.onnx')
 
     print('model converted')
 
