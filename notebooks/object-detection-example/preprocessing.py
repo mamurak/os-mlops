@@ -83,14 +83,14 @@ def _letterbox_image(
     if auto:  # minimum rectangle
         dw, dh = np.mod(dw, stride), np.mod(dh, stride)  # wh padding
 
-    dw_half, dh_half = dw / 2, dh / 2  # split padding into two sides
+    dw, dh = dw / 2, dh / 2  # split padding into two sides
 
     if shape != new_unpad[::-1]:  # resize
         im = im.resize(new_unpad, Image.BILINEAR)
 
     # Adjust border calculation to ensure the final dimensions are exactly new_shape
-    top, bottom = int(dh_half), int(dh_half + 0.5)
-    left, right = int(dw_half), int(dw_half + 0.5)
+    top, bottom = int(dh), int(dh + 0.5)
+    left, right = int(dw), int(dw + 0.5)
 
     im = ImageOps.expand(im, border=(left, top, right, bottom), fill=color)
 
