@@ -18,7 +18,7 @@
                 "sample_count"
               ],
               "dependencies": [
-                "configuration.yaml"
+                "configuration-pipeline.yaml"
               ],
               "include_subdirectories": false,
               "outputs": [],
@@ -39,7 +39,7 @@
             "label": "",
             "ui_data": {
               "label": "data_ingestion.py",
-              "image": "/notebook/object-detection/development/static/elyra/python.svg",
+              "image": "/notebook/object-detection/jupyterlab/static/elyra/python.svg",
               "x_pos": 199,
               "y_pos": 267,
               "description": "Run Python script"
@@ -86,8 +86,7 @@
                 "base_model"
               ],
               "dependencies": [
-                "yolov5/*",
-                "configuration.yaml"
+                "configuration-pipeline.yaml"
               ],
               "include_subdirectories": true,
               "outputs": [
@@ -115,7 +114,7 @@
             "label": "",
             "ui_data": {
               "label": "model_training.py",
-              "image": "/notebook/object-detection/development/static/elyra/python.svg",
+              "image": "/notebook/object-detection/jupyterlab/static/elyra/python.svg",
               "x_pos": 671,
               "y_pos": 266,
               "description": "Run Python script"
@@ -164,7 +163,7 @@
           "app_data": {
             "component_parameters": {
               "dependencies": [
-                "configuration.yaml"
+                "configuration-pipeline.yaml"
               ],
               "include_subdirectories": false,
               "outputs": [],
@@ -180,7 +179,7 @@
             "label": "",
             "ui_data": {
               "label": "preprocessing.py",
-              "image": "/notebook/object-detection/development/static/elyra/python.svg",
+              "image": "/notebook/object-detection/jupyterlab/static/elyra/python.svg",
               "x_pos": 428,
               "y_pos": 260,
               "description": "Run Python script"
@@ -228,9 +227,7 @@
           "op": "execute-python-node",
           "app_data": {
             "component_parameters": {
-              "dependencies": [
-                "yolov5/*"
-              ],
+              "dependencies": [],
               "include_subdirectories": false,
               "outputs": [
                 "model.onnx"
@@ -247,7 +244,7 @@
             "label": "",
             "ui_data": {
               "label": "model_conversion.py",
-              "image": "/notebook/object-detection/development/static/elyra/python.svg",
+              "image": "/notebook/object-detection/jupyterlab/static/elyra/python.svg",
               "x_pos": 895,
               "y_pos": 267,
               "description": "Run Python script"
@@ -318,7 +315,7 @@
             "label": "",
             "ui_data": {
               "label": "model_upload.py",
-              "image": "/notebook/object-detection/development/static/elyra/python.svg",
+              "image": "/notebook/object-detection/jupyterlab/static/elyra/python.svg",
               "x_pos": 1106,
               "y_pos": 269,
               "description": "Run Python script"
