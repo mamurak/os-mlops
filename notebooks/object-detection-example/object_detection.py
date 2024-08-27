@@ -74,7 +74,7 @@ def _unpack(model_output, classes_count):
 
 def postprocess(
         prediction,
-        conf_thres=0.5,
+        conf_thres=0.2,
         iou_thres=0.6,
         classes=None,
         agnostic=False,
