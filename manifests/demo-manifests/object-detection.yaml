@@ -302,6 +302,7 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: shared-memory-pvc
+  namespace: object-detection
 spec:
   accessModes:
     - ReadWriteOnce

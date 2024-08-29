@@ -1,0 +1,13 @@
+FROM quay.io/modh/odh-minimal-notebook-container:v2-2024a-20240808
+
+RUN pip install pip==22.3.1 setuptools==65.3.0 &&
+    dnf -y update && \
+    dnf -y install git-lfs && \
+    dnf -y clean all && \
+    rm -rf /var/cache/dnf
+
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt && \
+    pip uninstall -y ray && \
+    chmod -R g+w /opt/app-root/lib/python3.9/site-packages && \
+    fix-permissions /opt/app-root -P
