@@ -1,4 +1,4 @@
-FROM quay.io/modh/runtime-images:runtime-minimal-ubi9-python-3.9-20240808
+FROM quay.io/modh/runtime-images:runtime-datascience-ubi9-python-3.9-2024a-20240808-bcbb42a
 
 RUN pip install pip==22.3.1 setuptools==65.3.0 && \
     dnf -y update && \
@@ -8,6 +8,5 @@ RUN pip install pip==22.3.1 setuptools==65.3.0 && \
 
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt && \
-    pip uninstall -y ray && \
     chmod -R g+w /opt/app-root/lib/python3.9/site-packages && \
     fix-permissions /opt/app-root -P
