@@ -1,10 +1,14 @@
 FROM quay.io/modh/runtime-images:runtime-datascience-ubi9-python-3.9-2024a-20240808-bcbb42a
 
+USER 0
+
 RUN pip install pip==22.3.1 setuptools==65.3.0 && \
     dnf -y update && \
     dnf -y install git-lfs && \
     dnf -y clean all && \
     rm -rf /var/cache/dnf
+
+USER 1001
 
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt && \
