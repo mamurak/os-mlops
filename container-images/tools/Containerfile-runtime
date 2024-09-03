@@ -1,6 +1,10 @@
 FROM quay.io/modh/runtime-images:runtime-minimal-ubi9-python-3.9-20240808
 
-RUN pip install pip==22.3.1 setuptools==65.3.0
+RUN pip install pip==22.3.1 setuptools==65.3.0 && \
+    dnf -y update && \
+    dnf -y install git-lfs && \
+    dnf -y clean all && \
+    rm -rf /var/cache/dnf
 
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt && \
