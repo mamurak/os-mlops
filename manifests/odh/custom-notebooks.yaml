@@ -624,3 +624,34 @@ spec:
         importMode: Legacy
       referencePolicy:
         type: Source
+---
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  annotations:
+    opendatahub.io/notebook-image-desc: JupyterLab based workbench with basic tools
+    opendatahub.io/notebook-image-name: Tools workbench
+    opendatahub.io/notebook-image-url: 'quay.io/mmurakam/workbenches:tools-v0.1.4'
+  name: tools
+  namespace: redhat-ods-applications
+  labels:
+    app.kubernetes.io/created-by: byon
+    opendatahub.io/dashboard: 'true'
+    opendatahub.io/notebook-image: 'true'
+spec:
+  lookupPolicy:
+    local: true
+  tags:
+    - name: 0.1.4
+      annotations:
+        opendatahub.io/notebook-python-dependencies: >-
+          [{"name":"boto3","version":"1.28.2","visible":true}]
+        opendatahub.io/notebook-software: '[{"name":"Python","version":"3.9","visible":true}]'
+        openshift.io/imported-from: 'quay.io/mmurakam/workbenches:tools-v0.1.4'
+      from:
+        kind: DockerImage
+        name: 'quay.io/mmurakam/workbenches:tools-v0.1.4'
+      importPolicy:
+        importMode: Legacy
+      referencePolicy:
+        type: Source

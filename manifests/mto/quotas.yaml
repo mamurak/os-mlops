@@ -1,0 +1,45 @@
+apiVersion: tenantoperator.stakater.com/v1beta1
+kind: Quota
+metadata:
+  name: small
+spec:
+  limitrange:
+    limits:
+      - max:
+          cpu: '12'
+          memory: 12Gi
+        min:
+          cpu: 200m
+          memory: 100Mi
+        type: Pod
+  resourcequota:
+    hard:
+      configmaps: '20'
+      requests.cpu: '5'
+      requests.memory: 20Gi
+      requests.nvidia.com/gpu: '1'
+      secrets: '20'
+      services: '10'
+---
+apiVersion: tenantoperator.stakater.com/v1beta1
+kind: Quota
+metadata:
+  name: large
+spec:
+  limitrange:
+    limits:
+      - max:
+          cpu: '20'
+          memory: 32Gi
+        min:
+          cpu: 200m
+          memory: 100Mi
+        type: Pod
+  resourcequota:
+    hard:
+      configmaps: '120'
+      requests.cpu: '50'
+      requests.memory: 240Gi
+      requests.nvidia.com/gpu: '100'
+      secrets: '200'
+      services: '100'

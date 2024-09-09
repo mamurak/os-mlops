@@ -1,0 +1,24 @@
+apiVersion: tenantoperator.stakater.com/v1beta3
+kind: Tenant
+metadata:
+  name: org2
+spec:
+  accessControl:
+    editors:
+      groups:
+        - org2
+    owners:
+      users:
+        - admin@org2
+  namespaces:
+    metadata:
+      common: {}
+      sandbox: {}
+    onDeletePurgeNamespaces: true
+    sandboxes:
+      enabled: true
+      private: true
+    withTenantPrefix:
+      - dev
+      - staging
+  quota: large

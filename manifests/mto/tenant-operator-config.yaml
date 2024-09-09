@@ -1,0 +1,49 @@
+apiVersion: tenantoperator.stakater.com/v1beta1
+kind: IntegrationConfig
+metadata:
+  name: tenant-operator-config
+  namespace: multi-tenant-operator
+spec:
+  accessControl:
+    namespaceAccessPolicy:
+      deny:
+        privilegedNamespaces: {}
+    privileged:
+      namespaces:
+        - ^default$
+        - ^openshift.*
+        - ^kube.*
+      serviceAccounts:
+        - '^system:serviceaccount:openshift.*'
+        - '^system:serviceaccount:kube.*'
+        - '^system:serviceaccount:stakater-actions-runner-controller:actions-runner-controller-runner-deployment$'
+        - '^system:serviceaccount:redhat-ods-operator.*'
+        - '^system:serviceaccount:nvidia-gpu-operator.*'
+        - '^system:serviceaccount:modelmesh.*'
+        - '^system:serviceaccount:notebook-controller-service-account.*'
+        - '^system:serviceaccount:odh.*'
+        - '^system:serviceaccount:rhods-dashboard.*'
+    rbac:
+      tenantRoles:
+        default:
+          editor:
+            clusterRoles:
+              - edit
+          owner:
+            clusterRoles:
+              - admin
+          viewer:
+            clusterRoles:
+              - view
+  components:
+    console: true
+    ingress:
+      console: {}
+      gateway: {}
+      keycloak: {}
+    showback: true
+  integrations: {}
+  metadata:
+    groups: {}
+    namespaces: {}
+    sandboxes: {}

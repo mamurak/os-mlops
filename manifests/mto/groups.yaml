@@ -1,0 +1,22 @@
+kind: Group
+apiVersion: user.openshift.io/v1
+metadata:
+  name: org1
+users:
+  - admin@org1
+  - user@org1
+---
+kind: Group
+apiVersion: user.openshift.io/v1
+metadata:
+  name: org2
+users:
+  - admin@org2
+  - user@org2
+---
+kind: Group
+apiVersion: user.openshift.io/v1
+metadata:
+  name: rhods-admins
+users:
+  - rhoai-admin@admins
