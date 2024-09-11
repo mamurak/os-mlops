@@ -17,7 +17,8 @@ apiVersion: user.openshift.io/v1
 metadata:
   name: users
 users:
-  - user
+  - user1
+  - user2
 ---
 kind: Group
 apiVersion: user.openshift.io/v1

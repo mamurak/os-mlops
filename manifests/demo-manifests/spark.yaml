@@ -156,3 +156,20 @@ spec:
   scheduledWorkflow:
     cronScheduleTimezone: UTC
     deploy: true
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: project-admins
+  namespace: spark-demo
+  labels:
+    opendatahub.io/dashboard: 'true'
+    opendatahub.io/project-sharing: 'true'
+subjects:
+  - kind: Group
+    apiGroup: rbac.authorization.k8s.io
+    name: users
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
