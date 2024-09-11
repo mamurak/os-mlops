@@ -2,4 +2,4 @@ train: /opt/app-root/src/os-mlops/notebooks/object-detection-example/model-train
 val:   /opt/app-root/src/os-mlops/notebooks/object-detection-example/model-training/data/images/val
 test:  /opt/app-root/src/os-mlops/notebooks/object-detection-example/model-training/data/images/test
 
-names: ['Bicycle', 'Car', 'Traffic sign']
+names: ['Traffic sign']

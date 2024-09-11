@@ -14,7 +14,7 @@ def train_model(
     base_model = base_model or environ.get('base_model', 'yolov8m')
 
     model = YOLO(f'{base_model}.pt')
-    model.train(
+    results = model.train(
         data=configuration_path,
         epochs=epochs,
         batch=batch_size,
@@ -27,7 +27,7 @@ def train_model(
 
     print('model training done')
 
-    return model
+    return model, results
 
 
 if __name__ == '__main__':

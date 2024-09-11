@@ -2,4 +2,4 @@ train: /data/images/train
 val:   /data/images/val
 test:  /data/images/test
 
-names: ['Fedora']
+names: ['Traffic sign']

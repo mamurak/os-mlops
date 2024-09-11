@@ -6,7 +6,6 @@ def convert_model(model_file_path='model.pt', opset=13):
 
     model = YOLO(model_file_path)
     model.export(format='onnx', imgsz=640, opset=opset)
-    model.save('model.onnx')
 
     print('model converted')
 
