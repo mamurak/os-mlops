@@ -18,7 +18,7 @@
                 "sample_count"
               ],
               "dependencies": [
-                "configuration.yaml"
+                "configuration-pipeline.yaml"
               ],
               "include_subdirectories": false,
               "outputs": [],
@@ -87,7 +87,7 @@
               ],
               "dependencies": [
                 "yolov5/*",
-                "configuration.yaml"
+                "configuration-pipeline.yaml"
               ],
               "include_subdirectories": true,
               "outputs": [
@@ -170,7 +170,7 @@
           "app_data": {
             "component_parameters": {
               "dependencies": [
-                "configuration.yaml"
+                "configuration-pipeline.yaml"
               ],
               "include_subdirectories": false,
               "outputs": [],
@@ -377,11 +377,6 @@
           "name": "model-training-gpu",
           "runtime": "Data Science Pipelines",
           "pipeline_defaults": {
-            "kubernetes_shared_mem_size": {
-              "size": 10
-            },
-            "kubernetes_pod_annotations": [],
-            "kubernetes_pod_labels": [],
             "mounted_volumes": [
               {
                 "path": "/data",
@@ -390,6 +385,11 @@
               }
             ],
             "kubernetes_tolerations": [],
+            "kubernetes_pod_labels": [],
+            "kubernetes_pod_annotations": [],
+            "kubernetes_shared_mem_size": {
+              "size": 10
+            },
             "env_vars": [],
             "kubernetes_secrets": [
               {

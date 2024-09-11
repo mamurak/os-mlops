@@ -5,9 +5,11 @@ import yaml
 from openimages.download import download_dataset
 
 
-def ingest_data(data_folder='./data', limit=0):
+def ingest_data(
+        data_folder='./data', limit=0,
+        configuration_path='configuration.yaml'):
     _clean_folder(data_folder)
-    class_labels = _read_class_labels('configuration.yaml')
+    class_labels = _read_class_labels(configuration_path)
 
     print('Commencing data ingestion.')
 
@@ -47,4 +49,6 @@ def _read_class_labels(configuration_file_path):
 
 
 if __name__ == '__main__':
-    ingest_data(data_folder='/data')
+    ingest_data(
+        data_folder='/data', configuration_path='configuration-pipeline.yaml'
+    )

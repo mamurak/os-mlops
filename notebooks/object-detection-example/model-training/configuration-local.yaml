@@ -1,0 +1,10 @@
+# Dataset paths relative to the yolov5 folder
+train: /opt/app-root/src/os-mlops/notebooks/object-detection-example/model-training/data/images/train
+val:   /opt/app-root/src/os-mlops/notebooks/object-detection-example/model-training/data/images/val
+test:  /opt/app-root/src/os-mlops/notebooks/object-detection-example/model-training/data/images/test
+
+# Number of classes
+nc: 3
+
+# Class names 0 - bicycle, 1 - car, 3 - traffic sign
+names: ['Bicycle', 'Car', 'Traffic sign']

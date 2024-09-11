@@ -9,7 +9,7 @@ def detect_objects(
         prediction_url,
         classes_count,
         token='',
-        confidence_threshold=0.2,
+        confidence_threshold=0.5,
         iou_threshold=0.6,
         ):
 
@@ -74,7 +74,7 @@ def _unpack(model_output, classes_count):
 
 def postprocess(
         prediction,
-        conf_thres=0.2,
+        conf_thres=0.5,
         iou_thres=0.6,
         classes=None,
         agnostic=False,
