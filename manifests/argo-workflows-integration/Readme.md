@@ -153,7 +153,7 @@ The pros and cons of this architecture can be summarized as follows.
 | enhanced multi-tenancy by separating controller instances by namespace | |
 
 Notes:
-1. Each namespace with Data Science Pipelines hosts seven application pods (including the workflow controller) with a total resource request of about 1.3 CPU and 3.3 GB RAM, see Appendix 1.
+1. Each namespace with Data Science Pipelines hosts seven application pods (including the workflow controller) with a total resource request of about 1.3 CPU and 3.3 GB RAM, see Appendix 1. As described in Appendix 1, the application deployments can be pruned to achieve a total resource request of about 0.4 CPU and 1.2 GB RAM. Subtracting the resource footprint of the workflow controller, we arrive at an unused resource overhead of about 0.3 CPU and 768 MB RAM.
 2. S3-compliant object storage is a dependency of Data Science Pipelines, for which various object storage solutions like AWS S3 or self-managed options such as Ceph S3, or Minio can be used. This object storage is used for storing artifacts produced by OpenShift AI-native pipelines. If the workflow controller within Data Science Pipelines is used directly, artifact tracking is skipped and the S3 storage provider is not consuming resources above its baseline.
 
 ## Appendix
@@ -172,6 +172,15 @@ OpenShift AI features Data Science Pipelines, a pipeline orchestration engine wi
 | Workflow controller | 0.12 | 500 |
 | Maria DB | 0.3 | 800 |
 | **Total** | **1.31** | **3424** |
+
+Once deployed, the Data Science Pipelines CR can be customized to enable a minimal deployment, which renders the overall Data Science Pipelines application non-functional but preservers the workflow controller deployment. A sample manifest is given in `/poc/rhoai-datasciencepipelinesapplication-minimal.yaml`. Once the CR has been updated, the pipeline server, persistence agent, workflow scheduler, and Maria DB deployments can be removed to minimize the overall resource overhead:
+
+| Name | CPU request | Memory request in MB |
+| ---- | ----------- | -------------------- |
+| Metadata envoy service | 0.2 | 512 |
+| Metadata gRPC service | 0.1 | 256 |
+| Workflow controller | 0.12 | 500 |
+| **Total** | **0.42** | **1268** |
 
 ### 2. Custom Resource Definitions
 
