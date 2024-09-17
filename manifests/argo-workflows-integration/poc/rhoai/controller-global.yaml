@@ -1,0 +1,86 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: argo-workflows-workflow-controller-rhoai
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: argo-workflows
+      app.kubernetes.io/name: argo-workflows-workflow-controller-rhoai
+  template:
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+      restartPolicy: Always
+      serviceAccountName: argo-workflows-workflow-controller
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      securityContext: {}
+      containers:
+        - resources: {}
+          terminationMessagePath: /dev/termination-log
+          name: controller
+          command:
+            - workflow-controller
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 6060
+              scheme: HTTP
+            initialDelaySeconds: 90
+            timeoutSeconds: 30
+            periodSeconds: 60
+            successThreshold: 1
+            failureThreshold: 3
+          env:
+            - name: ARGO_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: LEADER_ELECTION_IDENTITY
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+            - name: LEADER_ELECTION_DISABLE
+              value: 'true'
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+          ports:
+            - name: metrics
+              containerPort: 9090
+              protocol: TCP
+            - containerPort: 6060
+              protocol: TCP
+          imagePullPolicy: Always
+          terminationMessagePolicy: File
+          image: >-
+            registry.redhat.io/rhoai/odh-data-science-pipelines-argo-workflowcontroller-rhel8@sha256:cdc696a523b135a6e702a431192a424b3448427bd98b16bdbc54938f3a375c90
+          args:
+            - '--configmap'
+            - argo-workflows-workflow-controller-configmap
+            - '--executor-image'
+            - >-
+              registry.redhat.io/rhoai/odh-data-science-pipelines-argo-argoexec-rhel8@sha256:e6736ca502c845fe47efb665bb2c8f30aa74c2238018b423c9214ab16ece3b12
+            - '--loglevel'
+            - info
+            - '--gloglevel'
+            - '0'
+            - '--log-format'
+            - text
+      serviceAccount: argo-workflows-workflow-controller
+      dnsPolicy: ClusterFirst
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
