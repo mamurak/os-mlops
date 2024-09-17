@@ -42,14 +42,14 @@ spec:
     externalStorage:
       basePath: ''
       bucket: pipelines
-      host: REPLACE_ME
-      port: ''
+      host: minio-default-service.minio.svc.cluster.local
+      port: '9000'
       region: none
       s3CredentialsSecret:
         accessKey: AWS_ACCESS_KEY_ID
         secretKey: AWS_SECRET_ACCESS_KEY
         secretName: dashboard-dspa-secret
-      scheme: https
+      scheme: http
   persistenceAgent:
     deploy: true
     numWorkers: 2

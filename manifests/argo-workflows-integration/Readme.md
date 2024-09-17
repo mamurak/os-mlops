@@ -43,7 +43,11 @@ To validate the deployment, access the Argo Workflows UI. It can be accessed thr
 
 Install the _Red Hat OpenShift AI_ operator through the Operator Hub, using the `fast` subscription channel.
 
-OpenShift AI 2.12.0 fails to install if Argo Workflows has already been installed on the cluster (the Workflows CRD is already present). Before proceeding, find and delete the `workflows.argoproj.io` CRD.
+> :bulb: **GitOps:** Deploy the `/poc/rhoai/operator.yaml` manifest.
+
+OpenShift AI 2.12.0 fails to install if Argo Workflows has already been installed on the cluster (the Workflows CRD is already present). Before proceeding, find and delete the `workflows.argoproj.io` CRD:
+
+`oc delete crd/workflows.argoproj.io`
 
 > :warning: **Warning:** This is a destructive action. All existing `Workflows` CRs on the cluster will be removed by this. Make sure to backup all needed CRs before deleting the CRD.
 
@@ -52,6 +56,8 @@ Instantiate a minimal installation of OpenShift AI dy deploying `/poc/rhoai/data
 To satisfy the dependency on an S3-compliant object storage provider, deploy a small-scale Minio instance in a separate namespace, see `/poc/rhoai/minio.yaml`.
 
 Through the OpenShift AI dashboard create a new Data Science Project `rhoai-test` and configure and instantiate a pipeline server ([details](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.12/html/working_with_data_science_pipelines/managing-data-science-pipelines_ds-pipelines#configuring-a-pipeline-server_ds-pipelines)). This triggers the deployment of the namespace-scoped Argo Workflow controller that is integrated in OpenShift AI.
+
+> :bulb: **GitOps:** Deploy the `/poc/rhoai/datasciencepipelineapplication.yaml` manifest.
 
 ## Test workflow
 

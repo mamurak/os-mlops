@@ -1,3 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: minio
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1

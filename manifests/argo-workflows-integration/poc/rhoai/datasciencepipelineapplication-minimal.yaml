@@ -37,19 +37,19 @@ spec:
       username: mlpipeline
   dspVersion: v2
   objectStorage:
-    disableHealthCheck: false
+    disableHealthCheck: true
     enableExternalRoute: false
     externalStorage:
       basePath: ''
       bucket: pipelines
-      host: REPLACE_ME
+      host: NO_ENDPOINT
       port: ''
       region: none
       s3CredentialsSecret:
         accessKey: AWS_ACCESS_KEY_ID
         secretKey: AWS_SECRET_ACCESS_KEY
         secretName: dashboard-dspa-secret
-      scheme: https
+      scheme: http
   persistenceAgent:
     deploy: false
     numWorkers: 2
