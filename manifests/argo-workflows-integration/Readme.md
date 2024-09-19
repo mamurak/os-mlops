@@ -166,27 +166,43 @@ Notes:
 
 ### 1. Data Science Pipelines resource footprint
 
+#### Full deployment
+
 OpenShift AI features Data Science Pipelines, a pipeline orchestration engine with a multi-tenant architecture based on namespace isolation. Each namespace in which Data Science Pipelines is enabled contains the following application components:
 
 | Name | CPU request | Memory request in MB |
 | ---- | ----------- | -------------------- |
+| Workflow controller | 0.12 | 500 |
 | KFP pipeline server | 0.35 | 756 |
 | Metadata envoy service | 0.2 | 512 |
 | Metadata gRPC service | 0.1 | 256 |
 | Persistence agent | 0.12 | 500 |
 | Workflow scheduler | 0.12 | 100 |
-| Workflow controller | 0.12 | 500 |
 | Maria DB | 0.3 | 800 |
 | **Total** | **1.31** | **3424** |
+
+#### Minimal deployment
 
 Once deployed, the Data Science Pipelines CR can be customized to enable a minimal deployment, which renders the overall Data Science Pipelines application non-functional but preservers the workflow controller deployment. A sample manifest is given in `/poc/rhoai-datasciencepipelinesapplication-minimal.yaml`. Once the CR has been updated, the pipeline server, persistence agent, workflow scheduler, and Maria DB deployments can be removed to minimize the overall resource overhead:
 
 | Name | CPU request | Memory request in MB |
 | ---- | ----------- | -------------------- |
+| Workflow controller | 0.12 | 500 |
 | Metadata envoy service | 0.2 | 512 |
 | Metadata gRPC service | 0.1 | 256 |
-| Workflow controller | 0.12 | 500 |
 | **Total** | **0.42** | **1268** |
+
+#### Minimal stable deployment
+
+In the previous minimal deployment, the metadata gRPC service remains in an error state as it fails to connect to its assigned Maria DB instance. To avoid running pods in an error state, we can allow the re-activate the deployment of Maria DB to achieve a small and stable set of Data Science Pipelines components. Find the corresponding manifest under `/poc/rhoai/datasciencepipelineapplication-small-stable.yaml`.
+
+| Name | CPU request | Memory request in MB |
+| ---- | ----------- | -------------------- |
+| Workflow controller | 0.12 | 500 |
+| Metadata envoy service | 0.2 | 512 |
+| Metadata gRPC service | 0.1 | 256 |
+| Maria DB | 0.3 | 800 |
+| **Total** | **0.72** | **1868** |
 
 ### 2. Custom Resource Definitions
 
