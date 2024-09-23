@@ -298,3 +298,67 @@ objects:
       supportedModelFormats:
         - autoSelect: true
           name: pytorch
+---
+kind: Template
+apiVersion: template.openshift.io/v1
+metadata:
+  name: kserve-mlserver
+  namespace: redhat-ods-applications
+  labels:
+    app: odh-dashboard
+    app.opendatahub.io/model-mesh: 'false'
+    opendatahub.io/dashboard: 'true'
+    opendatahub.io/ootb: 'false'
+  annotations:
+    opendatahub.io/apiProtocol: REST
+    opendatahub.io/modelServingSupport: '["single"]'
+objects:
+  - apiVersion: serving.kserve.io/v1alpha1
+    kind: ServingRuntime
+    metadata:
+      annotations:
+        opendatahub.io/recommended-accelerators: ''
+        openshift.io/display-name: ML Server
+      labels:
+        opendatahub.io/dashboard: 'true'
+      name: kserve-mlserver
+    spec:
+      annotations:
+        prometheus.io/path: /metrics
+        prometheus.io/port: '8080'
+      containers:
+        - name: kserve-container
+          image: 'docker.io/seldonio/mlserver:1.5.0'
+          env:
+            - name: MLSERVER_MODEL_NAME
+              value: '{{.Name}}'
+            - name: MLSERVER_MODEL_IMPLEMENTATION
+              value: mlserver_sklearn.SKLearnModel
+            - name: MLSERVER_HTTP_PORT
+              value: '8080'
+            - name: MLSERVER_GRPC_PORT
+              value: '9000'
+            - name: MODELS_DIR
+              value: /mnt/models
+            - name: MLSERVER_MODEL_URI
+              value: /mnt/models
+          resources:
+            requests:
+              cpu: '1'
+              memory: 2Gi
+            limits:
+              cpu: '1'
+          memory: 2Gi
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+      multiModel: false
+      supportedModelFormats:
+        - name: sklearn
+          version: '0'
+          autoSelect: true
+        - name: sklearn
+          version: '1'
+          autoSelect: true
+      protocolVersions:
+        - v2
