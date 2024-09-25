@@ -159,7 +159,7 @@ The pros and cons of this architecture can be summarized as follows.
 | enhanced multi-tenancy by separating controller instances by namespace | |
 
 Notes:
-1. Each namespace with Data Science Pipelines hosts seven application pods (including the workflow controller) with a total resource request of about 1.3 CPU and 3.3 GB RAM, see Appendix 1. As described in Appendix 1, the application deployments can be pruned to achieve a total resource request of about 0.4 CPU and 1.2 GB RAM. Subtracting the resource footprint of the workflow controller, we arrive at an unused resource overhead of about 0.3 CPU and 768 MB RAM.
+1. Each namespace with Data Science Pipelines hosts seven application pods (including the workflow controller) with a total resource request of about 1.3 CPU and 3.3 GB RAM, see Appendix 1. As described in Appendix 1, the application deployments can be pruned to achieve a total resource request of about 0.4 CPU and 1.2 GB RAM. Subtracting the resource footprint of the workflow controller, we arrive at an unused resource overhead of about 0.3 CPU and 768 MB RAM. A workaround for completely removing the resource overhead is described in Appendix 3.
 2. S3-compliant object storage is a dependency of Data Science Pipelines, for which various object storage solutions like AWS S3 or self-managed options such as Ceph S3, or Minio can be used. This object storage is used for storing artifacts produced by OpenShift AI-native pipelines. If the workflow controller within Data Science Pipelines is used directly, artifact tracking is skipped and the S3 storage provider is not consuming resources above its baseline.
 
 ## Appendix
@@ -204,6 +204,8 @@ In the previous minimal deployment, the metadata gRPC service remains in an erro
 | Maria DB | 0.3 | 800 |
 | **Total** | **0.72** | **1868** |
 
+Note that arbitrary application components can be fully shutdown by setting Data Science Pipelines applications unmanaged in the OpenShift AI instance, see Appendix 3.
+
 ### 2. Custom Resource Definitions
 
 Compatibility between the upstream Argo Workflow Controller and the one from OpenShift AI critically depends on the specifications of the Custom Resources they act on, which are defined within their Custom Resource Definitions (CRDs). The CRDs of upstream Argo Workflows are collected in `/poc/argo-workflows/crds.yaml` while the corresponding one shipped with OpenShift AI can be found in `/poc/rhoai/crds.yaml`. A comparison of the respective `workflows.argoproj.io` CRDs reveals:
@@ -211,3 +213,16 @@ Compatibility between the upstream Argo Workflow Controller and the one from Ope
 - an additional printer column `Message` ("Human readable message indicating details about why the workflow is in this condition.") within the upstream CRD, which can be considered outside of the technical specification for practical purposes.
 
 With this, no incompatibilities between the different workflow controller versions are expected with respect to their supported Workflow Custom Resource specifications.
+
+### 3. Full control over Data Science Pipelines application deployments
+
+As highlighted in Appendix 1, the `DataSciencePipelinesApplication` CR can be customized to reduce the number of application components that are running in a given namespace. However, it is currently not possible to fully customize which components are running, e.g. only the workflow controller. The following steps can be followed as a workaround for fully controlling the running application components:
+1. Deploy the Data Science Pipelines application in a given namespace (either through the dashboard or by deploying a `DataSciencePipelinesApplication` CR). Verify that its components are running (see Appendix 1).
+2. Within the namespace `redhat-ods-applications`, find the deployment `data-science-pipelines-operator-controller-manager` (DSPOCM). Scale it down to 0. This renders all Data Science Pipelines instances on the cluster unmanaged.
+3. Go back to the namespace in which you deployed the Data Science Pipelines application in step 1. You can now scale down or remove any unwanted pipelines application deployments to achieve your desired set of running components.
+
+This approach comes with a number of limitations. Since the central DSPOCM manages the lifecycle of all Data Science Pipelines applications on the cluster, deactivating it will impact all lifecycle operations including creation and upgrades. Specifically, the DSPOCM needs to be running in the following cases:
+- a new Data Science Pipelines application (including the workflow controller) should be installed in another namespace, 
+- existing Data Science Pipelines application components (including the workflow controller) should be upgraded after upgrading the OpenShift AI installation.
+
+In both cases, after re-activating the DSPOCM, the lifecycle operations of Data Science Pipelines will resume, which means that previously deactived pipelines application components will be re-deployed in the namespaces containing pipelines applications. Once all upgrades and new deployments have been implemented, you can restore your customized deployment layout by re-applying the workaround steps described above.
