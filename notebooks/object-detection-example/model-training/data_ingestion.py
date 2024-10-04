@@ -7,7 +7,7 @@ from openimages.download import download_dataset
 
 def ingest_data(
         data_folder='./data', limit=0,
-        configuration_path='configuration.yaml'):
+        configuration_path='configuration-local.yaml'):
     _clean_folder(data_folder)
     class_labels = _read_class_labels(configuration_path)
 
