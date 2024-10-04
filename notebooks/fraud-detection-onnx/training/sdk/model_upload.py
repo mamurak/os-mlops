@@ -7,7 +7,7 @@ runtime_image = 'quay.io/mmurakam/runtimes:fraud-detection-v2.1.0'
 @component(base_image=runtime_image)
 def upload_model(model_object_prefix: str, model: Input[Model]):
     from os import environ
-    from datetime import datetime
+    from uuid import uuid4
 
     from boto3 import client
 
@@ -20,13 +20,9 @@ def upload_model(model_object_prefix: str, model: Input[Model]):
         )
         return s3_client
 
-    def _generate_model_name(model_object_prefix, version=''):
-        version = version if version else _timestamp()
-        model_name = f'{model_object_prefix}-{version}.onnx'
+    def _generate_model_name(model_object_prefix):
+        model_name = f'{model_object_prefix}-{uuid4()}.onnx'
         return model_name
-
-    def _timestamp():
-        return datetime.now().strftime('%y%m%d%H%M')
 
     def _do_upload(s3_client, object_name):
         print(f'uploading model to {object_name}')
@@ -52,8 +48,3 @@ def upload_model(model_object_prefix: str, model: Input[Model]):
     )
     model_object_name = _generate_model_name(model_object_prefix)
     _do_upload(s3_client, model_object_name)
-
-    model_object_name_latest = _generate_model_name(
-        model_object_prefix, 'latest'
-    )
-    _do_upload(s3_client, model_object_name_latest)
