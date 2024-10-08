@@ -224,6 +224,7 @@ metadata:
     opendatahub.io/notebook-image-name: "RStudio CUDA Data Science"
     opendatahub.io/notebook-image-desc: >-
       Jupyter notebook image RStudio application.
+    opendatahub.io/recommended-accelerators: '["nvidia.com/gpu"]'
   name: rstudio-cuda-data-science
   namespace: redhat-ods-applications
   labels:
@@ -282,6 +283,7 @@ metadata:
     opendatahub.io/notebook-image-name: "Object detection"
     opendatahub.io/notebook-image-desc: >-
       Jupyter notebook image enabling computer vision use cases, in particular object detection.
+    opendatahub.io/recommended-accelerators: '["nvidia.com/gpu"]'
   name: object-detection
   namespace: redhat-ods-applications
   labels:

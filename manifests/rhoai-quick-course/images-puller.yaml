@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: minimal-python-workbench
-          image: quay.io/modh/odh-minimal-notebook-container@sha256:03b10a8b90de4bdee0fdf7b4d11fe867f99149fe72f2b7fcd438e0a1f29db3e2
+          image: quay.io/modh/odh-minimal-notebook-container@sha256:eed810f98057c391799db3feea0a61baaaa6b154660d32d1737980020e335dc3
           command: ["tail"]
           args: ["-f", "/dev/null"]
           resources:
@@ -26,7 +26,7 @@ spec:
               cpu: 10m
               memory: 10Mi
         - name: standard-datascience-workbench
-          image: quay.io/modh/odh-generic-data-science-notebook@sha256:6e10eaeb233fb7a3d5c2832906a47042ba83149f5912b8a88af5de4b3b19af41
+          image: quay.io/modh/odh-generic-data-science-notebook@sha256:d81e47fa2f5656042748cf2cd1d97033f58d6dd707667ff0e25aa969959e56a7
           command: ["tail"]
           args: ["-f", "/dev/null"]
           resources:
@@ -36,17 +36,7 @@ spec:
               cpu: 10m
               memory: 10Mi
         - name: fraud-detection-workbench
-          image: quay.io/mmurakam/workbenches:fraud-detection-v1.0.1
-          command: ["tail"]
-          args: ["-f", "/dev/null"]
-          resources:
-            limits:
-              memory: 20Mi
-            requests:
-              cpu: 10m
-              memory: 10Mi
-        - name: vscode-kfp-workbench
-          image: quay.io/mmurakam/workbenches:vscode-kfp-v0.2.1
+          image: quay.io/mmurakam/workbenches:fraud-detection-v2.1.0
           command: ["tail"]
           args: ["-f", "/dev/null"]
           resources:
@@ -56,7 +46,7 @@ spec:
               cpu: 10m
               memory: 10Mi
         - name: pytorch-workbench
-          image: quay.io/modh/odh-pytorch-notebook@sha256:c812c544eceeec994b04bd4f1cba8dc38e15a88637a06556a21ed26f808c4b4a
+          image: quay.io/modh/odh-pytorch-notebook@sha256:8e6f96724b9d9f9e56f680e19607646b9c51467ef2e38df451155877326ecce9
           command: ["tail"]
           args: ["-f", "/dev/null"]
           resources:
@@ -66,57 +56,7 @@ spec:
               cpu: 10m
               memory: 10Mi
         - name: tensorflow-workbench
-          image: quay.io/modh/cuda-notebooks@sha256:d4a01e0b236566ed3ac828658dc6b9db4306e22e89402bd0170a288a82c0e578
-          command: ["tail"]
-          args: ["-f", "/dev/null"]
-          resources:
-            limits:
-              memory: 20Mi
-            requests:
-              cpu: 10m
-              memory: 10Mi
-        - name: serving-queue
-          image: registry.redhat.io/openshift-serverless-1/serving-queue-rhel8@sha256:a0d0c8517ff470e3afac4c90df5e6541d974507feb50eac9719f87fcf78bba96
-          command: ["tail"]
-          args: ["-f", "/dev/null"]
-          resources:
-            limits:
-              memory: 20Mi
-            requests:
-              cpu: 10m
-              memory: 10Mi
-        - name: kserve-storage-initializer
-          image: quay.io/modh/kserve-storage-initializer@sha256:ae57d82e1fd85135dd257cf6f4c9f5dfe7ac92cd6d6bb634f79999bafbd602ac
-          command: ["tail"]
-          args: ["-f", "/dev/null"]
-          resources:
-            limits:
-              memory: 20Mi
-            requests:
-              cpu: 10m
-              memory: 10Mi
-        - name: servicemesh-proxy
-          image: registry.redhat.io/openshift-service-mesh/proxyv2-rhel8@sha256:91d76a248eec9ddac000d36339df4ac6311e387bf32bb301c610ce4b93731766
-          command: ["tail"]
-          args: ["-f", "/dev/null"]
-          resources:
-            limits:
-              memory: 20Mi
-            requests:
-              cpu: 10m
-              memory: 10Mi
-        - name: tgis-runtime
-          image: quay.io/modh/text-generation-inference@sha256:e4d24fd401fd4eb89b49b4ab07e0c08389384d4a672b240e98a03ad7f9ef1c85
-          command: ["tail"]
-          args: ["-f", "/dev/null"]
-          resources:
-            limits:
-              memory: 20Mi
-            requests:
-              cpu: 10m
-              memory: 10Mi
-        - name: fraud-detection-runtime
-          image: quay.io/mmurakam/runtimes:fraud-detection-v0.1.0
+          image: quay.io/modh/cuda-notebooks@sha256:ce86467ff0768a47ca6adb5268f29c9986a5925020a7cd9e951fcd6347c977ad
           command: ["tail"]
           args: ["-f", "/dev/null"]
           resources:
@@ -127,6 +67,226 @@ spec:
               memory: 10Mi
         - name: langchain-workbench
           image: quay.io/mmurakam/workbenches:insurance-claims-v0.1.0
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: s3-browser
+          image: quay.io/rh-aiservices-bu/odh-tec:latest
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: serving-queue
+          image: registry.redhat.io/openshift-serverless-1/serving-queue-rhel8@sha256:2f4e2426b335998d1cf131f799a62696cb3ad46ee513c524ac1e50ac1609822c
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: kserve-storage-initializer
+          image: quay.io/modh/kserve-storage-initializer@sha256:8be80149e2a41c89bae4ef69a2d18333e2f16afea559c19cdcb664594898a557
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: servicemesh-proxy
+          image: registry.redhat.io/openshift-service-mesh/proxyv2-rhel9@sha256:153130dd485f60c9b1e120d51b8228fc3100afa9a7f500c3caa13ccd41520e99
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: tgis-runtime
+          image: quay.io/modh/text-generation-inference@sha256:792e1500548c293eae428cf079fce836e68fbf7d4f7a53b5958c5158a70edfbf
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: fraud-detection-runtime
+          image: quay.io/mmurakam/runtimes:fraud-detection-v2.1.0
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: argo-exec
+          image: registry.redhat.io/rhoai/odh-data-science-pipelines-argo-argoexec-rhel8@sha256:37572cc0c20b16760cabd7bdab399cd595510bfde8ccbfd96a4fc7678eb2efc1
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: kfp-launcher
+          image: registry.redhat.io/rhoai/odh-ml-pipelines-launcher-rhel8@sha256:e8aa5ae0a36dc50bdc740d6d9753b05f2174e68a7edbd6c5b0ce3afd194c7a6e
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: pipelines-driver
+          image: registry.redhat.io/rhoai/odh-ml-pipelines-driver-rhel8@sha256:16a711ba5c770c3b93e9a5736735f972df9451a9a1903192fcb486aa929a44b7
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: oauth-proxy
+          image: registry.redhat.io/openshift4/ose-oauth-proxy@sha256:4bef31eb993feb6f1096b51b4876c65a6fb1f4401fee97fa4f4542b6b7c9bc46
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: pipelines-api
+          image: registry.redhat.io/rhoai/odh-ml-pipelines-api-server-v2-rhel8@sha256:57c0aca35e6ca40f0d2db044decabdd5244c749da1233a04ed585f37566e5caa
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: pipelines-metadata-envoy
+          image: registry.redhat.io/openshift-service-mesh/proxyv2-rhel8@sha256:a744c1b386fd5e4f94e43543e829df1bfdd1b564137917372a11da06872f4bcb
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: pipelines-metadata-grpc
+          image: registry.redhat.io/rhoai/odh-mlmd-grpc-server-rhel8@sha256:293630db7b10a89b4695d5f84721879d137d7ef618965d9fe3a1b60506c070de
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: pipelines-persistence
+          image: registry.redhat.io/rhoai/odh-ml-pipelines-persistenceagent-v2-rhel8@sha256:b90b63e3c5de629eb89798d818218104158a5401220397ddbc7072a390e46bdd
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: pipelines-scheduler
+          image: registry.redhat.io/rhoai/odh-ml-pipelines-scheduledworkflow-v2-rhel8@sha256:bd3c7607b526720ab63adc2e84be145ad186575c8ebe4bae99b93292aab6f530
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: workflow-controller
+          image: registry.redhat.io/rhoai/odh-data-science-pipelines-argo-workflowcontroller-rhel8@sha256:f9ffc83c23f959ae57a8a6a544afd5175c9f4230b017de6f64b033c582f107d2
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: mariadb
+          image: registry.redhat.io/rhel8/mariadb-103@sha256:3d30992e60774f887c4e7959c81b0c41b0d82d042250b3b56f05ab67fd4cdee1
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: minio
+          image: quay.io/mmurakam/minio:minio-v0.5.0
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: mm-rest-proxy
+          image: registry.redhat.io/rhoai/odh-mm-rest-proxy-rhel8@sha256:078478d8b55336e81b0080faef625c445dce39bc200765149f073039fb5f77ee
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: ovms
+          image: quay.io/modh/openvino_model_server@sha256:9086c1ba1ba30d358194c534f0563923aab02d03954e43e9f3647136b44a5daf
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: ovms-adapter
+          image: registry.redhat.io/rhoai/odh-modelmesh-runtime-adapter-rhel8@sha256:3d4e39039afe33ae7841258cc4bfe986755b9faefedf8a964f2c3826626d6d09
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: mm
+          image: registry.redhat.io/rhoai/odh-modelmesh-rhel8@sha256:2eb179e9cd22bf4a85d990508ede72fe279ec92f9ac60dbfe4dbc43f7d444b09
           command: ["tail"]
           args: ["-f", "/dev/null"]
           resources:
