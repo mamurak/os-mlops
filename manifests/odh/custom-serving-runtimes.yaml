@@ -216,7 +216,7 @@ objects:
 kind: Template
 apiVersion: template.openshift.io/v1
 metadata:
-  name: vllm
+  name: vllm-4k
   namespace: redhat-ods-applications
   labels:
     opendatahub.io/dashboard: 'true'
@@ -230,7 +230,7 @@ objects:
     metadata:
       annotations:
         openshift.io/display-name: vLLM
-      name: vllm
+      name: vllm-4k
     spec:
       builtInAdapter:
         modelLoadingTimeoutMillis: 90000
