@@ -543,7 +543,7 @@ metadata:
   annotations:
     opendatahub.io/notebook-image-desc: Open Data Hub Tools & Extensions Companion
     opendatahub.io/notebook-image-name: ODH TEC
-    opendatahub.io/notebook-image-url: 'quay.io/rh-aiservices-bu/odh-tec:latest'
+    opendatahub.io/notebook-image-url: 'quay.io/rh-aiservices-bu/odh-tec:1.2.0'
   name: odh-tec
   namespace: redhat-ods-applications
   labels:
@@ -554,14 +554,14 @@ spec:
   lookupPolicy:
     local: true
   tags:
-    - name: v0.1
+    - name: "1.2.0"
       annotations:
         opendatahub.io/notebook-python-dependencies: ''
         opendatahub.io/notebook-software: ''
-        openshift.io/imported-from: 'quay.io/rh-aiservices-bu/odh-tec:latest'
+        openshift.io/imported-from: 'quay.io/rh-aiservices-bu/odh-tec:1.2.0'
       from:
         kind: DockerImage
-        name: 'quay.io/rh-aiservices-bu/odh-tec:latest'
+        name: 'quay.io/rh-aiservices-bu/odh-tec:1.2.0'
       importPolicy:
         importMode: Legacy
       referencePolicy:
@@ -683,6 +683,36 @@ spec:
       from:
         kind: DockerImage
         name: 'quay.io/eformat/elyra-base:0.2.1'
+      importPolicy:
+        importMode: Legacy
+      referencePolicy:
+        type: Source
+---
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  annotations:
+    opendatahub.io/notebook-image-desc: AnythingLLM workbench
+    opendatahub.io/notebook-image-name: AnythingLLM
+    opendatahub.io/notebook-image-url: 'quay.io/rh-aiservices-bu/anythingllm-workbench:latest'
+  name: anythingllm
+  namespace: redhat-ods-applications
+  labels:
+    app.kubernetes.io/created-by: byon
+    opendatahub.io/dashboard: 'true'
+    opendatahub.io/notebook-image: 'true'
+spec:
+  lookupPolicy:
+    local: true
+  tags:
+    - name: 1.2.2
+      annotations:
+        opendatahub.io/notebook-python-dependencies: ''
+        opendatahub.io/notebook-software: ''
+        openshift.io/imported-from: 'quay.io/rh-aiservices-bu/anythingllm-workbench:latest'
+      from:
+        kind: DockerImage
+        name: 'quay.io/rh-aiservices-bu/anythingllm-workbench:1.2.2'
       importPolicy:
         importMode: Legacy
       referencePolicy:

@@ -82,6 +82,14 @@ spec:
   finalizers:
   - kubernetes
 ---
+apiVersion: project.openshift.io/v1
+kind: Project
+metadata:
+  name: mysql
+spec:
+  finalizers:
+  - kubernetes
+---
 kind: Namespace
 apiVersion: v1
 metadata:

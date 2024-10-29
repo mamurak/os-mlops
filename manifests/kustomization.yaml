@@ -13,3 +13,5 @@ resources:
 - ocp/gpu-dashboard.yaml
 - ocp/rbac.yaml
 - odh/dist-workloads.yaml
+- odh/model-registry.yaml
+- mysql/mysql.yaml
