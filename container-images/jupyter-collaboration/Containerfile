@@ -1,0 +1,5 @@
+FROM quay.io/modh/odh-generic-data-science-notebook:v3-2024b-20241004-69688c1
+
+RUN pip install pip==22.3.1 setuptools==65.3.0
+
+RUN pip install --no-cache-dir jupyter-collaboration>=1.0.0a0
