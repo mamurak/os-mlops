@@ -8,9 +8,9 @@ metadata:
   name: face-recognition
   namespace: redhat-ods-applications
   labels:
-    component.opendatahub.io/name: jupyterhub
+    app.kubernetes.io/created-by: byon
     opendatahub.io/component: "true"
-    opendatahub.io/notebook-image: "true"
+    opendatahub.io/notebook-image: "false"
 spec:
   lookupPolicy:
     local: true
@@ -38,8 +38,8 @@ metadata:
   namespace: redhat-ods-applications
   labels:
     app.kubernetes.io/created-by: byon
-    opendatahub.io/dashboard: 'true'
-    opendatahub.io/notebook-image: 'true'
+    opendatahub.io/component: "true"
+    opendatahub.io/notebook-image: "false"
 spec:
   lookupPolicy:
     local: true
@@ -68,8 +68,8 @@ metadata:
   namespace: redhat-ods-applications
   labels:
     app.kubernetes.io/created-by: byon
-    opendatahub.io/dashboard: 'true'
-    opendatahub.io/notebook-image: 'true'
+    opendatahub.io/component: "true"
+    opendatahub.io/notebook-image: "false"
 spec:
   lookupPolicy:
     local: true
@@ -98,8 +98,8 @@ metadata:
   namespace: redhat-ods-applications
   labels:
     app.kubernetes.io/created-by: byon
-    opendatahub.io/dashboard: 'true'
-    opendatahub.io/notebook-image: 'true'
+    opendatahub.io/component: "true"
+    opendatahub.io/notebook-image: "false"
 spec:
   lookupPolicy:
     local: true
@@ -128,8 +128,8 @@ metadata:
   namespace: redhat-ods-applications
   labels:
     app.kubernetes.io/created-by: byon
-    opendatahub.io/dashboard: 'true'
-    opendatahub.io/notebook-image: 'true'
+    opendatahub.io/component: "true"
+    opendatahub.io/notebook-image: "false"
 spec:
   lookupPolicy:
     local: true
@@ -169,9 +169,9 @@ metadata:
   name: spark
   namespace: redhat-ods-applications
   labels:
-    component.opendatahub.io/name: jupyterhub
+    app.kubernetes.io/created-by: byon
     opendatahub.io/component: "true"
-    opendatahub.io/notebook-image: "true"
+    opendatahub.io/notebook-image: "false"
 spec:
   lookupPolicy:
     local: true
@@ -198,9 +198,9 @@ metadata:
   name: optapy
   namespace: redhat-ods-applications
   labels:
-    component.opendatahub.io/name: jupyterhub
+    app.kubernetes.io/created-by: byon
     opendatahub.io/component: "true"
-    opendatahub.io/notebook-image: "true"
+    opendatahub.io/notebook-image: "false"
 spec:
   lookupPolicy:
     local: true
@@ -228,9 +228,9 @@ metadata:
   name: rstudio-cuda-data-science
   namespace: redhat-ods-applications
   labels:
-    component.opendatahub.io/name: jupyterhub
+    app.kubernetes.io/created-by: byon
     opendatahub.io/component: "true"
-    opendatahub.io/notebook-image: "true"
+    opendatahub.io/notebook-image: "false"
 spec:
   lookupPolicy:
     local: true
@@ -257,9 +257,9 @@ metadata:
   name: monai
   namespace: redhat-ods-applications
   labels:
-    component.opendatahub.io/name: jupyterhub
+    app.kubernetes.io/created-by: byon
     opendatahub.io/component: "true"
-    opendatahub.io/notebook-image: "true"
+    opendatahub.io/notebook-image: "false"
 spec:
   lookupPolicy:
     local: true
@@ -287,9 +287,9 @@ metadata:
   name: object-detection
   namespace: redhat-ods-applications
   labels:
-    component.opendatahub.io/name: jupyterhub
+    app.kubernetes.io/created-by: byon
     opendatahub.io/component: "true"
-    opendatahub.io/notebook-image: "true"
+    opendatahub.io/notebook-image: "false"
 spec:
   lookupPolicy:
     local: true
@@ -327,9 +327,9 @@ metadata:
   name: trino
   namespace: redhat-ods-applications
   labels:
-    component.opendatahub.io/name: jupyterhub
+    app.kubernetes.io/created-by: byon
     opendatahub.io/component: "true"
-    opendatahub.io/notebook-image: "true"
+    opendatahub.io/notebook-image: "false"
 spec:
   lookupPolicy:
     local: true
@@ -356,9 +356,9 @@ metadata:
   name: fraud-detection
   namespace: redhat-ods-applications
   labels:
-    component.opendatahub.io/name: jupyterhub
+    app.kubernetes.io/created-by: byon
     opendatahub.io/component: "true"
-    opendatahub.io/notebook-image: "true"
+    opendatahub.io/notebook-image: "false"
 spec:
   lookupPolicy:
     local: true
@@ -396,9 +396,9 @@ metadata:
   name: langchain
   namespace: redhat-ods-applications
   labels:
-    component.opendatahub.io/name: jupyterhub
+    app.kubernetes.io/created-by: byon
     opendatahub.io/component: "true"
-    opendatahub.io/notebook-image: "true"
+    opendatahub.io/notebook-image: "false"
 spec:
   lookupPolicy:
     local: true
@@ -425,9 +425,9 @@ metadata:
   name: langflow
   namespace: redhat-ods-applications
   labels:
-    component.opendatahub.io/name: jupyterhub
+    app.kubernetes.io/created-by: byon
     opendatahub.io/component: "true"
-    opendatahub.io/notebook-image: "true"
+    opendatahub.io/notebook-image: "false"
 spec:
   lookupPolicy:
     local: true
@@ -455,8 +455,8 @@ metadata:
   namespace: redhat-ods-applications
   labels:
     app.kubernetes.io/created-by: byon
-    opendatahub.io/dashboard: 'true'
-    opendatahub.io/notebook-image: 'true'
+    opendatahub.io/component: "true"
+    opendatahub.io/notebook-image: "false"
 spec:
   lookupPolicy:
     local: true
@@ -486,8 +486,8 @@ metadata:
   namespace: redhat-ods-applications
   labels:
     app.kubernetes.io/created-by: byon
-    opendatahub.io/dashboard: 'true'
-    opendatahub.io/notebook-image: 'true'
+    opendatahub.io/component: "true"
+    opendatahub.io/notebook-image: "false"
 spec:
   lookupPolicy:
     local: true
@@ -517,8 +517,8 @@ metadata:
   namespace: redhat-ods-applications
   labels:
     app.kubernetes.io/created-by: byon
-    opendatahub.io/dashboard: 'true'
-    opendatahub.io/notebook-image: 'true'
+    opendatahub.io/component: "true"
+    opendatahub.io/notebook-image: "false"
 spec:
   lookupPolicy:
     local: true
@@ -578,8 +578,8 @@ metadata:
   namespace: redhat-ods-applications
   labels:
     app.kubernetes.io/created-by: byon
-    opendatahub.io/dashboard: 'true'
-    opendatahub.io/notebook-image: 'true'
+    opendatahub.io/component: "true"
+    opendatahub.io/notebook-image: "false"
 spec:
   lookupPolicy:
     local: true
@@ -608,8 +608,8 @@ metadata:
   namespace: redhat-ods-applications
   labels:
     app.kubernetes.io/created-by: byon
-    opendatahub.io/dashboard: 'true'
-    opendatahub.io/notebook-image: 'true'
+    opendatahub.io/component: "true"
+    opendatahub.io/notebook-image: "false"
 spec:
   lookupPolicy:
     local: true
@@ -638,8 +638,8 @@ metadata:
   namespace: redhat-ods-applications
   labels:
     app.kubernetes.io/created-by: byon
-    opendatahub.io/dashboard: 'true'
-    opendatahub.io/notebook-image: 'true'
+    opendatahub.io/component: "true"
+    opendatahub.io/notebook-image: "false"
 spec:
   lookupPolicy:
     local: true
@@ -669,8 +669,8 @@ metadata:
   namespace: redhat-ods-applications
   labels:
     app.kubernetes.io/created-by: byon
-    opendatahub.io/dashboard: 'true'
-    opendatahub.io/notebook-image: 'true'
+    opendatahub.io/component: "true"
+    opendatahub.io/notebook-image: "false"
 spec:
   lookupPolicy:
     local: true
@@ -699,8 +699,8 @@ metadata:
   namespace: redhat-ods-applications
   labels:
     app.kubernetes.io/created-by: byon
-    opendatahub.io/dashboard: 'true'
-    opendatahub.io/notebook-image: 'true'
+    opendatahub.io/component: "true"
+    opendatahub.io/notebook-image: "false"
 spec:
   lookupPolicy:
     local: true
@@ -713,6 +713,36 @@ spec:
       from:
         kind: DockerImage
         name: 'quay.io/rh-aiservices-bu/anythingllm-workbench:1.2.2'
+      importPolicy:
+        importMode: Legacy
+      referencePolicy:
+        type: Source
+---
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  annotations:
+    opendatahub.io/notebook-image-desc: Jupyter Collaborate workbench
+    opendatahub.io/notebook-image-name: Jupyter Collaborate
+    opendatahub.io/notebook-image-url: 'quay.io/mmurakam/workbenches:jupyter-collaboration-v0.1.0'
+  name: jupyter-collaborate
+  namespace: redhat-ods-applications
+  labels:
+    app.kubernetes.io/created-by: byon
+    opendatahub.io/component: "true"
+    opendatahub.io/notebook-image: "false"
+spec:
+  lookupPolicy:
+    local: true
+  tags:
+    - name: "0.1.0"
+      annotations:
+        opendatahub.io/notebook-python-dependencies: '[{"name":"Boto3","version":"1.35"},{"name":"Kafka-Python-ng","version":"2.2"},{"name":"Kfp","version":"2.9"},{"name":"Matplotlib","version":"3.9"},{"name":"Numpy","version":"2.1"},{"name":"Pandas","version":"2.2"},{"name":"Scikit-learn","version":"1.5"},{"name":"Scipy","version":"1.14"},{"name":"Odh-Elyra","version":"4.0"},{"name":"PyMongo","version":"4.8"},{"name":"Pyodbc","version":"5.1"}, {"name":"Codeflare-SDK","version":"0.21"}, {"name":"Sklearn-onnx","version":"1.17"}, {"name":"Psycopg","version":"3.2"}, {"name":"MySQL Connector/Python","version":"9.0"}]'
+        opendatahub.io/notebook-software: '[{"name":"Python","version":"v3.11"}]'
+        openshift.io/imported-from: 'quay.io/mmurakam/workbenches:jupyter-collaboration-v0.1.0'
+      from:
+        kind: DockerImage
+        name: 'quay.io/mmurakam/workbenches:jupyter-collaboration-v0.1.0'
       importPolicy:
         importMode: Legacy
       referencePolicy:
