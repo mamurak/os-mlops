@@ -36,7 +36,7 @@
             "label": "",
             "ui_data": {
               "label": "data_ingestion.py",
-              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/jupyterlab/static/elyra/python.svg",
               "x_pos": 199,
               "y_pos": 267,
               "description": "Run Python script"
@@ -98,7 +98,7 @@
             "label": "",
             "ui_data": {
               "label": "model_training.py",
-              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/jupyterlab/static/elyra/python.svg",
               "x_pos": 671,
               "y_pos": 266,
               "description": "Run Python script"
@@ -164,7 +164,7 @@
             "label": "",
             "ui_data": {
               "label": "preprocessing.py",
-              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/jupyterlab/static/elyra/python.svg",
               "x_pos": 428,
               "y_pos": 260,
               "description": "Run Python script"
@@ -227,7 +227,7 @@
             "label": "",
             "ui_data": {
               "label": "model_validation.py",
-              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/jupyterlab/static/elyra/python.svg",
               "x_pos": 895,
               "y_pos": 267,
               "description": "Run Python script"
@@ -293,7 +293,7 @@
             "label": "",
             "ui_data": {
               "label": "model_upload.py",
-              "image": "/notebook/fraud-detection/development/static/elyra/python.svg",
+              "image": "/notebook/fraud-detection/jupyterlab/static/elyra/python.svg",
               "x_pos": 1106,
               "y_pos": 269,
               "description": "Run Python script"
@@ -374,7 +374,7 @@
               }
             ],
             "env_vars": [],
-            "runtime_image": "quay.io/mmurakam/runtimes:fraud-detection-v2.1.0"
+            "runtime_image": "quay.io/mmurakam/runtimes:fraud-detection-v2.3.3"
           },
           "pipeline_parameters": [
             {
