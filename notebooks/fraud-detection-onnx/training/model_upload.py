@@ -11,6 +11,7 @@ s3_endpoint_url = environ.get('AWS_S3_ENDPOINT')
 s3_access_key = environ.get('AWS_ACCESS_KEY_ID')
 s3_secret_key = environ.get('AWS_SECRET_ACCESS_KEY')
 s3_bucket_name = environ.get('AWS_S3_BUCKET')
+s3_region = environ.get('AWS_DEFAULT_REGION', 'None')
 s3_secret_name = 'aws-connection-fraud-detection'
 model_registry_endpoint_url_env = environ.get('MODEL_REGISTRY_ENDPOINT_URL')
 
@@ -56,7 +57,7 @@ def _do_upload(s3_client, object_name):
     print(f'uploading model to {object_name}')
     try:
         s3_client.upload_file('model.onnx', s3_bucket_name, object_name)
-    except:
+    except Exception:
         print(f'S3 upload to bucket {s3_bucket_name} at {s3_endpoint_url} failed!')
         raise
     print(f'model uploaded and available as "{object_name}"')
@@ -76,9 +77,15 @@ def _register_model_version(
     probabilities for non-fraud / fraud. See sample:
     https://github.com/mamurak/os-mlops/blob/main/notebooks/fraud-detection-onnx/online-scoring.ipynb
     '''
+    s3_uri = s3_uri_from(
+        path=model_object_name,
+        bucket=s3_bucket_name,
+        endpoint=s3_endpoint_url,
+        region=s3_region,
+    )
     registry.register_model(
         'fraud-detection',
-        uri=s3_uri_from(model_object_name, s3_bucket_name),
+        uri=s3_uri,
         version=version,
         description=model_description,
         model_format_name='onnx',
@@ -93,10 +100,14 @@ def _register_model_version(
 
 
 def _instantiate_model_registry(model_registry_endpoint_url):
+    sa_token_file_path = '/var/run/secrets/kubernetes.io/serviceaccount/token'
+    with open(sa_token_file_path, 'r') as token_file:
+        auth_token = token_file.read()
+
     registry = ModelRegistry(
         server_address=model_registry_endpoint_url,
-        port=443,
-        author='user'
+        author='user',
+        user_token=auth_token,
     )
     return registry
 

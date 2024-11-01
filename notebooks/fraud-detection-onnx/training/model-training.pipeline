@@ -284,7 +284,13 @@
               "env_vars": [],
               "kubernetes_pod_annotations": [],
               "kubernetes_pod_labels": [],
-              "kubernetes_secrets": [],
+              "kubernetes_secrets": [
+                {
+                  "env_var": "MODEL_REGISTRY_ENDPOINT_URL",
+                  "name": "model-registry-config",
+                  "key": "model-registry-endpoint-url"
+                }
+              ],
               "kubernetes_shared_mem_size": {},
               "kubernetes_tolerations": [],
               "mounted_volumes": [],
