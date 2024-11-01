@@ -84,7 +84,8 @@
               "dependencies": [],
               "include_subdirectories": false,
               "outputs": [
-                "model.onnx"
+                "model.onnx",
+                "metrics.pickle"
               ],
               "env_vars": [],
               "kubernetes_pod_annotations": [],
@@ -276,6 +277,8 @@
           "app_data": {
             "component_parameters": {
               "pipeline_parameters": [
+                "epoch_count",
+                "learning_rate",
                 "model_object_prefix"
               ],
               "dependencies": [],

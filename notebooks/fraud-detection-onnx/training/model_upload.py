@@ -1,5 +1,6 @@
 from datetime import datetime
 from os import environ
+from pickle import load
 
 from boto3 import client
 from model_registry import ModelRegistry
@@ -13,6 +14,8 @@ s3_secret_key = environ.get('AWS_SECRET_ACCESS_KEY')
 s3_bucket_name = environ.get('AWS_S3_BUCKET')
 s3_region = environ.get('AWS_DEFAULT_REGION', 'None')
 s3_secret_name = 'aws-connection-fraud-detection'
+epoch_count = environ.get('epoch_count')
+learning_rate = environ.get('learning_rate')
 model_registry_endpoint_url_env = environ.get('MODEL_REGISTRY_ENDPOINT_URL')
 
 
@@ -68,6 +71,7 @@ def _register_model_version(
 
     print(f'registering model version {version}')
     registry = _instantiate_model_registry(model_registry_endpoint_url)
+    training_metrics = _load_training_metrics()
 
     model_description = '''
     Shallow neural network trained on Credit Card Fraud Detector dataset 
@@ -92,6 +96,9 @@ def _register_model_version(
         model_format_version='1',
         storage_key=s3_secret_name,
         metadata={
+            'accuracy': str(training_metrics['accuracy'][-1]),
+            'epoch_count': epoch_count,
+            'learning_rate': learning_rate,
             'fraud-detection': '',
             'onnx': '',
         }
@@ -110,6 +117,13 @@ def _instantiate_model_registry(model_registry_endpoint_url):
         user_token=auth_token,
     )
     return registry
+
+
+def _load_training_metrics():
+    metrics_file_path = 'metrics.pickle'
+    with open(metrics_file_path, 'rb') as inputfile:
+        training_metrics = load(inputfile)
+    return training_metrics
 
 
 if __name__ == '__main__':

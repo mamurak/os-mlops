@@ -1,4 +1,5 @@
 from os import environ
+from pickle import dump
 
 environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
@@ -30,7 +31,7 @@ def train_model(data_folder='./data'):
         loss='sparse_categorical_crossentropy',
         metrics=['accuracy'],
     )
-    oversample_model.fit(
+    training_metrics = oversample_model.fit(
         Xsm_train,
         ysm_train,
         validation_split=0.2,
@@ -39,6 +40,10 @@ def train_model(data_folder='./data'):
         shuffle=True,
         verbose=2,
     )
+    metrics_file_path = 'metrics.pickle'
+    with open(metrics_file_path, 'wb') as outputfile:
+        dump(training_metrics.history, outputfile)
+
     onnx_model, _ = convert.from_keras(oversample_model)
     save(onnx_model, 'model.onnx')
 
