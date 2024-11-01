@@ -244,3 +244,28 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: admin
+---
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: TrustyAIService
+metadata:
+  name: trustyai-service
+  namespace: fraud-detection
+spec:
+  data:
+    filename: data.csv
+    format: CSV
+  metrics:
+    batchSize: 5000
+    schedule: 5s
+  storage:
+    folder: /inputs
+    format: PVC
+    size: 1Gi
+---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: model-registry-config
+  namespace: fraud-detection
+stringData:
+  model-registry-endpoint-url: REPLACE_ME
