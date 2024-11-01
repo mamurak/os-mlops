@@ -10,6 +10,7 @@ from model_upload import upload_model
 
 
 data_connection_secret_name = 'aws-connection-fraud-detection'
+model_registry_secret_name = 'model-registry-config'
 
 
 @pipeline(name='model-training-kfp')
@@ -52,7 +53,8 @@ def model_training_pipeline(
 
     model_upload_task = upload_model(
         model_object_prefix=model_object_prefix,
-        model=model_training_task.outputs['model']
+        model=model_training_task.outputs['model'],
+        training_history=model_training_task.outputs['training_history'],
     )
     use_secret_as_env(
         model_upload_task,
@@ -62,6 +64,14 @@ def model_training_pipeline(
             'AWS_ACCESS_KEY_ID': 'AWS_ACCESS_KEY_ID',
             'AWS_SECRET_ACCESS_KEY': 'AWS_SECRET_ACCESS_KEY',
             'AWS_S3_BUCKET': 'AWS_S3_BUCKET',
+            'AWS_DEFAULT_REGION': 'AWS_DEFAULT_REGION',
+        },
+    )
+    use_secret_as_env(
+        model_upload_task,
+        secret_name=model_registry_secret_name,
+        secret_key_to_env={
+            'model-registry-endpoint-url': 'MODEL_REGISTRY_ENDPOINT_URL',
         },
     )
     model_upload_task.after(model_validation_task).set_caching_options(False)

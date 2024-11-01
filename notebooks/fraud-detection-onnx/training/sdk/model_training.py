@@ -2,16 +2,17 @@ from kfp.dsl import (component, Dataset, Input, Metrics,
                      Model, Output)
 
 
-runtime_image = 'quay.io/mmurakam/runtimes:fraud-detection-v2.1.0'
+runtime_image = 'quay.io/mmurakam/runtimes:fraud-detection-v2.3.3'
 
 
 @component(base_image=runtime_image)
 def train_model(
         epoch_count: int, learning_rate: float,
         training_samples: Input[Dataset], training_labels: Input[Dataset],
-        model: Output[Model], metrics: Output[Metrics]):
+        model: Output[Model], metrics: Output[Metrics],
+        training_history: Output[Dataset]):
     from os import environ
-    from pickle import load
+    from pickle import dump, load
 
     environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
@@ -40,7 +41,7 @@ def train_model(
         loss='sparse_categorical_crossentropy',
         metrics=['accuracy'],
     )
-    training_history = oversample_model.fit(
+    training_metrics = oversample_model.fit(
         Xsm_train,
         ysm_train,
         validation_split=0.2,
@@ -49,7 +50,13 @@ def train_model(
         shuffle=True,
         verbose=2,
     )
-    accuracy = training_history.history['accuracy'][-1]
+    metrics_history = training_metrics.history
+    accuracy = metrics_history['accuracy'][-1]
     metrics.log_metric('accuracy', accuracy)
+    metrics_history['learning_rate'] = learning_rate
+    metrics_history['epoch_count'] = epoch_count
+    with open(training_history.path, 'wb') as outputfile:
+        dump(metrics_history, outputfile)
+
     onnx_model, _ = convert.from_keras(oversample_model)
     save(onnx_model, model.path)
