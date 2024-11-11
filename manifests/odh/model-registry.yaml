@@ -48,7 +48,7 @@ spec:
     tlsMode: ISTIO_MUTUAL
   mysql:
     database: model_registry
-    host: model-registry-db.database.svc.cluster.local
+    host: model-registry-db.mysql.svc.cluster.local
     passwordSecret:
       key: database-password
       name: model-registry-db

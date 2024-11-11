@@ -150,3 +150,6 @@ spec:
       managementState: Managed
     trainingoperator:
       managementState: Managed
+    modelregistry:
+      registriesNamespace: rhoai-model-registries
+      managementState: Managed
