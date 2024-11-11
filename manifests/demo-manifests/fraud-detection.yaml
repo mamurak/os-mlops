@@ -268,4 +268,4 @@ metadata:
   name: model-registry-config
   namespace: fraud-detection
 stringData:
-  model-registry-endpoint-url: REPLACE_ME
+  model-registry-endpoint-url: ''
