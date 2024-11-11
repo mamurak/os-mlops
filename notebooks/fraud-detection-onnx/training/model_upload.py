@@ -14,8 +14,8 @@ s3_secret_key = environ.get('AWS_SECRET_ACCESS_KEY')
 s3_bucket_name = environ.get('AWS_S3_BUCKET')
 s3_region = environ.get('AWS_DEFAULT_REGION', 'None')
 s3_secret_name = 'aws-connection-fraud-detection'
-epoch_count = environ.get('epoch_count')
-learning_rate = environ.get('learning_rate')
+epoch_count = environ.get('epoch_count', '20')
+learning_rate = environ.get('learning_rate', '0.001')
 model_registry_endpoint_url_env = environ.get('MODEL_REGISTRY_ENDPOINT_URL')
 
 
