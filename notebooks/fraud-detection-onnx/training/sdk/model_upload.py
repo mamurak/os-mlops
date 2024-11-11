@@ -89,7 +89,7 @@ def upload_model(
 
         registry = ModelRegistry(
             server_address=model_registry_endpoint_url,
-            author='user',
+            author='kfp-pipeline',
             user_token=auth_token,
         )
         return registry

@@ -20,7 +20,8 @@ model_registry_endpoint_url_env = environ.get('MODEL_REGISTRY_ENDPOINT_URL')
 
 
 def upload_model(
-        model_object_prefix='model', model_registry_endpoint_url=''):
+        model_object_prefix='model', model_registry_endpoint_url='',
+        registry_user='user'):
 
     s3_client = _initialize_s3_client(
         s3_endpoint_url=s3_endpoint_url,
@@ -70,7 +71,9 @@ def _register_model_version(
         model_object_name, version, model_registry_endpoint_url):
 
     print(f'registering model version {version}')
-    registry = _instantiate_model_registry(model_registry_endpoint_url)
+    registry = _instantiate_model_registry(
+        model_registry_endpoint_url, registry_user
+    )
     training_metrics = _load_training_metrics()
 
     model_description = '''
@@ -106,14 +109,14 @@ def _register_model_version(
     print('model registration complete.')
 
 
-def _instantiate_model_registry(model_registry_endpoint_url):
+def _instantiate_model_registry(model_registry_endpoint_url, registry_user):
     sa_token_file_path = '/var/run/secrets/kubernetes.io/serviceaccount/token'
     with open(sa_token_file_path, 'r') as token_file:
         auth_token = token_file.read()
 
     registry = ModelRegistry(
         server_address=model_registry_endpoint_url,
-        author='user',
+        author=registry_user,
         user_token=auth_token,
     )
     return registry
@@ -127,4 +130,4 @@ def _load_training_metrics():
 
 
 if __name__ == '__main__':
-    upload_model(model_object_prefix)
+    upload_model(model_object_prefix, registry_user='elyra-pipeline')
