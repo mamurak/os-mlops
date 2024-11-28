@@ -374,10 +374,10 @@ spec:
         opendatahub.io/notebook-python-dependencies: >-
           [{"name":"tensorflow","version":"2.11.1"},{"name":"scikit-learn","version":"1.2.2"},{"name":"trino","version":"0.323.0"}]
         opendatahub.io/notebook-software: '[{"name":"Python","version":"3.8"}]'
-    - name: "2.3.3"
+    - name: "2.4.0"
       from:
         kind: DockerImage
-        name: quay.io/mmurakam/workbenches:fraud-detection-v2.3.3
+        name: quay.io/mmurakam/workbenches:fraud-detection-v2.4.0
       importPolicy: {}
       referencePolicy:
         type: Local
