@@ -21,7 +21,8 @@ type: kubernetes.io/dockerconfigjson
 apiVersion: tekton.dev/v1
 kind: Pipeline
 metadata:
-  name: workbench-ci-pipeline
+  name: workbench-ci
+  namespace: ci
 spec:
   params:
     - default: 'https://github.com/mamurak/os-mlops.git'
@@ -29,23 +30,12 @@ spec:
       name: git-source-url
       type: string
     - default: main
-      description: 'git revision to checkout (branch, tag, sha, ref…)'
-      name: git-source-revision
+      description: 'git tag to checkout'
+      name: tag
       type: string
-    - description: image tag - truncated commit Id
-      name: short-commit-id
-      type: string
-    - default: quay.io/mmurakam/workbenches
-      description: image path
-      name: REMOTE_IMAGE_URL
-      type: string
-    - default: ./container-images/
-      description: containerfile location
-      name: containerfile-location
-      type: string
-    - default: ./container-images/
-      description: build context
-      name: build-context
+    - default: fraud-detection
+      description: container source folder
+      name: source-folder
       type: string
   tasks:
     - name: git-clone
@@ -53,7 +43,7 @@ spec:
         - name: url
           value: $(params.git-source-url)
         - name: revision
-          value: $(params.git-source-revision)
+          value: tags/$(params.tag)
         - name: sslVerify
           value: 'false'
         - name: noProxy
@@ -64,18 +54,50 @@ spec:
       workspaces:
         - name: output
           workspace: app-source
-    - name: build-and-push-image
+    - name: build-and-push-workbench-image
       params:
         - name: IMAGE
-          value: '$(params.REMOTE_IMAGE_URL):$(params.short-commit-id)'
+          value: 'quay.io/mmurakam/workbenches:$(params.tag)'
         - name: BUILDER_IMAGE
           value: 'registry.redhat.io/rhel8/buildah@sha256:aac6629389db17e99894c5bee0da01d4c8065d11d8c6f6e1602f9484290baa70'
         - name: STORAGE_DRIVER
           value: vfs
         - name: DOCKERFILE
-          value: $(params.containerfile-location)
+          value: container-images/$(params.source-folder)/Containerfile-workbench
         - name: CONTEXT
-          value: $(params.build-context)
+          value: container-images/$(params.source-folder)
+        - name: TLSVERIFY
+          value: 'true'
+        - name: FORMAT
+          value: oci
+        - name: BUILD_EXTRA_ARGS
+          value: ''
+        - name: PUSH_EXTRA_ARGS
+          value: ''
+        - name: SKIP_PUSH
+          value: 'false'
+      runAfter:
+        - git-clone
+      taskRef:
+        kind: ClusterTask
+        name: buildah
+      workspaces:
+        - name: source
+          workspace: app-source
+        - name: dockerconfig
+          workspace: dockersecret
+    - name: build-and-push-runtime-image
+      params:
+        - name: IMAGE
+          value: 'quay.io/mmurakam/runtimes:$(params.tag)'
+        - name: BUILDER_IMAGE
+          value: 'registry.redhat.io/rhel8/buildah@sha256:aac6629389db17e99894c5bee0da01d4c8065d11d8c6f6e1602f9484290baa70'
+        - name: STORAGE_DRIVER
+          value: vfs
+        - name: DOCKERFILE
+          value: container-images/$(params.source-folder)/Containerfile-runtime
+        - name: CONTEXT
+          value: container-images/$(params.source-folder)
         - name: TLSVERIFY
           value: 'true'
         - name: FORMAT
