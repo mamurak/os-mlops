@@ -1,7 +1,7 @@
 kind: Secret
 apiVersion: v1
 metadata:
-  name: minio-models-secret
+  name: minio-breast-cancer-secret
   namespace: minio
 stringData:
   accesskey: minio
@@ -10,18 +10,18 @@ stringData:
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: minio-models
+  name: minio-breast-cancer
   namespace: minio
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: minio-models
+      app: minio-breast-cancer
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: minio-models
+        app: minio-breast-cancer
     spec:
       containers:
         - resources:
@@ -53,12 +53,12 @@ spec:
             - name: MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: minio-models-secret
+                  name: minio-breast-cancer-secret
                   key: accesskey
             - name: MINIO_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: minio-models-secret
+                  name: minio-breast-cancer-secret
                   key: secretkey
           ports:
             - containerPort: 9000
@@ -67,7 +67,7 @@ spec:
               protocol: TCP
           imagePullPolicy: IfNotPresent
           terminationMessagePolicy: File
-          image: quay.io/mmurakam/minio:minio-v1.4.0
+          image: quay.io/mmurakam/minio:breast-cancer-v0.1.1
           args:
             - server
             - /data1
@@ -86,7 +86,7 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: minio-models-service
+  name: minio-breast-cancer-service
   namespace: minio
 spec:
   ipFamilies:
@@ -96,7 +96,7 @@ spec:
       protocol: TCP
       port: 9000
       targetPort: 9000
-    - name: gui
+    - name: ui
       protocol: TCP
       port: 9090
       targetPort: 9090
@@ -105,17 +105,17 @@ spec:
   ipFamilyPolicy: SingleStack
   sessionAffinity: None
   selector:
-    app: minio-models
+    app: minio-breast-cancer
 ---
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
-  name: minio-models-api
+  name: minio-breast-cancer-api
   namespace: minio
 spec:
   to:
     kind: Service
-    name: minio-models-service
+    name: minio-breast-cancer-service
     weight: 100
   port:
     targetPort: api
@@ -127,15 +127,15 @@ spec:
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
-  name: minio-models-gui
+  name: minio-breast-cancer-ui
   namespace: minio
 spec:
   to:
     kind: Service
-    name: minio-models-service
+    name: minio-breast-cancer-service
     weight: 100
   port:
-    targetPort: gui
+    targetPort: ui
   wildcardPolicy: None
   tls:
     termination: edge
