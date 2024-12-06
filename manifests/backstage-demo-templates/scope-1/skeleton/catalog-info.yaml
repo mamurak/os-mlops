@@ -1,0 +1,20 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ${{values.component_id}}
+  annotations:
+    argocd/app-name: ${{values.component_id}}-build
+    backstage.io/kubernetes-id: ${{values.component_id}}
+    backstage.io/kubernetes-namespace: ${{values.namespace}}
+    janus-idp.io/tekton-enabled: 'false'
+    scope: scope-1
+  tags:
+    - scope-1
+  links:
+    - url: https://rhods-dashboard-redhat-ods-applications.apps.${{values.cluster_domain_url}}/projects/${{values.namespace}}?section=workbenches
+      title: Red Hat OpenShift AI
+      icon: web
+spec:
+  type: service
+  lifecycle: development
+  owner: ${{values.owner | dump}}

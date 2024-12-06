@@ -1,0 +1,127 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: rhoai-custom-workbench-template-scope-1
+  title: Custom workbench in RHOAI Template for Scope 1
+  description: Deploy a data science project with a custom workbench on RHOAI for scope 1 v1.12
+  tags:
+    - scope-1
+  scope: scope-1    
+spec:
+  owner: rhdh
+  type: service
+
+  parameters:
+    - title: Provide information about the new component
+      required:
+        - cluster_domain_url
+        - workbench_image
+        - cpu
+        - memory
+      properties:
+        cluster_domain_url:
+          title: Cluster domain URL
+          type: string
+          description: Domain URL of the cluster
+          default: cluster-kl7pd.kl7pd.sandbox2537.opentlc.com
+        workbench_image:
+          title: Workbench image
+          type: string
+          description: Container image URL of the workbench
+          default: image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/s2i-generic-data-science-notebook:2023.2
+        cpu:
+          title: CPU
+          type: string
+          description: CPU
+          default: "2"
+          enum:
+            - "2"
+            - "4"
+            - "8"
+        memory:
+          title: Memory
+          type: string
+          description: Memory in GB
+          default: "8"
+          enum:
+            - "8"
+            - "16"
+            - "32"
+  steps:
+    - id: templateSource
+      name: Generating the source code component
+      action: fetch:template
+      input:
+        url: ./skeleton
+        targetPath: ./source
+        values:
+          owner: ${{ user.entity.metadata.name }}
+          cluster_domain_url: ${{parameters.cluster_domain_url}}
+          namespace: ${{ user.entity.metadata.name }}-scope-1
+          component_id: ${{ user.entity.metadata.name }}-scope-1-rhoai-workbench
+    - id: publishSource
+      name: Publishing to Source Code Repository
+      action: publish:gitlab
+      input:
+        sourcePath: ./source
+        description: Sample custom workbench deployment for scope 1
+        repoUrl: gitlab-gitlab.apps.cluster-kl7pd.kl7pd.sandbox2537.opentlc.com?owner=scope-1&repo=${{ user.entity.metadata.name }}-scope-1-rhoai-workbench
+        defaultBranch: main
+        protectDefaultBranch: false
+        repoVisibility: public    
+    - id: registerSource
+      name: Registering the Source Code Component
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{steps.publishSource.output.repoContentsUrl}}
+        catalogInfoPath: /catalog-info.yaml
+    - id: templateGitops
+      name: Generating the deployment resources and artefacts
+      action: fetch:template
+      input:
+        url: ./manifests
+        copyWithoutTemplating: []
+        values:
+          component_id: ${{ user.entity.metadata.name }}-scope-1-rhoai-workbench
+          description: Sample custom workbench deployment for scope 1
+          destination: https://gitlab-gitlab.apps.cluster-kl7pd.kl7pd.sandbox2537.opentlc.com/scope-1/${{ user.entity.metadata.name }}-scope-1-rhoai-workbench-gitops.git
+          source_repository: https://gitlab-gitlab.apps.cluster-kl7pd.kl7pd.sandbox2537.opentlc.com/scope-1/${{ user.entity.metadata.name }}-scope-1-rhoai-workbench.git
+          repository_name: ${{ user.entity.metadata.name }}-scope-1-rhoai-workbench
+          git_owner: scope-1
+          cluster_domain_url: ${{parameters.cluster_domain_url}}
+          namespace: ${{ user.entity.metadata.name }}-scope-1
+          image_host: ${{parameters.image_host}}
+          image_name: ${{ user.entity.metadata.name }}/scope-1-rhoai-workbench
+          image_tag: ${{parameters.image_tag}}
+          user: ${{ user.entity.metadata.name }}
+          workbench_image: ${{parameters.workbench_image}}
+          cpu: ${{parameters.cpu}}
+          memory: ${{parameters.memory}}
+        targetPath: ./tenant-gitops
+    - id: publishGitops
+      name: Publishing to Deployment Resource Repository
+      action: publish:gitlab
+      input:
+        repoUrl: gitlab-gitlab.apps.cluster-kl7pd.kl7pd.sandbox2537.opentlc.com?owner=scope-1&repo=${{ user.entity.metadata.name }}-scope-1-rhoai-workbench-gitops
+        title: gitops resources for ${{ user.entity.metadata.name }}-scope-1-rhoai-workbench
+        description: gitops resources for ${{ user.entity.metadata.name }}-scope-1-rhoai-workbench
+        sourcePath: ./tenant-gitops
+        defaultBranch: main
+        protectDefaultBranch: false
+        repoVisibility: public
+    - id: createArgoResources
+      name: Create ArgoCD Resources
+      action: argocd:create-resources
+      input:
+        appName: ${{ user.entity.metadata.name }}-scope-1-rhoai-workbench-bootstrap
+        argoInstance: main
+        namespace: janus-argocd
+        repoUrl: https://gitlab-gitlab.apps.cluster-kl7pd.kl7pd.sandbox2537.opentlc.com/scope-1/${{ user.entity.metadata.name }}-scope-1-rhoai-workbench-gitops.git
+        path: 'argocd/'
+  output:
+    links:
+      - title: Source Code Repository
+        url: ${{steps.publishSource.output.remoteUrl}}
+      - title: Open Component in catalog
+        icon: catalog
+        entityRef: ${{steps.registerSource.output.entityRef}}

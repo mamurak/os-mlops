@@ -1,0 +1,167 @@
+apiVersion: kubeflow.org/v1
+kind: Notebook
+metadata:
+  annotations:
+    notebooks.opendatahub.io/inject-oauth: "true"
+    notebooks.opendatahub.io/last-image-selection: s2i-generic-data-science-notebook:2023.2
+    notebooks.opendatahub.io/last-size-selection: Small
+    notebooks.opendatahub.io/oauth-logout-url: https://rhods-dashboard-redhat-ods-applications.apps.{{ .Values.app.cluster_domain_url }}/projects/{{ .Values.app.namespace }}?notebookLogout={{ .Values.app.name }}
+    opendatahub.io/accelerator-name: ""
+    opendatahub.io/image-display-name: Standard Data Science
+    openshift.io/description: {{ .Values.app.name }}
+    openshift.io/display-name: {{ .Values.app.name }}
+    backstage.io/kubernetes-id: {{ .Values.app.name }}
+  generation: 1
+  labels:
+    app: {{ .Values.app.name }}
+    opendatahub.io/dashboard: "true"
+    opendatahub.io/odh-managed: "true"
+  name: {{ .Values.app.name }}
+  namespace: {{ .Values.app.namespace }}
+spec:
+  template:
+    spec:
+      affinity: {}
+      containers:
+      - env:
+        - name: NOTEBOOK_ARGS
+          value: |-
+            --ServerApp.port=8888
+                              --ServerApp.token=''
+                              --ServerApp.password=''
+                              --ServerApp.base_url=/notebook/{{ .Values.app.namespace }}/{{ .Values.app.name }}
+                              --ServerApp.quit_button=False
+                              --ServerApp.tornado_settings={"user":"{{ .Values.app.user }}","hub_host":"https://rhods-dashboard-redhat-ods-applications.apps.{{ .Values.app.cluster_domain_url }}","hub_prefix":"/projects/{{ .Values.app.namespace }}"}
+        - name: JUPYTER_IMAGE
+          value: {{ .Values.app.workbench_image }}
+        image: {{ .Values.app.workbench_image }}
+        imagePullPolicy: Always
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /notebook/{{ .Values.app.namespace }}/{{ .Values.app.name }}/api
+            port: notebook-port
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 1
+        name: {{ .Values.app.name }}
+        ports:
+        - containerPort: 8888
+          name: notebook-port
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /notebook/{{ .Values.app.namespace }}/{{ .Values.app.name }}/api
+            port: notebook-port
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            cpu: {{ .Values.app.cpu }}
+            memory: {{ .Values.app.memory }}Gi
+          requests:
+            cpu: {{ .Values.app.cpu }}
+            memory: {{ .Values.app.memory }}Gi
+        volumeMounts:
+        - mountPath: /opt/app-root/src
+          name: workbench-volume
+        - mountPath: /data
+          name: data-volume
+        - mountPath: /dev/shm
+          name: shm
+        workingDir: /opt/app-root/src
+      - args:
+        - --provider=openshift
+        - --https-address=:8443
+        - --http-address=
+        - --openshift-service-account={{ .Values.app.name }}
+        - --cookie-secret-file=/etc/oauth/config/cookie_secret
+        - --cookie-expire=24h0m0s
+        - --tls-cert=/etc/tls/private/tls.crt
+        - --tls-key=/etc/tls/private/tls.key
+        - --upstream=http://localhost:8888
+        - --upstream-ca=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        - --email-domain=*
+        - --skip-provider-button
+        - --openshift-sar={"verb":"get","resource":"notebooks","resourceAPIGroup":"kubeflow.org","resourceName":"{{ .Values.app.name }}","namespace":"$(NAMESPACE)"}
+        - --logout-url=https://rhods-dashboard-redhat-ods-applications.apps.{{ .Values.app.cluster_domain_url }}/projects/{{ .Values.app.namespace }}?notebookLogout={{ .Values.app.name }}
+        env:
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        image: registry.redhat.io/openshift4/ose-oauth-proxy@sha256:4bef31eb993feb6f1096b51b4876c65a6fb1f4401fee97fa4f4542b6b7c9bc46
+        imagePullPolicy: Always
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /oauth/healthz
+            port: oauth-proxy
+            scheme: HTTPS
+          initialDelaySeconds: 30
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 1
+        name: oauth-proxy
+        ports:
+        - containerPort: 8443
+          name: oauth-proxy
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /oauth/healthz
+            port: oauth-proxy
+            scheme: HTTPS
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            cpu: 100m
+            memory: 64Mi
+          requests:
+            cpu: 100m
+            memory: 64Mi
+        volumeMounts:
+        - mountPath: /etc/oauth/config
+          name: oauth-config
+        - mountPath: /etc/tls/private
+          name: tls-certificates
+      - image: registry.redhat.io/rhoai/odh-dashboard-rhel8@sha256:8aa45df2edad53e9c30b59111fd6bad888bac145891dde9ba5541f4bfd37538a
+        imagePullPolicy: Always
+        name: custom-sidecar
+        resources:
+          limits:
+            cpu: 100m
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 200Mi
+      enableServiceLinks: false
+      serviceAccountName: {{ .Values.app.name }}
+      volumes:
+      - name: workbench-volume
+        persistentVolumeClaim:
+          claimName: workbench-volume
+      - name: data-volume
+        persistentVolumeClaim:
+          claimName: data-volume
+      - emptyDir:
+          medium: Memory
+        name: shm
+      - name: oauth-config
+        secret:
+          defaultMode: 420
+          secretName: {{ .Values.app.name }}-oauth-config
+      - name: tls-certificates
+        secret:
+          defaultMode: 420
+          secretName: {{ .Values.app.name }}-tls

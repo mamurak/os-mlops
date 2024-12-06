@@ -1,0 +1,161 @@
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: rhdh
+  description: Red Hat Developer Hub
+spec:
+  type: team
+  profile:
+    # Intentional no displayName for testing
+    email: rhdh@demo.redhat.com
+    picture: https://avatars.dicebear.com/api/identicon/team-a@example.com.svg?background=%23fff&margin=25
+  children: [team-a]
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: team-a
+  description: team-a group
+  owner: team-a
+  tags:
+    - team-a
+spec:
+  owner: team-a
+  type: team
+  profile:
+    # Intentional no displayName for testing
+    email: user2@demo.redhat.com
+    picture: https://avatars.dicebear.com/api/identicon/team-a@example.com.svg?background=%23fff&margin=25
+  parent: rhdh
+  children: [user2]
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user1
+spec:
+  profile:
+    # Intentional no displayName for testing
+    email: user1@demo.redhat.com
+    picture: https://avatars.dicebear.com/api/avataaars/breanna-davison@example.com.svg?background=%23fff
+  memberOf: [admins]
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: team-b
+  description: team-b group
+  owner: team-b
+  tags:
+    - team-b
+spec:
+  owner: team-b
+  type: team
+  profile:
+    # Intentional no displayName for testing
+    email: user3@demo.redhat.com
+    picture: https://avatars.dicebear.com/api/identicon/team-a@example.com.svg?background=%23fff&margin=25
+  parent: rhdh
+  children: [user3]
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user2
+  owner: team-a
+  tags:
+  - team-a
+spec:
+  owner: team-a
+  profile:
+    # Intentional no displayName for testing
+    email: user2@demo.redhat.com
+    picture: https://avatars.dicebear.com/api/avataaars/breanna-davison@example.com.svg?background=%23fff
+  memberOf: [user2, team-a]
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: admins
+  description: admin group
+spec:
+  type: team
+  profile:
+    # Intentional no displayName for testing
+    email: user1@demo.redhat.com
+    picture: https://avatars.dicebear.com/api/identicon/team-a@example.com.svg?background=%23fff&margin=25
+  parent: rhdh
+  children: []
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user3
+  owner: team-b
+  tags:
+  - team-b
+spec:
+  owner: team-b
+  profile:
+    # Intentional no displayName for testing
+    email: user3@demo.redhat.com
+    picture: https://avatars.dicebear.com/api/avataaars/breanna-davison@example.com.svg?background=%23fff
+  memberOf: [user3]
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: user2
+  description: user2 group
+  owner: team-a
+  tags:
+    - team-a
+spec:
+  owner: team-a
+  type: team
+  profile:
+    # Intentional no displayName for testing
+    email: user4@demo.redhat.com
+    picture: https://avatars.dicebear.com/api/identicon/team-a@example.com.svg?background=%23fff&margin=25
+  parent: team-a
+  children: []
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user4
+spec:
+  profile:
+    # Intentional no displayName for testing
+    email: user4@demo.redhat.com
+    picture: https://avatars.dicebear.com/api/avataaars/breanna-davison@example.com.svg?background=%23fff
+  memberOf: [user4]
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: user3
+  description: user3 group
+  owner: team-b
+  tags:
+    - team-b
+spec:
+  owner: team-b
+  type: team
+  profile:
+    # Intentional no displayName for testing
+    email: user5@demo.redhat.com
+    picture: https://avatars.dicebear.com/api/identicon/team-a@example.com.svg?background=%23fff&margin=25
+  parent: team-b
+  children: []
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: user5
+spec:
+  profile:
+    # Intentional no displayName for testing
+    email: user5@demo.redhat.com
+    picture: https://avatars.dicebear.com/api/avataaars/breanna-davison@example.com.svg?background=%23fff
+  memberOf: [admins]

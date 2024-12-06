@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+    openshift.io/description: "data-science-project for {{ .Values.app.name }}"
+    openshift.io/display-name: "{{ .Values.app.namespace }}"
+    argocd.argoproj.io/sync-wave: "-5"    
+  labels:
+    kubernetes.io/metadata.name: {{ .Values.app.namespace }}
+    modelmesh-enabled: "true"
+    opendatahub.io/dashboard: "true"
+  name: {{ .Values.app.namespace }}
+spec:
+  finalizers:
+  - kubernetes
+

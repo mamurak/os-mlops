@@ -1,0 +1,41 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  annotations:
+    openshift.io/description: "Workbench volume for {{ .Values.app.name }}" 
+    openshift.io/display-name: "workbench volume"
+    argocd.argoproj.io/sync-wave: "-2" 
+  name: workbench-volume
+  namespace: {{ .Values.app.namespace }}
+  finalizers:
+    - kubernetes.io/pvc-protection
+  labels:
+    opendatahub.io/dashboard: 'true'
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+  volumeMode: Filesystem
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  annotations:
+    openshift.io/description: "Custom data volume for {{ .Values.app.name }}" 
+    openshift.io/display-name: "custom data volume for scope 3"
+    argocd.argoproj.io/sync-wave: "-2" 
+  name: data-volume
+  namespace: {{ .Values.app.namespace }}
+  finalizers:
+    - kubernetes.io/pvc-protection
+  labels:
+    opendatahub.io/dashboard: 'true'
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+  volumeMode: Filesystem

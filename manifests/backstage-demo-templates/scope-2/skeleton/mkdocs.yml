@@ -1,0 +1,13 @@
+site_name: ${{values.component_id}}
+{%- if values.description %}
+site_description: ${{values.description}}
+{%- endif %}
+site_description: description
+
+nav:
+  - Introduction: index.md
+  - Notebook: 01_regression_with_scikit-learn.md
+
+plugins:
+  - techdocs-core
+

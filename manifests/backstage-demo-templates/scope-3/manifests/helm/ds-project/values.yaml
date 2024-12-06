@@ -1,0 +1,12 @@
+app:
+  name: ${{values.component_id}}
+  namespace: ${{values.namespace}}
+  cluster_domain_url: ${{values.cluster_domain_url}}
+  user: ${{values.user}}
+  workbench_image: ${{values.workbench_image}}
+  cpu: ${{values.cpu}}
+  memory: ${{values.memory}}
+
+git:
+  branch: main
+  repo: ${{values.source_repository}}
