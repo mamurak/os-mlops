@@ -1,0 +1,12 @@
+kind: ResourceQuota
+apiVersion: v1
+metadata:
+  name: sample-resource-quota
+spec:
+  hard:
+    limits.cpu: '20'
+    limits.memory: 20Gi
+    pods: '40'
+    requests.cpu: '13'
+    requests.memory: 42Gi
+    requests.nvidia.com/gpu: '2'
