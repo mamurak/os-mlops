@@ -747,3 +747,33 @@ spec:
         importMode: Legacy
       referencePolicy:
         type: Source
+---
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  annotations:
+    opendatahub.io/notebook-image-desc: Open Data Hub Stable Diffusion XL Mini Studio
+    opendatahub.io/notebook-image-name: ODH SDXL Mini Studio
+    opendatahub.io/notebook-image-url: 'quay.io/rh-aiservices-bu/sdxl-ministudio:0.0.2'
+  name: sdxl-ministudio
+  namespace: redhat-ods-applications
+  labels:
+    app.kubernetes.io/created-by: byon
+    opendatahub.io/component: "true"
+    opendatahub.io/notebook-image: "false"
+spec:
+  lookupPolicy:
+    local: true
+  tags:
+    - name: "0.0.2"
+      annotations:
+        opendatahub.io/notebook-python-dependencies: ''
+        opendatahub.io/notebook-software: ''
+        openshift.io/imported-from: 'quay.io/rh-aiservices-bu/sdxl-ministudio:0.0.2'
+      from:
+        kind: DockerImage
+        name: 'quay.io/rh-aiservices-bu/sdxl-ministudio:0.0.2'
+      importPolicy:
+        importMode: Legacy
+      referencePolicy:
+        type: Source
