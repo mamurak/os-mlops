@@ -1,0 +1,27 @@
+kind: Secret
+apiVersion: v1
+metadata:
+  name: credentials
+  namespace: openshift-lightspeed
+stringData:
+  apitoken: TOKEN
+type: Opaque
+---
+apiVersion: ols.openshift.io/v1alpha1
+kind: OLSConfig
+metadata:
+  name: cluster
+spec:
+  llm:
+    providers:
+      - credentialsSecretRef:
+          name: credentials
+        models:
+          - name: granite-3-8b-instruct
+        name: red_hat_openshift_ai
+        type: rhoai_vllm
+        url: 'MODEL_ENDPOINT/v1'
+  ols:
+    defaultModel: granite-3-8b-instruct
+    defaultProvider: red_hat_openshift_ai
+    logLevel: INFO
