@@ -17,11 +17,11 @@ s3_secret_name = 'aws-connection-fraud-detection'
 epoch_count = environ.get('epoch_count', '20')
 learning_rate = environ.get('learning_rate', '0.001')
 model_registry_endpoint_url_env = environ.get('MODEL_REGISTRY_ENDPOINT_URL')
+registry_user = environ.get('registry_user', 'workbench')
 
 
 def upload_model(
-        model_object_prefix='model', model_registry_endpoint_url='',
-        registry_user='user'):
+        model_object_prefix='model', model_registry_endpoint_url=''):
 
     s3_client = _initialize_s3_client(
         s3_endpoint_url=s3_endpoint_url,
@@ -71,9 +71,7 @@ def _register_model_version(
         model_object_name, version, model_registry_endpoint_url):
 
     print(f'registering model version {version}')
-    registry = _instantiate_model_registry(
-        model_registry_endpoint_url, registry_user
-    )
+    registry = _instantiate_model_registry(model_registry_endpoint_url)
     training_metrics = _load_training_metrics()
 
     model_description = '''
@@ -109,7 +107,7 @@ def _register_model_version(
     print('model registration complete.')
 
 
-def _instantiate_model_registry(model_registry_endpoint_url, registry_user):
+def _instantiate_model_registry(model_registry_endpoint_url):
     sa_token_file_path = '/var/run/secrets/kubernetes.io/serviceaccount/token'
     with open(sa_token_file_path, 'r') as token_file:
         auth_token = token_file.read()
@@ -130,4 +128,4 @@ def _load_training_metrics():
 
 
 if __name__ == '__main__':
-    upload_model(model_object_prefix, registry_user='elyra-pipeline')
+    upload_model(model_object_prefix)

@@ -284,7 +284,12 @@
               "dependencies": [],
               "include_subdirectories": false,
               "outputs": [],
-              "env_vars": [],
+              "env_vars": [
+                {
+                  "env_var": "registry_user",
+                  "value": "elyra-pipeline"
+                }
+              ],
               "kubernetes_pod_annotations": [],
               "kubernetes_pod_labels": [],
               "kubernetes_secrets": [
