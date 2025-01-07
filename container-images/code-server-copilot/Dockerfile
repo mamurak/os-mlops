@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi9/python-311:9.5-1734610704
+FROM quay.io/opendatahub/workbench-images:base-ubi9-python-3.11-20250101-8487113
 
 ARG CODESERVER_VERSION=v4.96.2
 ARG OS_MLOPS_ARTIFACTS_VERSION_TAG=1.5.0
