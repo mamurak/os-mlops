@@ -777,3 +777,33 @@ spec:
         importMode: Legacy
       referencePolicy:
         type: Source
+---
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  annotations:
+    opendatahub.io/notebook-image-desc: Code Server with Github Copilot
+    opendatahub.io/notebook-image-name: Code Server Copilot
+    opendatahub.io/notebook-image-url: 'quay.io/mmurakam/workbenches:code-server-copilot-v0.1.5'
+  name: code-server-copilot
+  namespace: redhat-ods-applications
+  labels:
+    app.kubernetes.io/created-by: byon
+    opendatahub.io/component: "true"
+    opendatahub.io/notebook-image: "false"
+spec:
+  lookupPolicy:
+    local: true
+  tags:
+    - name: "0.1.5"
+      annotations:
+        opendatahub.io/notebook-python-dependencies: ''
+        opendatahub.io/notebook-software: '[{"name":"Python","version":"3.11"},{"name":"VS Code","version":"1.96.2"},{"name":"Github Copilot","version":"1.246.1243"},{"name":"Github Copilot Chat","version":"0.23.2"}]'
+        openshift.io/imported-from: 'quay.io/mmurakam/workbenches:code-server-copilot-v0.1.5'
+      from:
+        kind: DockerImage
+        name: 'quay.io/mmurakam/workbenches:code-server-copilot-v0.1.5'
+      importPolicy:
+        importMode: Legacy
+      referencePolicy:
+        type: Source
