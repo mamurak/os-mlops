@@ -45,10 +45,12 @@ COPY --chown=1001:0 utils/ utils/
 WORKDIR /tmp
 RUN mkdir artefacts && \
     git clone https://github.com/mamurak/os-mlops-artefacts.git artefacts && \
+    cd artefacts && \
     git checkout ${OS_MLOPS_ARTIFACTS_VERSION_TAG} && \
-    cp artefacts/code-server-extensions/* /opt/app-root/bin/utils/ && \
+    cp code-server-extensions/* /opt/app-root/bin/utils/ && \
     chown -R 1001:0 /opt/app-root/bin/utils/* && \
     chmod -R g+w /opt/app-root/bin/utils/* && \
+    cd .. && \
     rm -r artefacts
 
 WORKDIR /opt/app-root/bin
