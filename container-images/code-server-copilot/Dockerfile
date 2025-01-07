@@ -1,6 +1,5 @@
 FROM registry.access.redhat.com/ubi9/python-311:9.5-1734610704
 
-ARG SOURCE_CODE=codeserver/ubi9-python-3.11
 ARG CODESERVER_VERSION=v4.96.2
 ARG OS_MLOPS_ARTIFACTS_VERSION_TAG=1.5.0
 
@@ -19,7 +18,7 @@ USER 0
 WORKDIR /opt/app-root/bin
 
 # Install usefull packages from Pipfile.lock
-COPY ${SOURCE_CODE}/Pipfile.lock ./
+COPY Pipfile.lock ./
 
 # Install packages and cleanup
 RUN echo "Installing softwares and packages" && \
@@ -40,7 +39,7 @@ RUN yum install -y "https://github.com/coder/code-server/releases/download/${COD
 RUN chmod -R g+w /opt/app-root/lib/python3.11/site-packages && \
     fix-permissions /opt/app-root -P
 
-COPY --chown=1001:0 ${SOURCE_CODE}/utils utils/
+COPY --chown=1001:0 utils/ utils/
 
 # Download code-server extensions
 WORKDIR /tmp
@@ -77,10 +76,10 @@ RUN yum install -y https://download.fedoraproject.org/pub/epel/epel-release-late
     rpm -V $INSTALL_PKGS && \
     yum -y clean all --enablerepo='*'
 
-COPY --chown=1001:0 ${SOURCE_CODE}/supervisord/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY --chown=1001:0 supervisord/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Copy extra files to the image.
-COPY ${SOURCE_CODE}/nginx/root/ /
+COPY nginx/root/ /
 
 # Changing ownership and user rights to support following use-cases:
 # 1) running container on OpenShift, whose default security model
@@ -117,12 +116,12 @@ RUN sed -i -f ${NGINX_APP_ROOT}/nginxconf.sed ${NGINX_CONF_PATH} && \
     chown -R 1001:0 /opt/app-root/src/.config/code-server
 
 ## Configure nginx
-COPY ${SOURCE_CODE}/nginx/serverconf/ /opt/app-root/etc/nginx.default.d/
-COPY ${SOURCE_CODE}/nginx/httpconf/ /opt/app-root/etc/nginx.d/
-COPY ${SOURCE_CODE}/nginx/api/ /opt/app-root/api/
+COPY nginx/serverconf/ /opt/app-root/etc/nginx.default.d/
+COPY nginx/httpconf/ /opt/app-root/etc/nginx.d/
+COPY nginx/api/ /opt/app-root/api/
 
 # Launcher
-COPY --chown=1001:0 ${SOURCE_CODE}/run-code-server.sh ${SOURCE_CODE}/run-nginx.sh ./
+COPY --chown=1001:0 run-code-server.sh run-nginx.sh ./
 
 ENV SHELL /bin/bash
 
