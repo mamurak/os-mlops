@@ -26,17 +26,16 @@ RUN echo "Installing softwares and packages" && \
     rm -f ./Pipfile.lock && \
     # Fix permissions to support pip in Openshift environments \
     chmod -R g+w /opt/app-root/lib/python3.11/site-packages && \
-    fix-permissions /opt/app-root -P
-
-# Install usefull OS packages
-RUN dnf install -y jq git-lfs libsndfile && dnf clean all && rm -rf /var/cache/yum
-
-# Install code-server
-RUN yum install -y "https://github.com/coder/code-server/releases/download/${CODESERVER_VERSION}/code-server-${CODESERVER_VERSION/v/}-amd64.rpm" && \
-    yum -y clean all --enablerepo='*'
-
-# Change ownership of relevant directories
-RUN chmod -R g+w /opt/app-root/lib/python3.11/site-packages && \
+    fix-permissions /opt/app-root -P && \
+    # Install usefull OS packages
+    dnf install -y jq git-lfs libsndfile && \
+    dnf clean all && \
+    rm -rf /var/cache/yum && \
+    # Install code-server
+    yum install -y "https://github.com/coder/code-server/releases/download/${CODESERVER_VERSION}/code-server-${CODESERVER_VERSION/v/}-amd64.rpm" && \
+    yum -y clean all --enablerepo='*' && \
+    # Change ownership of relevant directories
+    chmod -R g+w /opt/app-root/lib/python3.11/site-packages && \
     fix-permissions /opt/app-root -P
 
 COPY --chown=1001:0 utils/ utils/
@@ -57,8 +56,8 @@ WORKDIR /opt/app-root/bin
 
 # Create and intall the extensions though build-time on a temporary directory. Later this directory will copied on the `/opt/app-root/src/.local/share/code-server/extensions` via run-code-server.sh file when it starts up.
 RUN mkdir -p /opt/app-root/extensions-temp && \
-    code-server --install-extension /opt/app-root/bin/utils/ms-python.python-2024.14.1.vsix --extensions-dir /opt/app-root/extensions-temp && \
-    code-server --install-extension /opt/app-root/bin/utils/ms-toolsai.jupyter-2024.7.0.vsix --extensions-dir /opt/app-root/extensions-temp
+    code-server --install-extension /opt/app-root/bin/utils/GitHub.copilot-1.255.0.vsix --extensions-dir /opt/app-root/extensions-temp && \
+    code-server --install-extension /opt/app-root/bin/utils/GitHub.copilot-chat-0.24.2025010701.vsix --extensions-dir /opt/app-root/extensions-temp
 
 # Install NGINX to proxy code-server and pass probes check
 ENV NGINX_VERSION=1.24 \
