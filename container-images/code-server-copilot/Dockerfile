@@ -59,10 +59,11 @@ RUN mkdir -p /opt/app-root/extensions-temp && \
     code-server --install-extension /opt/app-root/bin/utils/GitHub.copilot-1.255.0.vsix --extensions-dir /opt/app-root/extensions-temp && \
     code-server --install-extension /opt/app-root/bin/utils/GitHub.copilot-chat-0.23.2.vsix --extensions-dir /opt/app-root/extensions-temp && \
     code-server --install-extension /opt/app-root/bin/utils/Continue.continue-0.9.250@linux-x64.vsix --extensions-dir /opt/app-root/extensions-temp && \
-    mkdir -p /opt/app-root/src/.continue && \
-    cp continue/config.json /opt/app-root/src/.continue/config.json && \
-    chown -R 1001:0 /opt/app-root/src/.continue/* && \
-    chmod -R g+w /opt/app-root/src/.continue/*
+    mkdir -p /opt/app-root/src/.continue 
+
+# Set up Continue configuration
+COPY --chown=1001:0 continue/config.json /opt/app-root/src/.continue/config.json
+RUN chmod -R g+w /opt/app-root/src/.continue/*
 
 # Install NGINX to proxy code-server and pass probes check
 ENV NGINX_VERSION=1.24 \
