@@ -1,7 +1,7 @@
 FROM quay.io/opendatahub/workbench-images:base-ubi9-python-3.11-20250101-8487113
 
 ARG CODESERVER_VERSION=v4.96.2
-ARG OS_MLOPS_ARTIFACTS_VERSION_TAG=1.5.1
+ARG OS_MLOPS_ARTIFACTS_VERSION_TAG=1.6.0
 
 LABEL name="odh-notebook-code-server-ubi9-python-3.11" \
       summary="code-server image with python 3.11 based on UBI 9" \
@@ -57,7 +57,12 @@ WORKDIR /opt/app-root/bin
 # Create and intall the extensions though build-time on a temporary directory. Later this directory will copied on the `/opt/app-root/src/.local/share/code-server/extensions` via run-code-server.sh file when it starts up.
 RUN mkdir -p /opt/app-root/extensions-temp && \
     code-server --install-extension /opt/app-root/bin/utils/GitHub.copilot-1.255.0.vsix --extensions-dir /opt/app-root/extensions-temp && \
-    code-server --install-extension /opt/app-root/bin/utils/GitHub.copilot-chat-0.23.2.vsix --extensions-dir /opt/app-root/extensions-temp
+    code-server --install-extension /opt/app-root/bin/utils/GitHub.copilot-chat-0.23.2.vsix --extensions-dir /opt/app-root/extensions-temp && \
+    code-server --install-extension /opt/app-root/bin/utils/Continue.continue-0.9.250@linux-x64.vsix --extensions-dir /opt/app-root/extensions-temp && \
+    mkdir -p /opt/app-root/src/.continue && \
+    cp continue/config.json /opt/app-root/src/.continue/config.json && \
+    chown -R 1001:0 /opt/app-root/src/.continue/* && \
+    chmod -R g+w /opt/app-root/src/.continue/*
 
 # Install NGINX to proxy code-server and pass probes check
 ENV NGINX_VERSION=1.24 \
