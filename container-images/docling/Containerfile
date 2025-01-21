@@ -2,10 +2,14 @@ FROM quay.io/modh/odh-pytorch-notebook:v3-2024b-20241111
 
 USER root
 
-RUN dnf install -y tesseract tesseract-devel tesseract-langpack-eng leptonica-devel && \
+RUN RUN yum install -y yum-utils && \
+    /usr/bin/crb enable && \
+    yum -y clean all --enablerepo='*' && \
+    yum install -y tesseract tesseract-devel tesseract-langpack-eng leptonica-devel && \
     TESSDATA_PREFIX=/usr/share/tesseract/tessdata/ && \
     echo "Set TESSDATA_PREFIX=${TESSDATA_PREFIX}" && \
     pip install --no-cache-dir docling && \
-    fix-permissions /opt/app-root -P
+    fix-permissions /opt/app-root -P && \
+    rm -rf /var/cache/dnf
 
 USER 1001
