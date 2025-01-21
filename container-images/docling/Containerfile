@@ -2,7 +2,7 @@ FROM quay.io/modh/odh-pytorch-notebook:v3-2024b-20241111
 
 USER root
 
-RUN RUN yum install -y yum-utils && \
+RUN yum install -y yum-utils && \
     /usr/bin/crb enable && \
     yum -y clean all --enablerepo='*' && \
     yum install -y tesseract tesseract-devel tesseract-langpack-eng leptonica-devel && \
