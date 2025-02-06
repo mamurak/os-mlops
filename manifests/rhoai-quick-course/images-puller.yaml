@@ -56,7 +56,6 @@ spec:
               cpu: 10m
               memory: 10Mi
         - name: tensorflow-workbench
-          image: quay.io/modh/cuda-notebooks@sha256:ce86467ff0768a47ca6adb5268f29c9986a5925020a7cd9e951fcd6347c977ad
           image: quay.io/modh/cuda-notebooks@sha256:b1d46489ecccc7c067754155bf1c3a29b2f5dd40712fe23d562e074e80e82bc3
           command: ["tail"]
           args: ["-f", "/dev/null"]
