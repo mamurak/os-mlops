@@ -65,6 +65,16 @@ spec:
             requests:
               cpu: 10m
               memory: 10Mi
+        - name: tensorflow-workbench
+          image: quay.io/modh/cuda-notebooks@sha256:67ae98e94f1003832c008b9348b1ed4bbd187c48b408ee9298104d5dd37140fb
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
         - name: langchain-workbench
           image: quay.io/mmurakam/workbenches:insurance-claims-v0.1.0
           command: ["tail"]
