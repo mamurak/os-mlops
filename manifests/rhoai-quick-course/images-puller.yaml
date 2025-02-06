@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: minimal-python-workbench
-          image: quay.io/modh/odh-minimal-notebook-container@sha256:eed810f98057c391799db3feea0a61baaaa6b154660d32d1737980020e335dc3
+          image: quay.io/modh/odh-minimal-notebook-container@sha256:9592b9aed5248b77c7490f08004091174030035a76c3b198f9f01c8be0060074
           command: ["tail"]
           args: ["-f", "/dev/null"]
           resources:
@@ -26,7 +26,7 @@ spec:
               cpu: 10m
               memory: 10Mi
         - name: standard-datascience-workbench
-          image: quay.io/modh/odh-generic-data-science-notebook@sha256:d81e47fa2f5656042748cf2cd1d97033f58d6dd707667ff0e25aa969959e56a7
+          image: quay.io/modh/odh-generic-data-science-notebook@sha256:7c1a4ca213b71d342a2d1366171304e469da06d5f15710fab5dd3ce013aa1b73
           command: ["tail"]
           args: ["-f", "/dev/null"]
           resources:
@@ -46,7 +46,7 @@ spec:
               cpu: 10m
               memory: 10Mi
         - name: pytorch-workbench
-          image: quay.io/modh/odh-pytorch-notebook@sha256:8e6f96724b9d9f9e56f680e19607646b9c51467ef2e38df451155877326ecce9
+          image: quay.io/modh/odh-pytorch-notebook@sha256:aaf5efdeb965abd7bb0fb330a3f63b58d86dd8bfd770335a371d296cb6ba50e2
           command: ["tail"]
           args: ["-f", "/dev/null"]
           resources:
@@ -57,6 +57,7 @@ spec:
               memory: 10Mi
         - name: tensorflow-workbench
           image: quay.io/modh/cuda-notebooks@sha256:ce86467ff0768a47ca6adb5268f29c9986a5925020a7cd9e951fcd6347c977ad
+          image: quay.io/modh/cuda-notebooks@sha256:b1d46489ecccc7c067754155bf1c3a29b2f5dd40712fe23d562e074e80e82bc3
           command: ["tail"]
           args: ["-f", "/dev/null"]
           resources:
@@ -246,7 +247,7 @@ spec:
               cpu: 10m
               memory: 10Mi
         - name: minio
-          image: quay.io/mmurakam/minio:minio-v0.5.0
+          image: quay.io/mmurakam/minio:minio-v1.2.1
           command: ["tail"]
           args: ["-f", "/dev/null"]
           resources:
