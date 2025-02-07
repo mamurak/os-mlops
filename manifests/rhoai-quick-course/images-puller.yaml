@@ -96,7 +96,7 @@ spec:
               cpu: 10m
               memory: 10Mi
         - name: kserve-storage-initializer
-          image: quay.io/modh/kserve-storage-initializer@sha256:8be80149e2a41c89bae4ef69a2d18333e2f16afea559c19cdcb664594898a557
+          image: quay.io/modh/kserve-storage-initializer@sha256:e745f50a8abbe412cdf5d868c5aeb4658f2042837d1d62c4825dac51bd7f40fb
           command: ["tail"]
           args: ["-f", "/dev/null"]
           resources:
@@ -295,3 +295,4 @@ spec:
             requests:
               cpu: 10m
               memory: 10Mi
+              
