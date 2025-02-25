@@ -107,6 +107,20 @@ spec:
 kind: Namespace
 apiVersion: v1
 metadata:
+  name: trustyai-demo
+  labels:
+    kubernetes.io/metadata.name: trustyai-demo
+    modelmesh-enabled: 'true'
+    opendatahub.io/dashboard: 'true'
+  annotations:
+    openshift.io/display-name: trustyai-demo
+spec:
+  finalizers:
+    - kubernetes
+---
+kind: Namespace
+apiVersion: v1
+metadata:
   name: ci-cd
 spec:
   finalizers:

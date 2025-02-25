@@ -1,0 +1,138 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: mariadb-trustyai
+  namespace: mysql
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+  volumeMode: Filesystem
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: mariadb-trustyai
+  namespace: mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mariadb-trustyai
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: mariadb-trustyai
+    spec:
+      volumes:
+        - name: mariadb-persistent-storage
+          persistentVolumeClaim:
+            claimName: mariadb-trustyai
+      containers:
+        - resources:
+            limits:
+              cpu: '1'
+              memory: 1Gi
+            requests:
+              cpu: 300m
+              memory: 800Mi
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - '-i'
+                - '-c'
+                - MYSQL_PWD=$MYSQL_PASSWORD mysql -h 127.0.0.1 -u $MYSQL_USER -D $MYSQL_DATABASE -e 'SELECT 1'
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: /dev/termination-log
+          name: mariadb
+          livenessProbe:
+            tcpSocket:
+              port: 3306
+            initialDelaySeconds: 30
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          env:
+            - name: MYSQL_USER
+              value: dbuser
+            - name: MYSQL_PASSWORD
+              value: dbpassword
+            - name: MYSQL_DATABASE
+              value: trustyai
+            - name: MYSQL_ALLOW_EMPTY_PASSWORD
+              value: 'true'
+          ports:
+            - containerPort: 3306
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: mariadb-persistent-storage
+              mountPath: /var/lib/mysql
+          terminationMessagePolicy: File
+          image: 'registry.redhat.io/rhel8/mariadb-103@sha256:3d30992e60774f887c4e7959c81b0c41b0d82d042250b3b56f05ab67fd4cdee1'
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+  strategy:
+    type: Recreate
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: mariadb-trustyai
+  namespace: mysql
+spec:
+  ipFamilies:
+    - IPv4
+  ports:
+    - name: mariadb
+      protocol: TCP
+      appProtocol: tcp
+      port: 3306
+      targetPort: 3306
+  internalTrafficPolicy: Cluster
+  type: ClusterIP
+  ipFamilyPolicy: SingleStack
+  sessionAffinity: None
+  selector:
+    app: mariadb-trustyai
+---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: db-credentials
+  namespace: trustyai-demo
+stringData:
+  databaseGeneration: drop-and-create
+  databaseKind: mariadb
+  databaseName: trustyai
+  databasePassword: dbpassword
+  databasePort: "3306"
+  databaseService: mariadb-trustyai.mysql.svc.cluster.local
+  databaseUsername: dbuser
+---
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: TrustyAIService
+metadata:
+  name: trustyai-service
+  namespace: trustyai-demo
+spec:
+  data: {}
+  metrics:
+    schedule: 5s
+  storage:
+    databaseConfigurations: db-credentials
+    format: DATABASE
