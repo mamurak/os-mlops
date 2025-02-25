@@ -18,7 +18,7 @@
                 "sample_count"
               ],
               "dependencies": [
-                "configuration.yaml"
+                "configuration-pipeline.yaml"
               ],
               "include_subdirectories": false,
               "outputs": [],
@@ -87,7 +87,7 @@
               ],
               "dependencies": [
                 "yolov5/*",
-                "configuration.yaml"
+                "configuration-pipeline.yaml"
               ],
               "include_subdirectories": true,
               "outputs": [
@@ -164,7 +164,7 @@
           "app_data": {
             "component_parameters": {
               "dependencies": [
-                "configuration.yaml"
+                "configuration-pipeline.yaml"
               ],
               "include_subdirectories": false,
               "outputs": [],
