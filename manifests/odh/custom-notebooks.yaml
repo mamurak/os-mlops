@@ -510,6 +510,37 @@ kind: ImageStream
 apiVersion: image.openshift.io/v1
 metadata:
   annotations:
+    opendatahub.io/notebook-image-desc: Code Server based workbench with InstructLab
+    opendatahub.io/notebook-image-name: InstructLab Code Server workbench
+    opendatahub.io/notebook-image-url: 'quay.io/rh-aiservices-bu/instructlab-workbench-code-server-cuda:0.21.0'
+  name: instructlab-code-server
+  namespace: redhat-ods-applications
+  labels:
+    app.kubernetes.io/created-by: byon
+    opendatahub.io/component: "true"
+    opendatahub.io/notebook-image: "false"
+spec:
+  lookupPolicy:
+    local: true
+  tags:
+    - name: '0.21.0'
+      annotations:
+        opendatahub.io/notebook-python-dependencies: >-
+          [{"name":"PyTorch","version":"1.8","visible":true},{"name":"CUDA","version":"11.4","visible":true}]
+        opendatahub.io/notebook-software: '[{"name":"Python","version":"3.9","visible":true}]'
+        openshift.io/imported-from: 'quay.io/rh-aiservices-bu/instructlab-workbench-code-server-cuda:0.21.0'
+      from:
+        kind: DockerImage
+        name: 'quay.io/rh-aiservices-bu/instructlab-workbench-code-server-cuda:0.21.0'
+      importPolicy:
+        importMode: Legacy
+      referencePolicy:
+        type: Source
+---
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  annotations:
     opendatahub.io/notebook-image-desc: VS Code based workbench with InstructLab
     opendatahub.io/notebook-image-name: InstructLab VS Code workbench
     opendatahub.io/notebook-image-url: 'quay.io/rh-aiservices-bu/instructlab-workbench-code-server-cuda:0.20.1'
@@ -705,14 +736,14 @@ spec:
   lookupPolicy:
     local: true
   tags:
-    - name: 1.2.2
+    - name: 1.3-1
       annotations:
         opendatahub.io/notebook-python-dependencies: ''
         opendatahub.io/notebook-software: ''
         openshift.io/imported-from: 'quay.io/rh-aiservices-bu/anythingllm-workbench:latest'
       from:
         kind: DockerImage
-        name: 'quay.io/rh-aiservices-bu/anythingllm-workbench:1.2.2'
+        name: 'quay.io/rh-aiservices-bu/anythingllm-workbench:1.3-1'
       importPolicy:
         importMode: Legacy
       referencePolicy:
@@ -782,10 +813,10 @@ kind: ImageStream
 apiVersion: image.openshift.io/v1
 metadata:
   annotations:
-    opendatahub.io/notebook-image-desc: Code Server with Github Copilot
-    opendatahub.io/notebook-image-name: Code Server Copilot
+    opendatahub.io/notebook-image-desc: Code Server with Github Copilot and Continue
+    opendatahub.io/notebook-image-name: 'Code Server - Code Assistant'
     opendatahub.io/notebook-image-url: 'quay.io/mmurakam/workbenches:code-server-copilot-v0.1.5'
-  name: code-server-copilot
+  name: code-server-code-assistant
   namespace: redhat-ods-applications
   labels:
     app.kubernetes.io/created-by: byon
@@ -795,14 +826,14 @@ spec:
   lookupPolicy:
     local: true
   tags:
-    - name: "0.1.5"
+    - name: "0.2.1"
       annotations:
         opendatahub.io/notebook-python-dependencies: ''
-        opendatahub.io/notebook-software: '[{"name":"Python","version":"3.11"},{"name":"VS Code","version":"1.96.2"},{"name":"Github Copilot","version":"1.246.1243"},{"name":"Github Copilot Chat","version":"0.23.2"}]'
-        openshift.io/imported-from: 'quay.io/mmurakam/workbenches:code-server-copilot-v0.1.5'
+        opendatahub.io/notebook-software: '[{"name":"Python","version":"3.11"},{"name":"VS Code","version":"1.96.2"},{"name":"Github Copilot","version":"1.246.1243"},{"name":"Github Copilot Chat","version":"0.23.2"},{"name":"Continue","version":"0.9.250"}]'
+        openshift.io/imported-from: 'quay.io/mmurakam/workbenches:code-server-copilot-v0.2.1'
       from:
         kind: DockerImage
-        name: 'quay.io/mmurakam/workbenches:code-server-copilot-v0.1.5'
+        name: 'quay.io/mmurakam/workbenches:code-server-copilot-v0.2.1'
       importPolicy:
         importMode: Legacy
       referencePolicy:
