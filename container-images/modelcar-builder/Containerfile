@@ -1,0 +1,7 @@
+FROM registry.access.redhat.com/ubi9/ubi-minimal:9.4
+
+RUN microdnf -y install git git-lfs python3-pip && \
+    microdnf clean all
+
+COPY requirements.txt ./
+RUN pip3 install --no-cache-dir -r requirements.txt
