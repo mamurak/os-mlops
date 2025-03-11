@@ -8,10 +8,9 @@ resources:
 - odh/custom-serving-runtimes.yaml
 - demo-manifests/llm-demo.yaml
 - demo-manifests/ray-demo.yaml
-# - demo-manifests/insuranceclaims-applicationset.yaml
-# - ocp/user-workload-monitoring.yaml
 - ocp/gpu-dashboard.yaml
 - ocp/rbac.yaml
 - odh/dist-workloads.yaml
 - odh/model-registry.yaml
 - mysql/mysql.yaml
+- tekton/model-ci.yaml
