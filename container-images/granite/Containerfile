@@ -1,0 +1,11 @@
+FROM quay.io/mmurakam/model-cars:modelcar-builder-v0.1.0 as builder
+
+RUN python3 -c "\
+from huggingface_hub import snapshot_download; \
+snapshot_download(repo_id='ibm-granite/granite-3.1-8b-instruct', revision='3f05a1d007b2484bbf17593efe110bd5b9d67655', local_dir='/models', allow_patterns=['*.safetensors', '*.json', '*.txt']);"
+
+FROM registry.access.redhat.com/ubi9/ubi-minimal:9.4
+
+COPY --from=builder /models /models
+
+USER 1001
