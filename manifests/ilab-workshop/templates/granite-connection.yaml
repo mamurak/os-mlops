@@ -1,0 +1,22 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: llm
+  labels:
+    modelmesh-enabled: 'false'
+    opendatahub.io/dashboard: 'true'
+  annotations:
+    "helm.sh/hook": pre-install
+---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: granite
+  namespace: llm
+  labels:
+    opendatahub.io/dashboard: 'true'
+  annotations:
+    opendatahub.io/connection-type-ref: uri-v1
+    openshift.io/display-name: granite
+stringData:
+  URI: oci://quay.io/mmurakam/model-cars:granite-3.1-8b-instruct-v0.1.0

@@ -1,0 +1,27 @@
+{{- $userCount := .Values.user_count -}}
+{{- range $i := until (int $userCount) }}
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: {{ printf "user%d" $i }}
+  labels:
+    modelmesh-enabled: 'false'
+    opendatahub.io/dashboard: 'true'
+  annotations:
+    "helm.sh/hook": pre-install
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: dashboard-permissions
+  namespace: {{ printf "user%d" $i }}
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: {{ printf "user%d" $i }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+{{- end }}

@@ -1,0 +1,4 @@
+apiVersion: v2
+description: A Helm chart to prepare the Instructlab workshop on OpenShift AI
+name: ilab-workshop
+version: 0.0.1

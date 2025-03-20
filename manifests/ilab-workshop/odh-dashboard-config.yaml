@@ -1,0 +1,84 @@
+apiVersion: opendatahub.io/v1alpha
+kind: OdhDashboardConfig
+metadata:
+  name: odh-dashboard-config
+  namespace: redhat-ods-applications
+  labels:
+    app: rhods-dashboard
+    app.kubernetes.io/part-of: rhods-dashboard
+    app.opendatahub.io/rhods-dashboard: 'true'
+    platform.opendatahub.io/part-of: dashboard
+spec:
+  dashboardConfig:
+    enablement: true
+    disableTrustyBiasMetrics: false
+    disableDistributedWorkloads: false
+    disableProjects: false
+    disableSupport: false
+    disableHome: false
+    disablePipelines: false
+    disableProjectSharing: false
+    disableModelServing: false
+    disableKServe: false
+    disableAcceleratorProfiles: false
+    disableNIMModelServing: false
+    disableCustomServingRuntimes: false
+    disableModelMesh: false
+    disableModelRegistrySecureDB: false
+    disableStorageClasses: false
+    disableKServeAuth: false
+    disableISVBadges: false
+    disableInfo: false
+    disableKServeMetrics: false
+    disableServingRuntimeParams: false
+    disableClusterManager: false
+    disablePerformanceMetrics: false
+    disableBYONImageStream: false
+    disableModelRegistry: false
+    disableTracking: false
+  groupsConfig:
+    adminGroups: rhods-admins
+    allowedGroups: 'system:authenticated'
+  modelServerSizes:
+    - name: Small
+      resources:
+        limits:
+          cpu: '2'
+          memory: 8Gi
+        requests:
+          cpu: '1'
+          memory: 4Gi
+    - name: Medium
+      resources:
+        limits:
+          cpu: '8'
+          memory: 10Gi
+        requests:
+          cpu: '4'
+          memory: 8Gi
+    - name: Large
+      resources:
+        limits:
+          cpu: '10'
+          memory: 20Gi
+        requests:
+          cpu: '6'
+          memory: 16Gi
+  notebookController:
+    enabled: true
+    notebookNamespace: rhods-notebooks
+    notebookTolerationSettings:
+      enabled: false
+      key: NotebooksOnly
+    pvcSize: 20Gi
+  notebookSizes:
+    - name: Small
+      resources:
+        limits:
+          cpu: '2'
+          memory: 8Gi
+        requests:
+          cpu: '1'
+          memory: 8Gi
+  templateDisablement: []
+  templateOrder: []

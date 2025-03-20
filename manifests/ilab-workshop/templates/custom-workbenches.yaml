@@ -1,0 +1,61 @@
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  annotations:
+    opendatahub.io/notebook-image-desc: Code Server based workbench with InstructLab
+    opendatahub.io/notebook-image-name: InstructLab Code Server workbench
+    opendatahub.io/notebook-image-url: 'quay.io/rh-aiservices-bu/instructlab-workbench-code-server-cuda:0.21.0'
+  name: instructlab-codeserver
+  namespace: redhat-ods-applications
+  labels:
+    app.kubernetes.io/created-by: byon
+    opendatahub.io/component: 'true'
+    opendatahub.io/notebook-image: 'true'
+spec:
+  lookupPolicy:
+    local: true
+  tags:
+    - name: 0.21.0
+      annotations:
+        opendatahub.io/notebook-python-dependencies: '[{"name":"PyTorch","version":"1.8","visible":true},{"name":"CUDA","version":"11.4","visible":true}]'
+        opendatahub.io/notebook-software: '[{"name":"Python","version":"3.9","visible":true}]'
+        openshift.io/imported-from: 'quay.io/rh-aiservices-bu/instructlab-workbench-code-server-cuda:0.21.0'
+      from:
+        kind: DockerImage
+        name: 'quay.io/rh-aiservices-bu/instructlab-workbench-code-server-cuda:0.21.0'
+      generation: 2
+      importPolicy:
+        importMode: Legacy
+      referencePolicy:
+        type: Source
+---
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  annotations:
+    opendatahub.io/notebook-image-desc: AnythingLLM workbench
+    opendatahub.io/notebook-image-name: AnythingLLM
+    opendatahub.io/notebook-image-url: 'quay.io/rh-aiservices-bu/anythingllm-workbench:1.7.4-1'
+  name: anythingllm
+  namespace: redhat-ods-applications
+  labels:
+    app.kubernetes.io/created-by: byon
+    opendatahub.io/component: 'true'
+    opendatahub.io/notebook-image: 'true'
+spec:
+  lookupPolicy:
+    local: true
+  tags:
+    - name: 1.7.4-1
+      annotations:
+        opendatahub.io/notebook-python-dependencies: ''
+        opendatahub.io/notebook-software: ''
+        openshift.io/imported-from: 'quay.io/rh-aiservices-bu/anythingllm-workbench:1.7.4-1'
+      from:
+        kind: DockerImage
+        name: 'quay.io/rh-aiservices-bu/anythingllm-workbench:1.7.4-1'
+      generation: 2
+      importPolicy:
+        importMode: Legacy
+      referencePolicy:
+        type: Source
