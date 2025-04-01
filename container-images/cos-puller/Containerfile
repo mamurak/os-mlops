@@ -1,0 +1,18 @@
+FROM quay.io/jharmison/s3-sync:0.4.1
+
+USER 0
+
+ARG IBMCLOUD_VERSION=2.32.0
+
+RUN set -eo pipefail && \
+    dnf -y install jq && \
+    dnf -y clean all && \
+    mkdir -p /usr/local/share && \
+    curl -sLo- "https://download.clis.cloud.ibm.com/ibm-cloud-cli/${IBMCLOUD_VERSION}/binaries/IBM_Cloud_CLI_${IBMCLOUD_VERSION}_linux_amd64.tgz" \
+    | tar xvz -C /usr/local/share && \
+    chmod +x /usr/local/share/IBM_Cloud_CLI/ibmcloud && \
+    ln -s /usr/local/share/IBM_Cloud_CLI/ibmcloud /usr/local/bin/ibmcloud && \
+    ibmcloud plugin install -f cloud-object-storage && \
+    ibmcloud config --check-version=false
+
+USER 1001
