@@ -1,0 +1,5 @@
+FROM registry.access.redhat.com/ubi9/ubi-minimal:9.4
+
+COPY /models /models
+
+USER 1001
