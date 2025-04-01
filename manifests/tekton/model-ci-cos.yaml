@@ -394,7 +394,7 @@ spec:
       resources: {}
       script: |
         buildah bud --storage-driver=$(params.STORAGE_DRIVER) \
-          --volume /source/models:/models $(params.BUILD_EXTRA_ARGS) \
+          $(params.BUILD_EXTRA_ARGS) \
           --format=$(params.FORMAT) --tls-verify=$(params.TLSVERIFY) \
           -f $(params.DOCKERFILE) -t $(params.IMAGE) $(params.CONTEXT)
 
@@ -455,7 +455,7 @@ spec:
       description: git url to clone
       name: git-source-url
       type: string
-    - default: tags/modelcar-scaffold-v0.1.0
+    - default: tags/modelcar-scaffold-v0.1.1
       description: 'git revision to checkout (branch, tag, sha, ref…)'
       name: git-source-revision
       type: string
