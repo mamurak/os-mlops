@@ -246,6 +246,8 @@ objects:
             - half
             - '--max-model-len'
             - '4096'
+            - '--tensor_parallel_size'
+            - '2'
           image: quay.io/rh-aiservices-bu/vllm-openai-ubi9:0.4.2
           name: kserve-container
           ports:
