@@ -23,84 +23,6 @@ type: kubernetes.io/dockerconfigjson
 apiVersion: tekton.dev/v1
 kind: Task
 metadata:
-  name: cos-pull
-  namespace: ci-cd
-spec:
-  description: |-
-    Download a model from an IBM Cloud Object Storage bucket.
-  params:
-    - description: COS instance CRN
-      name: cosInstanceCrn
-      type: string
-    - description: COS temporary passcode
-      name: cosTemporaryPasscode
-      type: string
-    - description: COS model prefix
-      name: cosModelPrefix
-      type: string
-    - description: COS bucket name
-      name: cosBucket
-      type: string
-    - description: COS instance region
-      name: cosInstanceRegion
-      type: string
-  steps:
-    - computeResources: {}
-      env:
-        - name: S3_SYNC_COS_INSTANCE_CRN
-          value: $(params.cosInstanceCrn)
-        - name: S3_SYNC_COS_TEMPORARY_PASSCODE
-          value: $(params.cosTemporaryPasscode)
-        - name: S3_SYNC_COS_MODEL_PREFIX
-          value: $(params.cosModelPrefix)
-        - name: S3_SYNC_COS_BUCKET
-          value: $(params.cosBucket)
-        - name: S3_SYNC_COS_INSTANCE_REGION
-          value: $(params.cosInstanceRegion)
-        - name: WORKSPACE_OUTPUT_PATH
-          value: $(workspaces.output.path)
-      image: 'quay.io/mmurakam/runtimes:cos-puller-v0.1.0'
-      name: cos-pull
-      script: |
-        #!/bin/bash
-        set -e
-        ibmcloud plugin install -f cloud-object-storage
-        ibmcloud config --check-version=false
-        echo "+ ibmcloud login -a https://cloud.ibm.com -u passcode -p <censored> --no-region" >&2
-        ibmcloud login -a https://cloud.ibm.com -u passcode -p "${S3_SYNC_COS_TEMPORARY_PASSCODE}" --no-region
-
-        crn="$(echo "${S3_SYNC_COS_INSTANCE_CRN}" | awk -F: '{$9=""; $10=""; print}' OFS=:)"
-        ibmcloud cos config crn --crn "$crn"
-
-        cd "${WORKSPACE_OUTPUT_PATH}"
-        mkdir models
-        cd models
-        while read -r object; do
-            dest=$(echo "$object" | sed "s,${S3_SYNC_COS_MODEL_PREFIX}/,,")
-            dest_dir="$(dirname "$dest")"
-            if [ "$dest_dir" != "." ]; then
-                mkdir -p "$dest_dir"
-            fi
-            ibmcloud cos download --bucket "${S3_SYNC_COS_BUCKET}" --region "${S3_SYNC_COS_INSTANCE_REGION}" --key "$object" "$dest"
-        done < <(ibmcloud cos list-objects-v2 --bucket "${S3_SYNC_COS_BUCKET}" --region "${S3_SYNC_COS_INSTANCE_REGION}" --prefix "${S3_SYNC_COS_MODEL_PREFIX}" --output json | jq -r '.Contents[].Key')
-
-        ls -halF
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 65532
-      volumeMounts:
-        - mountPath: /.bluemix
-          name: bluemix
-  volumes:
-    - emptyDir: {}
-      name: bluemix
-  workspaces:
-    - description: The folder path for the downloaded model artifacts.
-      name: output
----
-apiVersion: tekton.dev/v1
-kind: Task
-metadata:
   name: git-clone
   namespace: ci-cd
 spec:
@@ -332,6 +254,90 @@ spec:
       name: ssl-ca-directory
       optional: true
 ---
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: cos-pull
+  namespace: ci-cd
+spec:
+  description: |-
+    Download a model from an IBM Cloud Object Storage bucket.
+  params:
+    - description: COS instance CRN
+      name: cosInstanceCrn
+      type: string
+    - description: COS temporary passcode
+      name: cosTemporaryPasscode
+      type: string
+    - description: COS model prefix
+      name: cosModelPrefix
+      type: string
+    - description: COS bucket name
+      name: cosBucket
+      type: string
+    - description: COS instance region
+      name: cosInstanceRegion
+      type: string
+    - description: Container build context
+      name: context
+      type: string
+  steps:
+    - computeResources: {}
+      env:
+        - name: S3_SYNC_COS_INSTANCE_CRN
+          value: $(params.cosInstanceCrn)
+        - name: S3_SYNC_COS_TEMPORARY_PASSCODE
+          value: $(params.cosTemporaryPasscode)
+        - name: S3_SYNC_COS_MODEL_PREFIX
+          value: $(params.cosModelPrefix)
+        - name: S3_SYNC_COS_BUCKET
+          value: $(params.cosBucket)
+        - name: S3_SYNC_COS_INSTANCE_REGION
+          value: $(params.cosInstanceRegion)
+        - name: WORKSPACE_OUTPUT_PATH
+          value: $(workspaces.output.path)
+        - name: CONTEXT
+          value: $(params.context)
+      image: 'quay.io/mmurakam/runtimes:cos-puller-v0.1.0'
+      name: cos-pull
+      script: |
+        #!/bin/bash
+        set -e
+        ibmcloud plugin install -f cloud-object-storage
+        ibmcloud config --check-version=false
+        echo "+ ibmcloud login -a https://cloud.ibm.com -u passcode -p <censored> --no-region" >&2
+        ibmcloud login -a https://cloud.ibm.com -u passcode -p "${S3_SYNC_COS_TEMPORARY_PASSCODE}" --no-region
+
+        crn="$(echo "${S3_SYNC_COS_INSTANCE_CRN}" | awk -F: '{$9=""; $10=""; print}' OFS=:)"
+        ibmcloud cos config crn --crn "$crn"
+
+        cd "${CONTEXT}"
+        mkdir models
+        cd models
+        while read -r object; do
+            dest=$(echo "$object" | sed "s,${S3_SYNC_COS_MODEL_PREFIX}/,,")
+            dest_dir="$(dirname "$dest")"
+            if [ "$dest_dir" != "." ]; then
+                mkdir -p "$dest_dir"
+            fi
+            ibmcloud cos download --bucket "${S3_SYNC_COS_BUCKET}" --region "${S3_SYNC_COS_INSTANCE_REGION}" --key "$object" "$dest"
+        done < <(ibmcloud cos list-objects-v2 --bucket "${S3_SYNC_COS_BUCKET}" --region "${S3_SYNC_COS_INSTANCE_REGION}" --prefix "${S3_SYNC_COS_MODEL_PREFIX}" --output json | jq -r '.Contents[].Key')
+
+        ls -halF
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+      volumeMounts:
+        - mountPath: /.bluemix
+          name: bluemix
+      workingDir: $(workspaces.output.path)
+  volumes:
+    - emptyDir: {}
+      name: bluemix
+  workspaces:
+    - description: The folder path for the downloaded model artifacts.
+      name: output
+---
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
@@ -519,6 +525,8 @@ spec:
           value: $(params.cos-bucket)
         - name: cosInstanceRegion
           value: $(params.cos-instance-region)
+        - name: context
+          value: $(params.build-context)
       runAfter:
         - git-clone
       taskRef:
