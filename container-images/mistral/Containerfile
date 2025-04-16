@@ -1,0 +1,11 @@
+FROM quay.io/mmurakam/model-cars:modelcar-builder-v0.1.0 as builder
+
+RUN python3 -c "\
+from huggingface_hub import snapshot_download; \
+snapshot_download(repo_id='mistralai/Mistral-7B-Instruct-v0.2', revision='3ad372fc79158a2148299e3318516c786aeded6c', local_dir='/models', allow_patterns=['*.safetensors', '*.json', '*.txt']);"
+
+FROM registry.access.redhat.com/ubi9/ubi-minimal:9.4
+
+COPY --from=builder /models /models
+
+USER 1001
