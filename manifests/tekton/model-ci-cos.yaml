@@ -269,8 +269,8 @@ spec:
     - description: COS temporary passcode
       name: cosTemporaryPasscode
       type: string
-    - description: COS model prefix
-      name: cosModelPrefix
+    - description: ID of tuning run within COS bucket
+      name: cosRunId
       type: string
     - description: COS bucket name
       name: cosBucket
@@ -288,8 +288,8 @@ spec:
           value: $(params.cosInstanceCrn)
         - name: S3_SYNC_COS_TEMPORARY_PASSCODE
           value: $(params.cosTemporaryPasscode)
-        - name: S3_SYNC_COS_MODEL_PREFIX
-          value: $(params.cosModelPrefix)
+        - name: S3_RUN_ID
+          value: $(params.cosRunId)
         - name: S3_SYNC_COS_BUCKET
           value: $(params.cosBucket)
         - name: S3_SYNC_COS_INSTANCE_REGION
@@ -315,13 +315,13 @@ spec:
         mkdir models
         cd models
         while read -r object; do
-            dest=$(echo "$object" | sed "s,${S3_SYNC_COS_MODEL_PREFIX}/,,")
+            dest=$(echo "$object" | sed "s,trained_models/${S3_RUN_ID}/model/,,")
             dest_dir="$(dirname "$dest")"
             if [ "$dest_dir" != "." ]; then
                 mkdir -p "$dest_dir"
             fi
             ibmcloud cos download --bucket "${S3_SYNC_COS_BUCKET}" --region "${S3_SYNC_COS_INSTANCE_REGION}" --key "$object" "$dest"
-        done < <(ibmcloud cos list-objects-v2 --bucket "${S3_SYNC_COS_BUCKET}" --region "${S3_SYNC_COS_INSTANCE_REGION}" --prefix "${S3_SYNC_COS_MODEL_PREFIX}" --output json | jq -r '.Contents[].Key')
+        done < <(ibmcloud cos list-objects-v2 --bucket "${S3_SYNC_COS_BUCKET}" --region "${S3_SYNC_COS_INSTANCE_REGION}" --prefix "trained_models/${S3_RUN_ID}/model" --output json | jq -r '.Contents[].Key')
 
         ls -halF
       securityContext:
@@ -486,8 +486,8 @@ spec:
     - description: COS temporary password
       name: cos-temporary-password
       type: string
-    - description: COS model prefix
-      name: cos-model-prefix
+    - description: ID of tuning run within COS bucket
+      name: cos-run-id
       type: string
     - description: COS bucket
       name: cos-bucket
@@ -519,8 +519,8 @@ spec:
           value: $(params.cos-instance-crn)
         - name: cosTemporaryPasscode
           value: $(params.cos-temporary-password)
-        - name: cosModelPrefix
-          value: $(params.cos-model-prefix)
+        - name: cosRunId
+          value: $(params.cos-run-id)
         - name: cosBucket
           value: $(params.cos-bucket)
         - name: cosInstanceRegion
