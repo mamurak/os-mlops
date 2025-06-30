@@ -725,7 +725,7 @@ metadata:
   annotations:
     opendatahub.io/notebook-image-desc: AnythingLLM workbench
     opendatahub.io/notebook-image-name: AnythingLLM
-    opendatahub.io/notebook-image-url: 'quay.io/rh-aiservices-bu/anythingllm-workbench:1.7.4-1'
+    opendatahub.io/notebook-image-url: 'quay.io/rh-aiservices-bu/anythingllm-workbench:1.7.5'
   name: anythingllm
   namespace: redhat-ods-applications
   labels:
@@ -736,14 +736,14 @@ spec:
   lookupPolicy:
     local: true
   tags:
-    - name: 1.7.4-1
+    - name: 1.7.5
       annotations:
         opendatahub.io/notebook-python-dependencies: ''
         opendatahub.io/notebook-software: ''
-        openshift.io/imported-from: 'quay.io/rh-aiservices-bu/anythingllm-workbench:1.7.4-1'
+        openshift.io/imported-from: 'quay.io/rh-aiservices-bu/anythingllm-workbench:1.7.5'
       from:
         kind: DockerImage
-        name: 'quay.io/rh-aiservices-bu/anythingllm-workbench:1.7.4-1'
+        name: 'quay.io/rh-aiservices-bu/anythingllm-workbench:1.7.5'
       importPolicy:
         importMode: Legacy
       referencePolicy:
