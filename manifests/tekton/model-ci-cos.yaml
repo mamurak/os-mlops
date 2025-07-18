@@ -85,7 +85,7 @@ spec:
       description: Log the commands that are executed during `git-clone`'s operation.
       name: verbose
       type: string
-    - default: 'gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/git-init:v0.40.2'
+    - default: 'ghcr.io/tektoncd/github.com/tektoncd/pipeline/cmd/git-init:v0.40.2'
       description: The image providing the git-init binary that this Task runs.
       name: gitInitImage
       type: string
