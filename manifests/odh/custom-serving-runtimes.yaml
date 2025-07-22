@@ -440,3 +440,51 @@ spec:
         key: nvidia.com/gpu
         operator: Equal
         value: 'NVIDIA-A10G-SHARED'
+---
+apiVersion: serving.kserve.io/v1alpha1
+kind: ServingRuntime
+metadata:
+  annotations:
+    opendatahub.io/recommended-accelerators: '["nvidia.com/gpu"]'
+    openshift.io/display-name: vLLM NVIDIA GPU ServingRuntime for KServe
+  name: vllm-cuda-runtime
+  namespace: model
+  labels:
+    opendatahub.io/dashboard: 'true'
+spec:
+  annotations:
+    prometheus.io/path: /metrics
+    prometheus.io/port: '8080'
+  containers:
+    - args:
+        - '--port=8080'
+        - '--model=/mnt/models'
+        - '--served-model-name={{.Name}}'
+        - '--tensor-parallel-size=4'
+        - '--distributed-executor-backend=mp'
+        - '--trust-remote-code'
+        - '--max-model-len=4096'
+      command:
+        - python
+        - '-m'
+        - vllm.entrypoints.openai.api_server
+      env:
+        - name: HF_HOME
+          value: /tmp/hf_home
+      image: 'quay.io/modh/vllm@sha256:67822ff98835488ee34c25c2349b7b3d8c401928c45181b46ed533a9ccd7caba'
+      name: kserve-container
+      ports:
+        - containerPort: 8080
+          protocol: TCP
+      volumeMounts:
+        - mountPath: /dev/shm
+          name: shm
+  multiModel: false
+  supportedModelFormats:
+    - autoSelect: true
+      name: vLLM
+  volumes:
+    - emptyDir:
+        medium: Memory
+        sizeLimit: 2Gi
+      name: shm
