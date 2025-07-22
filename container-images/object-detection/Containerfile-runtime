@@ -1,9 +1,9 @@
-FROM quay.io/modh/runtime-images:runtime-pytorch-ubi9-python-3.9-2024a-20240628-ac07414
+FROM quay.io/modh/runtime-images:runtime-pytorch-ubi9-python-3.11-20250212-b23e7ed
 
-RUN pip install pip==22.3.1 setuptools==65.3.0
+RUN pip install pip==25.1.1 setuptools==75.8.2
 
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt && \
     pip uninstall -y ray && \
-    chmod -R g+w /opt/app-root/lib/python3.9/site-packages && \
+    chmod -R g+w /opt/app-root/lib/python3.11/site-packages && \
     fix-permissions /opt/app-root -P
