@@ -6,5 +6,5 @@ onnx==1.14.1
 tf2onnx==1.13.0
 onnxruntime==1.15.1
 pyarrow==13.0.0
-kfp==2.5.0
-kfp-kubernetes==1.0.0
+kfp==2.12.2
+kfp-kubernetes==1.5.0

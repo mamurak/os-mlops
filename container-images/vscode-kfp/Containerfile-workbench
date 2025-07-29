@@ -1,6 +1,6 @@
-FROM quay.io/modh/codeserver:codeserver-ubi9-python-3.9-2024a-20240628-ac07414
+FROM quay.io/modh/odh-workbench-codeserver-datascience-cpu-py311-ubi9:rhoai-2.22-840a528e16fb6287231a9388e9de0a569b13f24f
 
-RUN pip install pip==22.3.1 setuptools==65.3.0
+RUN pip install pip==25.1.1 setuptools==80.9.0
 
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
