@@ -1,25 +1,56 @@
 apiVersion: opendatahub.io/v1alpha
 kind: OdhDashboardConfig
 metadata:
+  annotations:
+    platform.opendatahub.io/instance.generation: '1'
+    platform.opendatahub.io/instance.name: default-dashboard
+    platform.opendatahub.io/instance.uid: 1caa56f8-b5a4-4290-b0f0-22835039ba92
+    platform.opendatahub.io/type: OpenShift AI Self-Managed
+    platform.opendatahub.io/version: 2.22.0
   name: odh-dashboard-config
-  namespace: odh-applications
+  namespace: redhat-ods-applications
+  labels:
+    app: rhods-dashboard
+    app.kubernetes.io/part-of: rhods-dashboard
+    app.opendatahub.io/rhods-dashboard: 'true'
+    platform.opendatahub.io/part-of: dashboard
 spec:
   dashboardConfig:
-    disableBYONImageStream: false
-    disableClusterManager: false
-    disableISVBadges: false
-    disableInfo: false
-    disableSupport: false
     disableTracking: false
-    disableUserManagement: false
-    enablement: true
-  groupsConfig:
-    adminGroups: odh-admins
-    allowedGroups: 'system:authenticated'
+    disableFineTuning: false
+    disableHardwareProfiles: false
+    disableModelCatalog: false
+  modelServerSizes:
+    - name: Small
+      resources:
+        limits:
+          cpu: '2'
+          memory: 8Gi
+        requests:
+          cpu: '1'
+          memory: 4Gi
+    - name: Medium
+      resources:
+        limits:
+          cpu: '8'
+          memory: 10Gi
+        requests:
+          cpu: '4'
+          memory: 8Gi
+    - name: Large
+      resources:
+        limits:
+          cpu: '10'
+          memory: 20Gi
+        requests:
+          cpu: '6'
+          memory: 16Gi
   notebookController:
     enabled: true
+    notebookNamespace: rhods-notebooks
+    pvcSize: 5Gi
   notebookSizes:
-    - name: small
+    - name: Small
       resources:
         limits:
           cpu: '2'
@@ -27,7 +58,7 @@ spec:
         requests:
           cpu: '1'
           memory: 8Gi
-    - name: medium
+    - name: Medium
       resources:
         limits:
           cpu: '6'
@@ -35,7 +66,7 @@ spec:
         requests:
           cpu: '3'
           memory: 24Gi
-    - name: large
+    - name: Large
       resources:
         limits:
           cpu: '14'
@@ -43,7 +74,7 @@ spec:
         requests:
           cpu: '7'
           memory: 56Gi
-    - name: XL
+    - name: X Large
       resources:
         limits:
           cpu: '30'
@@ -51,3 +82,5 @@ spec:
         requests:
           cpu: '15'
           memory: 120Gi
+  templateDisablement: []
+  templateOrder: []
