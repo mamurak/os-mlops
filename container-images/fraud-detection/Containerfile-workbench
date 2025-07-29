@@ -1,8 +1,8 @@
-FROM quay.io/modh/cuda-notebooks:cuda-jupyter-tensorflow-ubi9-python-3.9-2024a-20241011-636b66d
+FROM quay.io/modh/odh-workbench-jupyter-tensorflow-cuda-py311-ubi9:rhoai-2.22-840a528e16fb6287231a9388e9de0a569b13f24f
 
-RUN pip install --upgrade pip==24.3.1 setuptools==75.3.0
+RUN pip install --upgrade pip==25.1.1 setuptools==80.9.0
 
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt && \
-    chmod -R g+w /opt/app-root/lib/python3.9/site-packages && \
+    chmod -R g+w /opt/app-root/lib/python3.11/site-packages && \
     fix-permissions /opt/app-root -P
