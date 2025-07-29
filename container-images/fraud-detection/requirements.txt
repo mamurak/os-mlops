@@ -6,5 +6,5 @@ onnx==1.17.0
 tf2onnx==1.16.1
 onnxruntime==1.19.2
 pyarrow==17.0.0
-model_registry==0.2.9
+model_registry==0.2.21
 gitpython==3.1.43
