@@ -11,6 +11,7 @@ def upload_model(
     from os import environ
     from pickle import load
     from random import choices
+    from shutil import copy
     from string import ascii_lowercase, digits
 
     from model_registry import ModelRegistry
@@ -43,9 +44,10 @@ def upload_model(
             secret_access_key=s3_secret_key,
             endpoint_url=s3_endpoint_url
         )
+        copy(model.path, 'model.onnx')
         registry.upload_artifact_and_register_model(
             name='fraud-detection',
-            model_files_path=model.path,
+            model_files_path='model.onnx',
             upload_params=s3_params,
             version=version,
             description=model_description,
@@ -91,7 +93,8 @@ def upload_model(
 
     if model_registry_endpoint_url:
         _register_model_version(
-            model_prefix, model_version, model_registry_endpoint_url
+            model_prefix, model_version,
+            model_registry_endpoint_url
         )
     else:
         print('no model registry endpoint URL found. skipping model registration.')
