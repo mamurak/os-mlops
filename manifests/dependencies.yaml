@@ -8,6 +8,7 @@ metadata:
     opendatahub.io/dashboard: 'true'
   annotations:
     openshift.io/description: ''
+    openshift.io/requester: admin
     openshift.io/display-name: fraud-detection
 spec:
   finalizers:
@@ -23,6 +24,7 @@ metadata:
     opendatahub.io/dashboard: 'true'
   annotations:
     openshift.io/description: ''
+    openshift.io/requester: admin
     openshift.io/display-name: object-detection
 spec:
   finalizers:
@@ -38,6 +40,7 @@ metadata:
     opendatahub.io/dashboard: 'true'
   annotations:
     openshift.io/description: ''
+    openshift.io/requester: admin
     openshift.io/display-name: ray-demo
 spec:
   finalizers:
@@ -53,6 +56,7 @@ metadata:
     opendatahub.io/dashboard: 'true'
   annotations:
     openshift.io/description: ''
+    openshift.io/requester: admin
     openshift.io/display-name: spark-demo
 spec:
   finalizers:
@@ -69,6 +73,7 @@ metadata:
     opendatahub.io/dashboard: 'true'
   annotations:
     openshift.io/description: ''
+    openshift.io/requester: admin
     openshift.io/display-name: llm-demo
 spec:
   finalizers:
@@ -100,6 +105,7 @@ metadata:
     opendatahub.io/dashboard: 'true'
   annotations:
     openshift.io/display-name: production-project
+    openshift.io/requester: admin
 spec:
   finalizers:
     - kubernetes
@@ -114,6 +120,7 @@ metadata:
     opendatahub.io/dashboard: 'true'
   annotations:
     openshift.io/display-name: trustyai-demo
+    openshift.io/requester: admin
 spec:
   finalizers:
     - kubernetes
