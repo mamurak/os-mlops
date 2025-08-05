@@ -1,0 +1,21 @@
+FROM quay.io/modh/odh-pipeline-runtime-pytorch-cuda-py311-ubi9:rhoai-2.22-840a528e16fb6287231a9388e9de0a569b13f24f
+
+# By default, listen on port 8080
+EXPOSE 8080/tcp
+ENV FLASK_PORT=8080
+
+USER 1001
+
+# Set the working directory in the container
+WORKDIR /projects
+
+# Copy the content of the local src directory to the working directory
+COPY requirements.txt .
+
+# Install any dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY whisper_hf_server.py .
+
+# Specify the command to run on container start
+ENTRYPOINT ["python", "./whisper_hf_server.py"]
