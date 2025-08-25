@@ -284,7 +284,7 @@ spec:
         from huggingface_hub import login, snapshot_download
 
         login('$(params.authenticationToken)')
-        snapshot_download(repo_id='$(params.hfRepo)', revision='$(params.commitHash)', local_dir='$(params.context)/models', cache_dir='/.cache/huggingface', allow_patterns=['*.safetensors', '*.json', '*.txt'])
+        snapshot_download(repo_id='$(params.hfRepo)', revision='$(params.commitHash)', local_dir='$(params.context)/models', cache_dir='/.cache/huggingface', allow_patterns=['*.bin', '*.safetensors', '*.json', '*.txt'])
       securityContext:
         runAsNonRoot: true
         runAsUser: 65532
