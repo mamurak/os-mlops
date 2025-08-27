@@ -1,0 +1,130 @@
+---
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  annotations:
+    openshift.io/display-name: Llama 3.2 3b instruct
+    serving.kserve.io/deploymentMode: RawDeployment
+  name: llama-32-3b-instruct
+  namespace: llm
+  labels:
+    networking.kserve.io/visibility: exposed
+    opendatahub.io/dashboard: 'true'
+spec:
+  predictor:
+    automountServiceAccountToken: false
+    maxReplicas: 1
+    minReplicas: 1
+    model:
+      args:
+        - '--dtype=half'
+        - '--max-model-len=20000'
+        - '--gpu-memory-utilization=0.95'
+        - '--enable-chunked-prefill'
+        - '--enable-auto-tool-choice'
+        - '--tool-call-parser=llama3_json'
+        - '--chat-template=/app/data/template/tool_chat_template_llama3.2_json.jinja'
+      modelFormat:
+        name: vLLM
+      name: ''
+      resources:
+        limits:
+          cpu: '8'
+          memory: 10Gi
+          nvidia.com/gpu: '1'
+        requests:
+          cpu: '4'
+          memory: 8Gi
+          nvidia.com/gpu: '1'
+      runtime: llama-32-3b-instruct
+      storageUri: 'oci://quay.io/redhat-ai-services/modelcar-catalog:llama-3.2-3b-instruct'
+---
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  annotations:
+    openshift.io/display-name: gibberish-detector
+    serving.kserve.io/deploymentMode: RawDeployment
+  name: gibberish-detector
+  namespace: llm
+  labels:
+    networking.kserve.io/visibility: exposed
+    opendatahub.io/dashboard: 'true'
+spec:
+  predictor:
+    automountServiceAccountToken: false
+    maxReplicas: 1
+    minReplicas: 1
+    model:
+      modelFormat:
+        name: guardrails-detector-hf-runtime
+      name: ''
+      resources:
+        limits:
+          cpu: '2'
+          memory: 8Gi
+        requests:
+          cpu: '1'
+          memory: 4Gi
+      runtime: gibberish-detector
+      storageUri: 'oci://quay.io/mmurakam/model-cars:gibberish-text-detector-v0.1.1'
+---
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  annotations:
+    openshift.io/display-name: prompt-injection-detector
+    serving.kserve.io/deploymentMode: RawDeployment
+  name: prompt-injection-detector
+  namespace: llm
+  labels:
+    networking.kserve.io/visibility: exposed
+    opendatahub.io/dashboard: 'true'
+spec:
+  predictor:
+    automountServiceAccountToken: false
+    maxReplicas: 1
+    minReplicas: 1
+    model:
+      modelFormat:
+        name: guardrails-detector-hf-runtime
+      name: ''
+      resources:
+        limits:
+          cpu: '2'
+          memory: 8Gi
+        requests:
+          cpu: '1'
+          memory: 4Gi
+      runtime: prompt-injection-detector
+      storageUri: 'oci://quay.io/mmurakam/model-cars:deberta-v3-base-prompt-injection-v2-v0.1.0'
+---
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  annotations:
+    openshift.io/display-name: ibm-hate-and-profanity-detector
+    serving.kserve.io/deploymentMode: RawDeployment
+  name: ibm-hate-and-profanity-detector
+  namespace: llm
+  labels:
+    networking.kserve.io/visibility: exposed
+    opendatahub.io/dashboard: 'true'
+spec:
+  predictor:
+    automountServiceAccountToken: false
+    maxReplicas: 1
+    minReplicas: 1
+    model:
+      modelFormat:
+        name: guardrails-detector-hf-runtime
+      name: ''
+      resources:
+        limits:
+          cpu: '2'
+          memory: 8Gi
+        requests:
+          cpu: '1'
+          memory: 4Gi
+      runtime: ibm-hate-and-profanity-detector
+      storageUri: 'oci://quay.io/mmurakam/model-cars:granite-guardian-hap-38m-v0.1.0'

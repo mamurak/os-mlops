@@ -1,0 +1,105 @@
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: fms-orchestr8-config-nlp
+  namespace: llm
+data:
+  config.yaml: |
+    chat_generation: 
+      service:
+        hostname: llama-32-3b-instruct-predictor.llm.svc.cluster.local
+        port: 80
+    detectors:
+      regex:
+        type: text_contents
+        service:
+            hostname: "127.0.0.1"
+            port: 8080
+        chunker_id: whole_doc_chunker
+        default_threshold: 0.5
+      hap:
+        type: text_contents
+        service:
+          hostname: ibm-hate-and-profanity-detector-predictor.llm.svc.cluster.local
+          port: 8000
+        chunker_id: whole_doc_chunker
+        default_threshold: 0.5
+      prompt_injection:
+        type: text_contents
+        service:
+          hostname: prompt-injection-detector-predictor.llm.svc.cluster.local
+          port: 8000
+        chunker_id: whole_doc_chunker
+        default_threshold: 0.5
+      gibberish:
+        type: text_contents
+        service:
+          hostname: gibberish-detector-predictor.llm.svc.cluster.local
+          port: 8000
+        chunker_id: whole_doc_chunker
+        default_threshold: 0.35
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: gorch-regex-gateway-image-config
+  namespace: llm
+data:
+  GatewayImage: 'quay.io/repository/trustyai/vllm-orchestrator-gateway@sha256:c511b386d61a728acdfe8a1ac7a16b3774d072dd053718e5b9c5fab0f025ac3b'
+  regexDetectorImage: 'quay.io/repository/trustyai/regex-detector@sha256:efab6cd8b637b9c35d311aaf639dfedee7d28de3ee07b412ab473deadecd3606'
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: fms-orchestr8-config-gateway
+  namespace: llm
+  labels:
+    app: fmstack-nlp
+data:
+  config.yaml: |
+    orchestrator:   
+      host: "localhost"
+      port: 8032
+    detectors:      
+      - name: regex
+        input: true 
+        output: true
+        detector_params:
+          regex:
+            - email
+            - ssn
+      - name: hap
+        input: true
+        output: true
+        detector_params: {}
+      - name: prompt_injection
+        input: true
+        output: false
+        detector_params: {}
+      - name: gibberish
+        input: true
+        output: true
+        detector_params: {}
+    routes:         
+      - name: all
+        detectors:
+          - regex
+          - hap
+          - prompt_injection
+          - gibberish
+      - name: passthrough
+        detectors:
+---
+apiVersion: trustyai.opendatahub.io/v1alpha1
+kind: GuardrailsOrchestrator
+metadata:
+  name: gorch-sample
+  namespace: llm
+spec:
+  enableBuiltInDetectors: true
+  enableGuardrailsGateway: true
+  guardrailsGatewayConfig: fms-orchestr8-config-gateway
+  orchestratorConfig: fms-orchestr8-config-nlp
+  otelExporter: {}
+  replicas: 1
