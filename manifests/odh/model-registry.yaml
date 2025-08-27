@@ -8,44 +8,16 @@ stringData:
   database-password: "TheBlurstOfTimes" # notsecret
   database-user: "mlmduser" # notsecret
 ---
-apiVersion: modelregistry.opendatahub.io/v1alpha1
+apiVersion: modelregistry.opendatahub.io/v1beta1
 kind: ModelRegistry
 metadata:
+  annotations:
+    openshift.io/display-name: model-registry
   name: model-registry
   namespace: rhoai-model-registries
 spec:
   grpc:
-    image: 'registry.redhat.io/rhoai/odh-mlmd-grpc-server-rhel8@sha256:927a88bade78e121d84e4d072f07a203fb00173af3615e00ce712d45329dde2d'
     port: 9090
-    resources:
-      limits:
-        cpu: 100m
-        memory: 256Mi
-      requests:
-        cpu: 100m
-        memory: 256Mi
-  istio:
-    audiences:
-      - 'https://kubernetes.default.svc'
-    authConfigLabels:
-      security.opendatahub.io/authorization-group: default
-    authProvider: redhat-ods-applications-auth-provider
-    gateway:
-      # domain: apps.CLUSTER_DOMAIN_URL
-      grpc:
-        gatewayRoute: enabled
-        port: 443
-        tls:
-          credentialName: default-modelregistry-cert
-          mode: SIMPLE
-      istioIngress: ingressgateway
-      rest:
-        gatewayRoute: enabled
-        port: 443
-        tls:
-          credentialName: default-modelregistry-cert
-          mode: SIMPLE
-    tlsMode: ISTIO_MUTUAL
   mysql:
     database: model_registry
     host: model-registry-db.mysql.svc.cluster.local
@@ -55,14 +27,10 @@ spec:
     port: 3306
     skipDBCreation: false
     username: mlmduser
+  oauthProxy:
+    port: 8443
+    routePort: 443
+    serviceRoute: enabled
   rest:
-    image: 'registry.redhat.io/rhoai/odh-model-registry-rhel8@sha256:8410d3ad4777424d965c77a45f772c168764736855c25ef9f725d9af38688787'
     port: 8080
-    resources:
-      limits:
-        cpu: 100m
-        memory: 256Mi
-      requests:
-        cpu: 100m
-        memory: 256Mi
     serviceRoute: disabled
