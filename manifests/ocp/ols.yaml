@@ -17,11 +17,11 @@ spec:
       - credentialsSecretRef:
           name: credentials
         models:
-          - name: granite-3-8b-instruct
+          - name: llama-32-3b-instruct
         name: red_hat_openshift_ai
         type: rhoai_vllm
         url: 'MODEL_ENDPOINT/v1'
   ols:
-    defaultModel: granite-3-8b-instruct
+    defaultModel: llama-32-3b-instruct
     defaultProvider: red_hat_openshift_ai
     logLevel: INFO
