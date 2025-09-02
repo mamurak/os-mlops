@@ -44,6 +44,9 @@ spec:
   supportedModelFormats:
     - autoSelect: true
       name: vLLM
+  tolerations:
+    - key: nvidia.com/gpu
+      effect: NoSchedule
   volumes:
     - emptyDir:
         medium: Memory
