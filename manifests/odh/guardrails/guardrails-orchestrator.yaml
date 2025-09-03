@@ -9,7 +9,7 @@ data:
     chat_generation: 
       service:
         hostname: llama-32-3b-instruct-predictor.llm.svc.cluster.local
-        port: 80
+        port: 8080
     detectors:
       regex:
         type: text_contents
