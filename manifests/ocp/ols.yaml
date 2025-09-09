@@ -24,4 +24,4 @@ spec:
   ols:
     defaultModel: llama-32-3b-instruct
     defaultProvider: red_hat_openshift_ai
-    logLevel: INFO
+    logLevel: DEBUG
