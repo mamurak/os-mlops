@@ -4,9 +4,8 @@ metadata:
   annotations:
     platform.opendatahub.io/instance.generation: '1'
     platform.opendatahub.io/instance.name: default-dashboard
-    platform.opendatahub.io/instance.uid: 1caa56f8-b5a4-4290-b0f0-22835039ba92
     platform.opendatahub.io/type: OpenShift AI Self-Managed
-    platform.opendatahub.io/version: 2.22.0
+    platform.opendatahub.io/version: 2.23.0
   name: odh-dashboard-config
   namespace: redhat-ods-applications
   labels:
