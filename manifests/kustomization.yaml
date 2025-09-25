@@ -13,4 +13,3 @@ resources:
 - odh/dist-workloads.yaml
 - odh/model-registry.yaml
 - mysql/mysql.yaml
-- tekton/model-ci.yaml
