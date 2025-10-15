@@ -19,6 +19,7 @@ spec:
     disableFineTuning: false
     disableHardwareProfiles: false
     disableModelCatalog: false
+    disableLMEval: false
   modelServerSizes:
     - name: Small
       resources:
