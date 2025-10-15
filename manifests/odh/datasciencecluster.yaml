@@ -29,6 +29,8 @@ spec:
     ray:
       managementState: Managed
     kueue:
+      defaultClusterQueueName: default
+      defaultLocalQueueName: default
       managementState: Managed
     workbenches:
       managementState: Managed
@@ -36,7 +38,11 @@ spec:
       managementState: Managed
     modelmeshserving:
       managementState: Managed
+    llamastackoperator:
+      managementState: Managed
     datasciencepipelines:
+      argoWorkflowsControllers:
+        managementState: Managed
       managementState: Managed
     trainingoperator:
       managementState: Managed
