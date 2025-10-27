@@ -24,7 +24,16 @@ spec:
             type: OpenshiftDefaultIngress
         managementState: Removed
         name: knative-serving
+    modelregistry:
+      registriesNamespace: rhoai-model-registries
+      managementState: Managed
+    feastoperator:
+      managementState: Managed
     trustyai:
+      eval:
+        lmeval:
+          permitCodeExecution: deny
+          permitOnline: deny
       managementState: Managed
     ray:
       managementState: Managed
@@ -33,6 +42,7 @@ spec:
       defaultLocalQueueName: default
       managementState: Managed
     workbenches:
+      workbenchNamespace: rhods-notebooks
       managementState: Managed
     dashboard:
       managementState: Managed
@@ -45,7 +55,4 @@ spec:
         managementState: Managed
       managementState: Managed
     trainingoperator:
-      managementState: Managed
-    modelregistry:
-      registriesNamespace: rhoai-model-registries
       managementState: Managed
