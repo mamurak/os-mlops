@@ -1,0 +1,619 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: pgvector-initsql
+  labels:
+    app.kubernetes.io/instance: rag
+    app.kubernetes.io/name: pgvector
+    app.kubernetes.io/version: 1.16.0
+data:
+  init-db.sh: |
+    #!/bin/bash
+    set -e
+    psql -U postgres -c "CREATE DATABASE ${POSTGRES_DBNAME};"
+    psql -U postgres -d ${POSTGRES_DBNAME} -c "CREATE EXTENSION VECTOR;"
+---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: pgvector
+  labels:
+    app.kubernetes.io/instance: rag
+    app.kubernetes.io/name: pgvector
+    app.kubernetes.io/version: 1.16.0
+data:
+  dbname: cmFnX2JsdWVwcmludA==
+  host: cGd2ZWN0b3I=
+  jdbc-uri: amRiYzpwb3N0Z3Jlc3FsOi8vcGd2ZWN0b3IubGxhbWEtc3RhY2stcmFnOjU0MzIvcmFnX2JsdWVwcmludD9wYXNzd29yZD1yYWdfcGFzc3dvcmQmdXNlcj1wb3N0Z3Jlcw==
+  password: cmFnX3Bhc3N3b3Jk
+  port: NTQzMg==
+  uri: cG9zdGdyZXNxbDovL3Bvc3RncmVzOnJhZ19wYXNzd29yZEBwZ3ZlY3Rvci5sbGFtYS1zdGFjay1yYWc6NTQzMi9yYWdfYmx1ZXByaW50
+  user: cG9zdGdyZXM=
+type: Opaque
+---
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: pgvector
+  labels:
+    app.kubernetes.io/instance: rag
+    app.kubernetes.io/name: pgvector
+    app.kubernetes.io/version: 1.16.0
+spec:
+  serviceName: ''
+  revisionHistoryLimit: 10
+  persistentVolumeClaimRetentionPolicy:
+    whenDeleted: Retain
+    whenScaled: Retain
+  volumeClaimTemplates:
+    - kind: PersistentVolumeClaim
+      apiVersion: v1
+      metadata:
+        name: pg-data
+        creationTimestamp: null
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 5Gi
+        volumeMode: Filesystem
+      status:
+        phase: Pending
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/instance: rag
+        app.kubernetes.io/name: pgvector
+        app.kubernetes.io/version: 1.16.0
+    spec:
+      restartPolicy: Always
+      serviceAccountName: default
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      securityContext: {}
+      containers:
+        - resources: {}
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - '-c'
+                - |
+                  for db in "$POSTGRES_DBNAME"; do
+                    pg_isready -U "$POSTGRES_USER" -d "$db" -h 127.0.0.1 -p "$POSTGRES_PORT" || exit 1
+                  done
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: /dev/termination-log
+          name: pgvector
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: pgvector
+                  key: user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pgvector
+                  key: password
+            - name: POSTGRES_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: pgvector
+                  key: port
+            - name: POSTGRES_DBNAME
+              valueFrom:
+                secretKeyRef:
+                  name: pgvector
+                  key: dbname
+          ports:
+            - name: http
+              containerPort: 5432
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: initdb-volume
+              mountPath: /docker-entrypoint-initdb.d
+            - name: pg-data
+              mountPath: /var/lib/postgresql
+          terminationMessagePolicy: File
+          image: 'docker.io/pgvector/pgvector:pg17'
+      serviceAccount: default
+      volumes:
+        - name: initdb-volume
+          configMap:
+            name: pgvector-initsql
+            defaultMode: 420
+      dnsPolicy: ClusterFirst
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      partition: 0
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: rag
+      app.kubernetes.io/name: pgvector
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: pgvector
+  labels:
+    app.kubernetes.io/instance: rag
+    app.kubernetes.io/name: pgvector
+    app.kubernetes.io/version: 1.16.0
+spec:
+  ipFamilies:
+    - IPv4
+  ports:
+    - name: http
+      protocol: TCP
+      port: 5432
+      targetPort: http
+  internalTrafficPolicy: Cluster
+  type: ClusterIP
+  ipFamilyPolicy: SingleStack
+  sessionAffinity: None
+  selector:
+    app.kubernetes.io/instance: rag
+    app.kubernetes.io/name: pgvector
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: llama-stack-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+  volumeMode: Filesystem
+---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: llama-stack-env
+stringData:
+  TAVILY_SEARCH_API_KEY: REPLACE_ME
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: run-config
+data:
+  config.yaml: |
+    version: '2'
+    image_name: remote-vllm
+    apis:
+    - agents
+    - datasetio
+    - eval
+    - files
+    - inference
+    - safety
+    - scoring
+    - telemetry
+    - tool_runtime
+    - vector_io
+    providers:
+      inference:
+      - provider_id: llama-3-2-3b-instruct
+        provider_type: remote::vllm
+        config:
+          url: http://llama-3-2-3b-instruct-predictor.llama-stack-rag.svc.cluster.local:8080/v1
+          api_token: fake
+          max_tokens: 4096
+          tls_verify: false
+      - provider_id: llama-guard-3-8b
+        provider_type: remote::vllm
+        config:
+          url: http://llama-guard-3-8b-predictor.llama-stack-rag.svc.cluster.local:8080/v1
+          api_token: fake
+          max_tokens: 4096
+          tls_verify: false
+      - provider_id: sentence-transformers
+        provider_type: inline::sentence-transformers
+        config: {}
+      vector_io:
+      - provider_id: pgvector
+        provider_type: remote::pgvector
+        config:
+          host: ${env.POSTGRES_HOST:=pgvector}
+          port: ${env.POSTGRES_PORT:=5432}
+          db: ${env.POSTGRES_DBNAME:=rag_blueprint}
+          user: ${env.POSTGRES_USER:=postgres}
+          password: ${env.POSTGRES_PASSWORD:=rag_password}
+          kvstore:
+            type: sqlite
+            db_path: ${env.SQLITE_STORE_DIR:=~/.llama/distributions/starter}/pgvector_registry.db
+      files:
+      - provider_id: meta-reference-files
+        provider_type: inline::localfs
+        config:
+          storage_dir: ${env.FILES_STORAGE_DIR:=/tmp/llama-stack-files}
+          metadata_store:
+            type: sqlite
+            db_path: ${env.SQLITE_STORE_DIR:=~/.llama/distributions/starter}/files_metadata.db
+      safety:
+      - provider_id: llama-guard
+        provider_type: inline::llama-guard
+        config: {}
+      agents:
+      - config:
+          persistence_store:
+            db_path: ${env.SQLITE_STORE_DIR:=~/.llama/distributions/starter}/agents_store.db
+            namespace: null
+            type: sqlite
+          responses_store:
+            db_path: ${env.SQLITE_STORE_DIR:=~/.llama/distributions/starter}/responses_store.db
+            type: sqlite
+        provider_id: meta-reference
+        provider_type: inline::meta-reference
+      eval:
+      - provider_id: meta-reference
+        provider_type: inline::meta-reference
+        config:
+          kvstore:
+            type: sqlite
+            namespace: null
+            db_path: ${env.SQLITE_STORE_DIR:=~/.llama/distributions/starter}/meta_reference_eval.db
+      datasetio:
+      - provider_id: huggingface
+        provider_type: remote::huggingface
+        config:
+          kvstore:
+            type: sqlite
+            namespace: null
+            db_path: ${env.SQLITE_STORE_DIR:=~/.llama/distributions/starter}/huggingface_datasetio.db
+      - provider_id: localfs
+        provider_type: inline::localfs
+        config:
+          kvstore:
+            type: sqlite
+            namespace: null
+            db_path: ${env.SQLITE_STORE_DIR:=~/.llama/distributions/starter}/localfs_datasetio.db
+      scoring:
+      - provider_id: basic
+        provider_type: inline::basic
+        config: {}
+      - provider_id: llm-as-judge
+        provider_type: inline::llm-as-judge
+        config: {}
+      - provider_id: braintrust
+        provider_type: inline::braintrust
+        config:
+          openai_api_key: ${env.OPENAI_API_KEY:=}
+      telemetry:
+      - provider_id: meta-reference
+        provider_type: inline::meta-reference
+        config:
+          sinks: ${env.TELEMETRY_SINKS:=console,sqlite}
+          sqlite_db_path: ${env.SQLITE_DB_PATH:=~/.llama/distributions/starter/trace_store.db}
+      tool_runtime:
+      - provider_id: brave-search
+        provider_type: remote::brave-search
+        config:
+          api_key: ${env.BRAVE_SEARCH_API_KEY:=}
+          max_results: 3
+      - provider_id: tavily-search
+        provider_type: remote::tavily-search
+        config:
+          api_key: ${env.TAVILY_SEARCH_API_KEY:=}
+          max_results: 3
+      - provider_id: rag-runtime
+        provider_type: inline::rag-runtime
+        config: {}
+      - provider_id: model-context-protocol
+        provider_type: remote::model-context-protocol
+        config: {}
+    metadata_store:
+      type: sqlite
+      db_path: ${env.SQLITE_STORE_DIR:=~/.llama/distributions/starter}/registry.db
+    models:
+    - metadata: {}
+      model_id: meta-llama/Llama-3.2-3B-Instruct
+      provider_id: llama-3-2-3b-instruct
+      model_type: llm
+    - metadata: {}
+      model_id: meta-llama/Llama-Guard-3-8B
+      provider_id: llama-guard-3-8b
+      model_type: llm
+    - metadata:
+        embedding_dimension: 384
+      model_id: all-MiniLM-L6-v2
+      provider_id: sentence-transformers
+      model_type: embedding
+    shields:
+    - shield_id: meta-llama/Llama-Guard-3-8B
+      provider_id: llama-guard
+    vector_dbs: []
+    datasets: []
+    scoring_fns: []
+    eval_tasks: []
+    tool_groups:
+    - toolgroup_id: builtin::websearch
+      provider_id: tavily-search
+    - toolgroup_id: builtin::rag
+      provider_id: rag-runtime
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: llamastack
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: rag
+      app.kubernetes.io/name: llamastack
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/instance: rag
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: llamastack
+        app.kubernetes.io/version: 0.5.0
+        helm.sh/chart: llama-stack-0.5.0
+    spec:
+      restartPolicy: Always
+      initContainers:
+        - name: wait-for-models
+          image: 'llamastack/distribution-starter:0.2.22'
+          command:
+            - /bin/bash
+            - '-c'
+            - |
+              set -e
+              for url_data in http://llama-3-2-3b-instruct-predictor.llama-stack-rag.svc.cluster.local:8080/v1/models# http://llama-guard-3-8b-predictor.llama-stack-rag.svc.cluster.local:8080/v1/models# ; do
+                url_components=(${url_data//#/ })
+                url=${url_components[0]}
+                auth=${url_components[1]}
+                echo "Waiting for $url..."
+                curl_options=("-ksf" "$url")
+                if [[ -n "$auth" ]]; then
+                  curl_options+=("-H" "Authorization: Bearer $auth")
+                fi
+                until curl "${curl_options[@]}"; do
+                  echo "Still waiting for $url ..."
+                  sleep 10
+                done
+                echo "$url is ready."
+              done
+              echo "All services are up."
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: IfNotPresent
+      serviceAccountName: default
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      securityContext: {}
+      containers:
+        - resources: {}
+          terminationMessagePath: /dev/termination-log
+          name: llama-stack
+          command:
+            - python
+            - '-m'
+            - llama_stack.core.server.server
+            - /app-config/config.yaml
+          env:
+            - name: VLLM_MAX_TOKENS
+              value: '4096'
+            - name: VLLM_API_TOKEN
+              value: fake
+            - name: OTEL_ENDPOINT
+              value: 'http://otel-collector-collector.observability-hub.svc.cluster.local:4318/v1/traces'
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: pgvector
+                  key: user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pgvector
+                  key: password
+            - name: POSTGRES_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: pgvector
+                  key: host
+            - name: POSTGRES_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: pgvector
+                  key: port
+            - name: POSTGRES_DBNAME
+              valueFrom:
+                secretKeyRef:
+                  name: pgvector
+                  key: dbname
+          securityContext: {}
+          ports:
+            - name: http
+              containerPort: 8321
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: run-config-volume
+              mountPath: /app-config
+            - name: dot-llama
+              mountPath: /.llama
+            - name: cache
+              mountPath: /.cache
+          terminationMessagePolicy: File
+          envFrom:
+            - secretRef:
+                name: llama-stack-env
+          image: 'llamastack/distribution-starter:0.2.22'
+      serviceAccount: default
+      volumes:
+        - name: run-config-volume
+          configMap:
+            name: run-config
+            defaultMode: 420
+        - name: dot-llama
+          persistentVolumeClaim:
+            claimName: llama-stack-data
+        - name: cache
+          emptyDir: {}
+      dnsPolicy: ClusterFirst
+  strategy:
+    type: Recreate
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 3600
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: llamastack
+  labels:
+    app.kubernetes.io/instance: rag
+    app.kubernetes.io/name: llamastack
+    app.kubernetes.io/version: 0.5.0
+spec:
+  ipFamilies:
+    - IPv4
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8321
+      targetPort: 8321
+  internalTrafficPolicy: Cluster
+  type: ClusterIP
+  ipFamilyPolicy: SingleStack
+  sessionAffinity: None
+  selector:
+    app.kubernetes.io/instance: rag
+    app.kubernetes.io/name: llamastack
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: rag
+  labels:
+    app.kubernetes.io/instance: rag
+    app.kubernetes.io/name: rag
+    app.kubernetes.io/version: 0.2.22
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: rag
+      app.kubernetes.io/name: rag
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/instance: rag
+        app.kubernetes.io/name: rag
+        app.kubernetes.io/version: 0.2.22
+    spec:
+      restartPolicy: Always
+      serviceAccountName: default
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      securityContext: {}
+      containers:
+        - resources: {}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+              scheme: HTTP
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: /dev/termination-log
+          name: rag
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+              scheme: HTTP
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          env:
+            - name: LLAMA_STACK_ENDPOINT
+              value: 'http://llamastack:8321'
+            - name: TAVILY_SEARCH_API_KEY
+              value: REPLACE_ME
+          ports:
+            - name: http
+              containerPort: 8501
+              protocol: TCP
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: dot-streamlit
+              mountPath: /.streamlit
+          terminationMessagePolicy: File
+          image: 'quay.io/rh-ai-quickstart/llamastack-dist-ui:0.2.22'
+      serviceAccount: default
+      volumes:
+        - name: dot-streamlit
+          emptyDir: {}
+      dnsPolicy: ClusterFirst
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: rag
+  labels:
+    app.kubernetes.io/instance: rag
+    app.kubernetes.io/name: rag
+    app.kubernetes.io/version: 0.2.22
+spec:
+  ipFamilies:
+    - IPv4
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8501
+      targetPort: http
+  internalTrafficPolicy: Cluster
+  type: ClusterIP
+  ipFamilyPolicy: SingleStack
+  sessionAffinity: None
+  selector:
+    app.kubernetes.io/instance: rag
+    app.kubernetes.io/name: rag
+---
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: rag
+  labels:
+    app.kubernetes.io/instance: rag
+    app.kubernetes.io/name: rag
+    app.kubernetes.io/version: 0.2.22
+spec:
+  to:
+    kind: Service
+    name: rag
+    weight: 100
+  port:
+    targetPort: 8501
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+  wildcardPolicy: None

@@ -1,27 +1,18 @@
-apiVersion: datasciencecluster.opendatahub.io/v1
+apiVersion: datasciencecluster.opendatahub.io/v2
 kind: DataScienceCluster
 metadata:
-  name: rhods
+  name: default-dsc
   labels:
     app.kubernetes.io/name: datasciencecluster
-    app.kubernetes.io/instance: rhods
-    app.kubernetes.io/part-of: rhods-operator
-    app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/created-by: rhods-operator
 spec:
   components:
-    codeflare:
-      managementState: Managed
     kserve:
       defaultDeploymentMode: RawDeployment
-      managementState: Managed
       nim:
         managementState: Managed
-      rawDeploymentServiceConfig: Headless
+      rawDeploymentServiceConfig: Headed
+      managementState: Managed
       serving:
-        ingressGateway:
-          certificate:
-            type: OpenshiftDefaultIngress
         managementState: Removed
         name: knative-serving
     modelregistry:
@@ -35,24 +26,22 @@ spec:
           permitCodeExecution: deny
           permitOnline: deny
       managementState: Managed
+    aipipelines:
+      argoWorkflowsControllers:
+        managementState: Managed
+      managementState: Managed
     ray:
       managementState: Managed
     kueue:
       defaultClusterQueueName: default
       defaultLocalQueueName: default
-      managementState: Managed
+      managementState: Removed
     workbenches:
       workbenchNamespace: rhods-notebooks
       managementState: Managed
     dashboard:
       managementState: Managed
-    modelmeshserving:
-      managementState: Managed
     llamastackoperator:
-      managementState: Managed
-    datasciencepipelines:
-      argoWorkflowsControllers:
-        managementState: Managed
       managementState: Managed
     trainingoperator:
       managementState: Managed

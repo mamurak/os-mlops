@@ -15,11 +15,9 @@ metadata:
     platform.opendatahub.io/part-of: dashboard
 spec:
   dashboardConfig:
-    disableTracking: false
-    disableFineTuning: false
     disableHardwareProfiles: false
-    disableModelCatalog: false
     disableLMEval: false
+    disableTracking: false
   modelServerSizes:
     - name: Small
       resources:
