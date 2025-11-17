@@ -15,9 +15,11 @@ metadata:
     platform.opendatahub.io/part-of: dashboard
 spec:
   dashboardConfig:
-    disableHardwareProfiles: false
+    disableKueue: false
     disableLMEval: false
     disableTracking: false
+    genAiStudio: true
+    modelAsService: true
   modelServerSizes:
     - name: Small
       resources:
