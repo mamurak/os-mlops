@@ -2,8 +2,9 @@ from datetime import datetime
 from os import environ
 from pickle import load
 
+from boto3 import client
 from model_registry import ModelRegistry
-from model_registry.utils import S3Params
+from model_registry.utils import s3_uri_from
 
 
 model_object_prefix = environ.get('model_object_prefix', 'model')
@@ -22,8 +23,15 @@ registry_user = environ.get('registry_user', 'workbench')
 def upload_model(
         model_object_prefix='model', model_registry_endpoint_url=''):
 
+    s3_client = _initialize_s3_client(
+        s3_endpoint_url=s3_endpoint_url,
+        s3_access_key=s3_access_key,
+        s3_secret_key=s3_secret_key
+    )
     model_version = _timestamp()
     model_prefix = f'models/{model_version}'
+    model_object_name = f'{model_prefix}/1/model.onnx'
+    _do_upload(s3_client, model_object_name)
 
     model_registry_endpoint_url = (
         model_registry_endpoint_url_env or model_registry_endpoint_url
@@ -38,21 +46,34 @@ def upload_model(
         print('no model registry endpoint URL found. skipping model registration.')
 
 
+def _initialize_s3_client(s3_endpoint_url, s3_access_key, s3_secret_key):
+    print('initializing S3 client')
+    s3_client = client(
+        's3', aws_access_key_id=s3_access_key,
+        aws_secret_access_key=s3_secret_key,
+        endpoint_url=s3_endpoint_url,
+    )
+    return s3_client
+
+
 def _timestamp():
     return datetime.now().strftime('%y%m%d%H%M')
+
+
+def _do_upload(s3_client, object_name):
+    print(f'uploading model to {object_name}')
+    try:
+        s3_client.upload_file('model.onnx', s3_bucket_name, object_name)
+    except Exception:
+        print(f'S3 upload to bucket {s3_bucket_name} at {s3_endpoint_url} failed!')
+        raise
+    print(f'model uploaded and available as "{object_name}"')
 
 
 def _register_model_version(
         model_prefix, version, model_registry_endpoint_url):
 
     print(f'registering model version {version}')
-    s3_params = S3Params(
-        bucket_name=s3_bucket_name,
-        s3_prefix=model_prefix,
-        access_key_id=s3_access_key,
-        secret_access_key=s3_secret_key,
-        endpoint_url=s3_endpoint_url
-    )
     registry = _instantiate_model_registry(
         model_registry_endpoint_url
     )
@@ -67,24 +88,23 @@ def _register_model_version(
     https://github.com/mamurak/os-mlops/blob/main/notebooks/fraud-detection-onnx/online-scoring.ipynb
     '''
 
-    registry.upload_artifact_and_register_model(
-        name='fraud-detection',
-        model_files_path='model.onnx',
-        upload_params=s3_params,
+    registry.register_model(
+        'fraud-detection',
+        uri=s3_uri_from(model_prefix, s3_bucket_name),
         version=version,
         description=model_description,
         model_format_name='onnx',
         model_format_version='1',
-        storage_key=s3_secret_name,
+        storage_key='aws-connection-fraud-detection',
         metadata={
+            'epoch_count': str(epoch_count),
+            'learning_rate': str(learning_rate),
             'accuracy': str(training_metrics['accuracy'][-1]),
-            'epoch_count': epoch_count,
-            'learning_rate': learning_rate,
             'fraud-detection': '',
             'onnx': '',
         }
     )
-    print('model registration complete.')
+    print(f'model uploaded to {model_prefix} and registered as version {version}')
 
 
 def _instantiate_model_registry(model_registry_endpoint_url):
