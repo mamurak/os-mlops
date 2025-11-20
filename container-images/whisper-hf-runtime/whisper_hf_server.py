@@ -1,10 +1,11 @@
 from argparse import ArgumentParser
+from asyncio import create_task
+from json import dump
 from os import environ
 from typing import Dict, Union
 
 from boto3 import client
 from kserve import Model, ModelServer, model_server, InferRequest, InferResponse
-from kserve.errors import InvalidInput
 from librosa import load
 from torch import cuda
 from transformers import pipeline
@@ -26,17 +27,32 @@ class WhisperBucket(Model):
         self._pipeline = _init_pipeline(model_id)
         self.ready = True
 
-    def preprocess(
+    async def predict(
             self,
             payload: Union[Dict, InferRequest],
             headers: Dict[str, str] = None
-    ) -> Union[Dict, InferRequest]:
+    ) -> Union[Dict, InferResponse]:
 
-        _validate_request(payload, headers)
-        sample_path = self._download_from_s3(payload['sample_uri'])
-        audio_sample, _ = load(sample_path, sr=self._sample_rate)
+        sample_uris = payload['sample_uris']
+        uri_mapping = _map_uris(sample_uris)
+        create_task(self._transcript_generation(uri_mapping))
+        response_body = _create_response_body(uri_mapping)
 
-        return audio_sample
+        print(f'Returning to client: {response_body}')
+        return response_body
+
+    async def _transcript_generation(self, uri_mapping):
+        for sample_uri, transcript_uri in uri_mapping.items():
+            print(f'Processing {sample_uri} into {transcript_uri}')
+
+            local_sample_path = self._download_from_s3(sample_uri)
+            audio_sample, _ = load(local_sample_path, sr=self._sample_rate)
+            pipeline_output = self._pipeline(
+                audio_sample, return_timestamps='word'
+            )
+            local_transcript_path = _write(pipeline_output, local_sample_path)
+            self._upload_to_s3(local_transcript_path, transcript_uri)
+            print(f'S3 upload of {transcript_uri} complete')
 
     def _download_from_s3(self, object_key):
         local_path = f"/tmp/{object_key.split('/')[-1]}"
@@ -49,18 +65,9 @@ class WhisperBucket(Model):
             raise e
         return local_path
 
-    def predict(
-            self,
-            payload: Union[Dict, InferRequest],
-            headers: Dict[str, str] = None
-    ) -> Union[Dict, InferResponse]:
-
-        print('Generating transcription')
-        audio_sample = payload
-        pipeline_output = self._pipeline(audio_sample, return_timestamps='word')
-        print(f'Returning pipeline output: {pipeline_output}')
-
-        return pipeline_output
+    def _upload_to_s3(self, local_path, s3_uri):
+        print(f'Uploading transcripts from {local_path} to {s3_uri} at bucket {bucket_name}')
+        self._s3_client.upload_file(local_path, bucket_name, s3_uri)
 
 
 def _init_s3_client():
@@ -84,16 +91,34 @@ def _init_pipeline(model_id):
     return whisper_pipeline
 
 
-def _validate_request(payload, headers):
-    print('Validating request payload')
-    if isinstance(payload, Dict) and "sample_uri" in payload:
-        headers["request-type"] = "v1"
-    elif isinstance(payload, bytes):
-        raise InvalidInput("form data not implemented")
-    elif isinstance(payload, InferRequest):
-        raise InvalidInput("v2 protocol not implemented")
-    else:
-        raise InvalidInput("invalid payload")
+def _map_uris(sample_uris):
+    uri_mapping = {
+        sample_uri: _build_transcript_uri(sample_uri)
+        for sample_uri in sample_uris
+    }
+    return uri_mapping
+
+
+def _build_transcript_uri(sample_uri):
+    transcript_uri = f"transcripts/{sample_uri.split('/')[-1].split('.')[0]}.json"
+    return transcript_uri
+
+
+def _write(pipeline_output, local_sample_path):
+    local_transcript_path = f"{local_sample_path.split('.')[0]}.json"
+    print(f'Writing pipeline output to {local_transcript_path}')
+    with open(local_transcript_path, 'w') as transcript_file:
+        dump(pipeline_output, transcript_file)
+    return local_transcript_path
+
+
+def _create_response_body(uri_mapping):
+    response_body = {
+        'message': 'generating transcripts',
+        'source-target URIs': uri_mapping,
+        'S3 bucket': bucket_name,
+    }
+    return response_body
 
 
 if __name__ == '__main__':

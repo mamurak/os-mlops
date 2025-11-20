@@ -1,0 +1,84 @@
+---
+apiVersion: serving.kserve.io/v1alpha1
+kind: ServingRuntime
+metadata:
+  annotations:
+    opendatahub.io/template-name: whisper-bucket
+    opendatahub.io/serving-runtime-scope: global
+    opendatahub.io/runtime-version: v0.2.0
+    opendatahub.io/accelerator-name: migrated-gpu
+    openshift.io/display-name: whisper-bucket
+    opendatahub.io/template-display-name: Custom Whisper bucket runtime
+    opendatahub.io/recommended-accelerators: '["nvidia.com/gpu"]'
+    opendatahub.io/apiProtocol: REST
+    opendatahub.io/hardware-profile-name: migrated-gpu-mglzi-serving
+  name: whisper-bucket
+  labels:
+    opendatahub.io/dashboard: 'true'
+spec:
+  annotations:
+    prometheus.io/path: /metrics
+    prometheus.io/port: '8080'
+  containers:
+    - args:
+        - '--port=8080'
+        - '--model=/mnt/models'
+        - '--model_name=whisper-bucket'
+      env:
+        - name: HF_HOME
+          value: /tmp/hf_home
+      image: 'quay.io/mmurakam/runtimes:whisper-hf-v0.2.0'
+      name: kserve-container
+      ports:
+        - containerPort: 8080
+          protocol: TCP
+      volumeMounts:
+        - mountPath: /dev/shm
+          name: shm
+      envFrom:
+        - secretRef:
+            name: s3-bucket
+  multiModel: false
+  supportedModelFormats:
+    - autoSelect: true
+      name: vLLM
+  volumes:
+    - emptyDir:
+        medium: Memory
+        sizeLimit: 2Gi
+      name: shm
+---
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  annotations:
+    openshift.io/display-name: whisper-bucket
+    serving.kserve.io/deploymentMode: RawDeployment
+  name: whisper-bucket
+  labels:
+    opendatahub.io/dashboard: 'true'
+    networking.kserve.io/visibility: exposed
+spec:
+  predictor:
+    automountServiceAccountToken: false
+    maxReplicas: 1
+    minReplicas: 1
+    model:
+      modelFormat:
+        name: vLLM
+      name: ''
+      resources:
+        limits:
+          cpu: '8'
+          memory: 10Gi
+          nvidia.com/gpu: '1'
+        requests:
+          cpu: '4'
+          memory: 8Gi
+          nvidia.com/gpu: '1'
+      runtime: whisper-bucket
+      storageUri: 'oci://quay.io/mmurakam/model-cars:whisper-large-v3-turbo-quantized.w8a8'
+    tolerations:
+      - effect: NoSchedule
+        key: nvidia.com/gpu
+        operator: Exists
