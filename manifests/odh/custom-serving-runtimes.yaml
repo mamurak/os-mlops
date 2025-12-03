@@ -464,6 +464,8 @@ spec:
         - '--distributed-executor-backend=mp'
         - '--trust-remote-code'
         - '--max-model-len=4096'
+        - '--enable-auto-tool-choice'
+        - '--tool-call-parser=llama3_json'
       command:
         - python
         - '-m'
