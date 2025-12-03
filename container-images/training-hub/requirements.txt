@@ -1,0 +1,5 @@
+training-hub[cuda]
+kubeflow-training
+datasets
+transformers
+accelerate

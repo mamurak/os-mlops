@@ -1,0 +1,10 @@
+FROM registry.redhat.io/rhoai/odh-pipeline-runtime-pytorch-cuda-py312-rhel9:2.25.0
+
+RUN pip install pip==25.2 setuptools==80.9.0
+
+COPY requirements-elyra.txt ./
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt && \
+    pip install --no-cache-dir -r requirements-elyra.txt && \
+    chmod -R g+w /opt/app-root/lib/python3.12/site-packages && \
+    fix-permissions /opt/app-root -P
