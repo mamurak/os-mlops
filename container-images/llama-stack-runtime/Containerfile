@@ -1,0 +1,6 @@
+FROM python:3.12-slim
+
+RUN pip install pip==25.2 setuptools==80.9.0
+
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
