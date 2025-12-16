@@ -373,7 +373,6 @@ apiVersion: tekton.dev/v1
 kind: Pipeline
 metadata:
   name: workbench-ci
-  namespace: ci
 spec:
   params:
     - default: 'https://github.com/mamurak/os-mlops.git'
@@ -462,7 +461,7 @@ spec:
       runAfter:
         - git-clone
       taskRef:
-        kind: ClusterTask
+        kind: Task
         name: buildah
       workspaces:
         - name: source
