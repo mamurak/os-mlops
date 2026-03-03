@@ -18,6 +18,9 @@ spec:
     disableKueue: false
     disableLMEval: false
     disableTracking: false
+    disableKServeMetrics: false
+    disableModelRegistry: false
+    disableModelCatalog: false
     genAiStudio: true
     modelAsService: true
   modelServerSizes:

@@ -1,0 +1,90 @@
+apiVersion: serving.kserve.io/v1alpha1
+kind: LLMInferenceService
+metadata:
+  annotations:
+    alpha.maas.opendatahub.io/tiers: '[]'
+  name: llama-31-8b
+spec:
+  model:
+    name: llama-31-8b
+    uri: 'oci://registry.redhat.io/rhelai1/modelcar-llama-3-1-8b-instruct-fp8-dynamic:1.5'
+  replicas: 1
+  router:
+    gateway:
+      refs:
+        - name: maas-default-gateway
+          namespace: openshift-ingress
+    route: {}
+  template:
+    containers:
+      - args:
+          - |
+            # Create dummy certificate file in /tmp to prevent FileNotFoundError
+            mkdir -p /tmp/certs
+            touch /tmp/certs/ca-certificates.crt
+            export REQUESTS_CA_BUNDLE=/tmp/certs/ca-certificates.crt
+            export SSL_CERT_FILE=/tmp/certs/ca-certificates.crt
+            # Run vLLM with HTTPS using KServe certificates
+            # Use enforce-eager to avoid Triton compilation issues on Tesla T4
+            exec vllm serve /mnt/models \
+              --served-model-name "{{ .Spec.Model.Name }}" \
+              --port 8000 \
+              --trust-remote-code \
+              --disable-log-requests \
+              --ssl-certfile /var/run/kserve/tls/tls.crt \
+              --ssl-keyfile /var/run/kserve/tls/tls.key \
+              --enforce-eager \
+              --max-model-len 8192
+        command:
+          - sh
+          - '-c'
+        env:
+          - name: VLLM_ATTENTION_BACKEND
+            value: FLASH_ATTN
+          - name: VLLM_USE_TRITON_FLASH_ATTN
+            value: 'false'
+          - name: VLLM_WORKER_MULTIPROC_METHOD
+            value: spawn
+          - name: VLLM_ADDITIONAL_ARGS
+            value: '--tool-call-parser granite --enable-auto-tool-choice'
+          - name: NVIDIA_VISIBLE_DEVICES
+            value: all
+          - name: NVIDIA_DRIVER_CAPABILITIES
+            value: 'compute,utility'
+          - name: PYTHONHTTPSVERIFY
+            value: '0'
+        image: 'vllm/vllm-openai:latest'
+        livenessProbe:
+          failureThreshold: 10
+          httpGet:
+            path: /health
+            port: 8000
+            scheme: HTTPS
+          initialDelaySeconds: 240
+          periodSeconds: 30
+          timeoutSeconds: 30
+        name: main
+        readinessProbe:
+          failureThreshold: 30
+          httpGet:
+            path: /health
+            port: 8000
+            scheme: HTTPS
+          initialDelaySeconds: 240
+          periodSeconds: 10
+          timeoutSeconds: 10
+        resources:
+          limits:
+            cpu: '4'
+            memory: 12Gi
+            nvidia.com/gpu: '1'
+          requests:
+            cpu: '1'
+            memory: 8Gi
+            nvidia.com/gpu: '1'
+    nodeSelector:
+      nvidia.com/gpu.present: 'true'
+    tolerations:
+      - effect: NoSchedule
+        key: nvidia.com/gpu
+        operator: Exists
