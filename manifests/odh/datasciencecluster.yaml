@@ -7,14 +7,12 @@ metadata:
 spec:
   components:
     kserve:
-      defaultDeploymentMode: RawDeployment
+      modelsAsService:
+        managementState: Managed
       nim:
         managementState: Managed
       rawDeploymentServiceConfig: Headed
       managementState: Managed
-      serving:
-        managementState: Removed
-        name: knative-serving
     modelregistry:
       registriesNamespace: rhoai-model-registries
       managementState: Managed
@@ -39,7 +37,11 @@ spec:
     workbenches:
       workbenchNamespace: rhods-notebooks
       managementState: Managed
+    mlflowoperator:
+      managementState: Managed
     dashboard:
+      managementState: Managed
+    trainer:
       managementState: Managed
     llamastackoperator:
       managementState: Managed

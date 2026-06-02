@@ -1,0 +1,8 @@
+kind: JobSetOperator
+apiVersion: operator.openshift.io/v1
+metadata:
+  name: cluster
+spec:
+  logLevel: Normal
+  managementState: Managed
+  operatorLogLevel: Normal

@@ -22,3 +22,41 @@ spec:
   infrastructure:
     labels:
       serving.kserve.io/gateway: kserve-ingress-gateway
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  annotations:
+    opendatahub.io/managed: 'false'
+    security.opendatahub.io/authorino-tls-bootstrap: 'true'
+  name: maas-default-gateway
+  namespace: openshift-ingress
+  labels:
+    app.kubernetes.io/component: gateway
+    app.kubernetes.io/instance: maas-default-gateway
+    app.kubernetes.io/name: maas
+    istio.io/rev: openshift-gateway
+    opendatahub.io/managed: 'false'
+spec:
+  gatewayClassName: openshift-default
+  listeners:
+    - allowedRoutes:
+        namespaces:
+          from: All
+      hostname: maas.apps.CLUSTER_DOMAIN
+      name: http
+      port: 80
+      protocol: HTTP
+    - allowedRoutes:
+        namespaces:
+          from: All
+      hostname: maas.apps.CLUSTER_DOMAIN
+      name: https
+      port: 443
+      protocol: HTTPS
+      tls:
+        certificateRefs:
+          - group: ''
+            kind: Secret
+            name: cert-manager-ingress-cert
+        mode: Terminate

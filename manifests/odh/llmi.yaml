@@ -30,7 +30,6 @@ spec:
               --served-model-name "{{ .Spec.Model.Name }}" \
               --port 8000 \
               --trust-remote-code \
-              --disable-log-requests \
               --ssl-certfile /var/run/kserve/tls/tls.crt \
               --ssl-keyfile /var/run/kserve/tls/tls.key \
               --enforce-eager \
