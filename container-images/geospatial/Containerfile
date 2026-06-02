@@ -2,12 +2,14 @@ FROM fedora:40
 
 USER root
 
-# Install GIS libraries and system python bindings
+# Install GIS libraries, system python bindings, and build tools needed for runtime compilation
 RUN dnf -y update && \
     dnf -y install \
     gdal gdal-devel python3-gdal \
     PDAL PDAL-devel \
-    python3-pip && \
+    python3-pip python3-devel \
+    gcc gcc-c++ cmake \
+    kernel-headers && \
     dnf clean all
 
 # Create non-root user and directories following OpenShift/KFP standards
