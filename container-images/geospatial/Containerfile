@@ -1,0 +1,25 @@
+FROM fedora:40
+
+USER root
+
+# Install GIS libraries and system python bindings
+RUN dnf -y update && \
+    dnf -y install \
+    gdal gdal-devel python3-gdal \
+    PDAL PDAL-devel \
+    python3-pip && \
+    dnf clean all
+
+# Create non-root user and directories following OpenShift/KFP standards
+# Set group-write permissions on site-packages to support runtime pip installs
+RUN mkdir -p /opt/app-root/src && \
+    useradd -u 1001 -g 0 -d /opt/app-root/src default && \
+    chown -R 1001:0 /opt/app-root && \
+    chmod -R g=u /opt/app-root && \
+    chmod -R g+w /usr/lib/python3.12/site-packages /usr/lib64/python3.12/site-packages
+
+USER 1001
+
+WORKDIR /opt/app-root/src
+
+CMD ["python3"]
