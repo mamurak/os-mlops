@@ -1,16 +1,36 @@
-FROM fedora:40
+FROM fedora:44
 
 USER root
 
-# Install GIS libraries, system python bindings, and build tools needed for runtime compilation
+# Install GDAL 3.12.4, build tools, and PDAL build dependencies
 RUN dnf -y update && \
     dnf -y install \
     gdal gdal-devel python3-gdal \
-    PDAL PDAL-devel \
     python3-pip python3-devel \
     gcc gcc-c++ cmake \
-    kernel-headers && \
+    kernel-headers \
+    proj-devel libgeotiff-devel laszip-devel zlib-devel libxml2-devel \
+    wget tar bzip2 && \
     dnf clean all
+
+# Build PDAL 2.10.1 from source and install Python bindings
+RUN cd /tmp && \
+    wget https://github.com/PDAL/PDAL/releases/download/2.10.1/PDAL-2.10.1-src.tar.bz2 && \
+    tar xf PDAL-2.10.1-src.tar.bz2 && \
+    cd PDAL-2.10.1-src && \
+    mkdir build && cd build && \
+    cmake .. \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_INSTALL_PREFIX=/usr/local \
+      -DWITH_LASZIP=ON \
+      -DBUILD_PLUGIN_PGPOINTCLOUD=OFF && \
+    make -j$(nproc) && \
+    make install && \
+    echo "/usr/local/lib64" > /etc/ld.so.conf.d/pdal-x86_64.conf && \
+    ldconfig && \
+    pip install --no-cache-dir pdal==3.5.3 && \
+    cd /tmp && \
+    rm -rf PDAL-2.10.1-src PDAL-2.10.1-src.tar.bz2
 
 # Create non-root user and directories following OpenShift/KFP standards
 # Set group-write permissions on site-packages to support runtime pip installs
@@ -18,7 +38,7 @@ RUN mkdir -p /opt/app-root/src && \
     useradd -u 1001 -g 0 -d /opt/app-root/src default && \
     chown -R 1001:0 /opt/app-root && \
     chmod -R g=u /opt/app-root && \
-    chmod -R g+w /usr/lib/python3.12/site-packages /usr/lib64/python3.12/site-packages
+    chmod -R g+w /usr/lib/python3.14/site-packages /usr/lib64/python3.14/site-packages
 
 USER 1001
 
