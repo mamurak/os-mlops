@@ -56,29 +56,22 @@ spec:
       storage: 20Gi
   volumeMode: Filesystem
 ---
-apiVersion: datasciencepipelinesapplications.opendatahub.io/v1alpha1
+apiVersion: datasciencepipelinesapplications.opendatahub.io/v1
 kind: DataSciencePipelinesApplication
 metadata:
-  finalizers:
-    - datasciencepipelinesapplications.opendatahub.io/finalizer
   name: dspa
   namespace: fraud-detection
 spec:
   apiServer:
     caBundleFileMountPath: ''
-    stripEOF: true
-    dbConfigConMaxLifetimeSec: 120
-    applyTektonCustomResource: true
     caBundleFileName: ''
     deploy: true
+    artifactSignedURLExpirySeconds: 60
     enableSamplePipeline: false
-    autoUpdatePipelineDefaultVersion: true
-    archiveLogs: false
-    terminateStatus: Cancelled
+    managedPipelines: {}
     enableOauth: true
-    trackArtifacts: true
-    collectMetrics: true
-    injectDefaultScript: true
+    cacheEnabled: true
+    pipelineStore: kubernetes
   database:
     disableHealthCheck: false
     mariaDB:
@@ -93,17 +86,18 @@ spec:
     externalStorage:
       basePath: ''
       bucket: fraud-detection-pipelines
-      host: minio-default-service.minio.svc:9000
+      host: 'minio-default-service.minio.svc:9000'
       port: ''
-      region: none
+      region: us-east-1
       s3CredentialsSecret:
         accessKey: AWS_ACCESS_KEY_ID
         secretKey: AWS_SECRET_ACCESS_KEY
-        secretName: aws-connection-pipelines
+        secretName: dashboard-dspa-secret
       scheme: http
   persistenceAgent:
     deploy: true
     numWorkers: 2
+  podToPodTLS: true
   scheduledWorkflow:
     cronScheduleTimezone: UTC
     deploy: true
@@ -133,44 +127,6 @@ spec:
     requests:
       storage: 10Gi
   volumeMode: Filesystem
----
-kind: NetworkPolicy
-apiVersion: networking.k8s.io/v1
-metadata:
-  name: allow-from-all-namespaces
-  namespace: fraud-detection
-spec:
-  podSelector: {}
-  ingress:
-    - from:
-        - namespaceSelector: {}
-  policyTypes:
-    - Ingress
----
-kind: NetworkPolicy
-apiVersion: networking.k8s.io/v1
-metadata:
-  name: allow-from-ingress-namespace
-  namespace: fraud-detection
-spec:
-  podSelector: {}
-  ingress:
-    - from:
-        - namespaceSelector:
-            matchLabels:
-              network-policy: global
-  policyTypes:
-    - Ingress
----
-kind: Secret
-apiVersion: v1
-metadata:
-  name: starburst-data-connection
-stringData:
-  TRINO_USERNAME: "trino"
-  TRINO_PASSWORD: "trino"
-  TRINO_HOSTNAME: "trino-service"
-  TRINO_PORT: "8080"
 ---
 apiVersion: serving.kserve.io/v1alpha1
 kind: ServingRuntime
