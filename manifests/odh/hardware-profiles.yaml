@@ -1,0 +1,67 @@
+apiVersion: infrastructure.opendatahub.io/v1
+kind: HardwareProfile
+metadata:
+  annotations:
+    opendatahub.io/dashboard-feature-visibility: '[]'
+    opendatahub.io/disabled: 'false'
+    opendatahub.io/display-name: Nvidia GPU
+  name: nvidia-gpu
+  namespace: redhat-ods-applications
+spec:
+  identifiers:
+    - defaultCount: '4'
+      displayName: CPU
+      identifier: cpu
+      maxCount: '16'
+      minCount: 1
+      resourceType: CPU
+    - defaultCount: 8Gi
+      displayName: Memory
+      identifier: memory
+      maxCount: 16Gi
+      minCount: 2Gi
+      resourceType: Memory
+    - defaultCount: 1
+      displayName: Nvidia GPU
+      identifier: nvidia.com/gpu
+      maxCount: 1
+      minCount: 1
+      resourceType: Accelerator
+  scheduling:
+    node:
+      nodeSelector: {}
+      tolerations:
+        - effect: NoSchedule
+          key: nvidia.com/gpu
+          operator: Exists
+    type: Node
+---
+apiVersion: infrastructure.opendatahub.io/v1
+kind: HardwareProfile
+metadata:
+  annotations:
+    opendatahub.io/dashboard-feature-visibility: '[]'
+    opendatahub.io/description: 'This profile offers access to an 35GB MIG slice from GPU workers'
+    opendatahub.io/disabled: 'false'
+    opendatahub.io/display-name: 35GB Slice
+  name: mig-35gb
+  namespace: redhat-ods-applications
+spec:
+  identifiers:
+    - defaultCount: 2
+      displayName: CPU
+      identifier: cpu
+      maxCount: 4
+      minCount: 1
+      resourceType: CPU
+    - defaultCount: 8Gi
+      displayName: Memory
+      identifier: memory
+      minCount: 2Gi
+      resourceType: Memory
+    - defaultCount: 1
+      displayName: 35GB MIG Slice
+      identifier: nvidia.com/mig-2g.35gb
+      maxCount: 8
+      minCount: 1
+      resourceType: Accelerator
