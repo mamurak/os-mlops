@@ -1,0 +1,71 @@
+apiVersion: maas.opendatahub.io/v1alpha1
+kind: MaasTenantConfig
+metadata:
+  annotations:
+    maas.opendatahub.io/aitenant-name: models-as-a-service
+    maas.opendatahub.io/aitenant-namespace: ai-tenants
+  name: default-tenant
+  namespace: models-as-a-service
+  labels:
+    ai-gateway.opendatahub.io/tenant: models-as-a-service
+    app.kubernetes.io/managed-by: maas-controller
+    app.kubernetes.io/part-of: modelsasservice
+    maas.opendatahub.io/managed-by-aitenant: 'true'
+    maas.opendatahub.io/tenant-name: models-as-a-service
+    maas.opendatahub.io/tenant-namespace: models-as-a-service
+spec:
+  telemetry:
+    enabled: true
+    metrics:
+      captureUser: true
+---
+apiVersion: maas.opendatahub.io/v1alpha1
+kind: Config
+metadata:
+  name: default
+spec:
+  limitadorScrapeInterval: 30s
+  usageLogging: true
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: minio-secret
+  namespace: redhat-ods-monitoring
+stringData:
+  access_key_id: minio
+  access_key_secret: minio123
+  bucketnames: loki
+  endpoint: http://minio.redhat-ods-monitoring.svc:9000
+  region: us-east-1
+type: Opaque
+---
+apiVersion: loki.grafana.com/v1
+kind: LokiStack
+metadata:
+  name: usage
+  namespace: redhat-ods-monitoring
+spec:
+  limits:
+    global:
+      otlp:
+        streamLabels:
+          resourceAttributes:
+            - name: service.name
+            - name: subscription
+            - name: model
+            - name: response_type
+            - name: kubernetes_namespace_name
+  managementState: Managed
+  size: 1x.demo
+  storage:
+    schemas:
+      - effectiveDate: "2024-10-01"
+        version: v13
+    secret:
+      credentialMode: static
+      name: minio-secret
+      type: s3
+  storageClassName: gp3-csi
+  tenants:
+    mode: openshift-logging

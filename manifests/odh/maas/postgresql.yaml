@@ -1,0 +1,121 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-data
+  namespace: redhat-ods-applications
+  labels:
+    app: postgres
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: postgres-creds
+  namespace: redhat-ods-applications
+stringData:
+  POSTGRES_DB: maas
+  POSTGRES_PASSWORD: postgres123
+  POSTGRES_USER: maas
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: redhat-ods-applications
+  labels:
+    app: postgres
+    purpose: poc
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: registry.redhat.io/rhel9/postgresql-16@sha256:3943bfa5de044d8f033df148c0409ed826171b779f3cf3ddf537a1914960ab57
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRESQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-creds
+                  key: POSTGRES_USER
+            - name: POSTGRESQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-creds
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRESQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-creds
+                  key: POSTGRES_DB
+            - name: PGDATA
+              value: /var/lib/pgsql/data/userdata
+          readinessProbe:
+            exec:
+              command:
+                - /usr/libexec/check-container
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - pg_isready -U "$POSTGRESQL_USER" -d "$POSTGRESQL_DATABASE"
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/pgsql/data
+              subPath: userdata
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: postgres-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: redhat-ods-applications
+  labels:
+    app: postgres
+    purpose: poc
+spec:
+  selector:
+    app: postgres
+  ports:
+    - port: 5432
+      targetPort: 5432
+---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: maas-db-config
+  namespace: redhat-ods-applications
+stringData:
+  DB_CONNECTION_URL: postgresql://maas:postgres123@postgres:5432/maas?sslmode=disable

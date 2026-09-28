@@ -1,0 +1,16 @@
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: redhat-ai-gateway-infra
+spec:
+  finalizers:
+    - kubernetes
+---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: maas-db-config
+  namespace: redhat-ai-gateway-infra
+stringData:
+  DB_CONNECTION_URL: postgresql://maas:postgres123@postgres.redhat-ods-applications.svc:5432/maas?sslmode=disable

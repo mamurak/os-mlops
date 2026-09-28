@@ -1,0 +1,86 @@
+apiVersion: operator.authorino.kuadrant.io/v1beta1
+kind: Authorino
+metadata:
+  name: authorino
+  namespace: kuadrant-system
+spec:
+  clusterWide: true
+  healthz: {}
+  listener:
+    ports: {}
+    tls:
+      enabled: true
+      certSecretRef:
+        name: authorino-server-cert
+  metrics: {}
+  oidcServer:
+    tls:
+      enabled: false
+  supersedingHostSubsets: true
+  tracing:
+    endpoint: ''
+  volumes: {}
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: authorino
+  namespace: kuadrant-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      authorino-resource: authorino
+      control-plane: controller-manager
+  template:
+    metadata:
+      labels:
+        authorino-resource: authorino
+        control-plane: controller-manager
+        kuadrant.io/managed: 'true'
+        sidecar.istio.io/inject: 'false'
+    spec:
+      restartPolicy: Always
+      serviceAccountName: authorino-authorino
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      securityContext: {}
+      containers:
+        - resources: {}
+          terminationMessagePath: /dev/termination-log
+          name: authorino
+          env:
+            - name: SSL_CERT_FILE
+              value: /etc/ssl/certs/openshift-service-ca/service-ca-bundle.crt
+            - name: REQUESTS_CA_BUNDLE
+              value: /etc/ssl/certs/openshift-service-ca/service-ca-bundle.crt
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: tls-cert
+              readOnly: true
+              mountPath: /etc/ssl/certs/tls.crt
+              subPath: tls.crt
+            - name: tls-cert
+              readOnly: true
+              mountPath: /etc/ssl/private/tls.key
+              subPath: tls.key
+          terminationMessagePolicy: File
+          image: 'registry.redhat.io/rhcl-1/authorino-rhel9@sha256:fbe9e2e767530eae72a421f541325640feba03322441cd7a294f8a6bf1fb4d97'
+          args:
+            - '--allow-superseding-host-subsets'
+            - '--tls-cert=/etc/ssl/certs/tls.crt'
+            - '--tls-cert-key=/etc/ssl/private/tls.key'
+      serviceAccount: authorino-authorino
+      volumes:
+        - name: tls-cert
+          secret:
+            secretName: authorino-server-cert
+            defaultMode: 420
+      dnsPolicy: ClusterFirst
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
