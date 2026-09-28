@@ -15,7 +15,6 @@ metadata:
     platform.opendatahub.io/part-of: dashboard
 spec:
   dashboardConfig:
-    disableKueue: false
     disableLMEval: false
     disableTracking: false
     disableKServeMetrics: false
@@ -23,6 +22,51 @@ spec:
     disableModelCatalog: false
     genAiStudio: true
     modelAsService: true
+    enablement: true
+    disableTrustyBiasMetrics: false
+    disableProjectScoped: false
+    disableDistributedWorkloads: true
+    disableProjects: false
+    disableKueue: true
+    aiAssetCustomEndpoints: true
+    disableSupport: false
+    disableHome: false
+    autorag: true
+    disablePipelines: false
+    disableProjectSharing: false
+    disableModelServing: false
+    disableKServe: false
+    disableNIMModelServing: false
+    disableCustomServingRuntimes: false
+    automl: true
+    trainingJobs: true
+    disableModelRegistrySecureDB: false
+    disableStorageClasses: false
+    observabilityDashboard: true
+    disableKServeAuth: false
+    disableISVBadges: false
+    disableAdminConnectionTypes: false
+    disableUserManagement: false
+    disableInfo: false
+    disableServingRuntimeParams: false
+    disableClusterManager: false
+    disablePerformanceMetrics: false
+    disableKServeRaw: false
+    disableBYONImageStream: false
+    mcpCatalog: true
+    vLLMDeploymentOnMaaS: true
+    externalModels: true
+    connectionTest: true
+    agentsCatalog: true
+    agentOps: true
+    mcpRegistry: true
+    guardrails: true
+    agentConfigManagement: true
+    genAiTracing: true
+    promptManagement: true
+    globalProjectPrompts: true
+    llmdTemplates: true
+    toolCalling: true
   modelServerSizes:
     - name: Small
       resources:

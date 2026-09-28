@@ -1,0 +1,29 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: llm
+  labels:
+    kubernetes.io/metadata.name: llm-demo
+    modelmesh-enabled: 'false'
+    opendatahub.io/dashboard: 'true'
+    maas.opendatahub.io/gateway-access: 'true'
+spec:
+  finalizers:
+    - kubernetes
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: project-admins
+  namespace: llm
+  labels:
+    opendatahub.io/dashboard: 'true'
+    opendatahub.io/project-sharing: 'true'
+subjects:
+  - kind: Group
+    apiGroup: rbac.authorization.k8s.io
+    name: users
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
