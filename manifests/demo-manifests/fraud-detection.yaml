@@ -80,6 +80,9 @@ spec:
       pvcSize: 10Gi
       username: mlpipeline
   dspVersion: v2
+  mlflow:
+    injectUserEnvVars: true
+    integrationMode: AUTODETECT
   objectStorage:
     disableHealthCheck: false
     enableExternalRoute: false
@@ -225,3 +228,4 @@ metadata:
   namespace: fraud-detection
 stringData:
   model-registry-endpoint-url: ''
+  # something like: https://model-registry-rest.apps.mydomain
