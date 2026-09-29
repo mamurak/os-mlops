@@ -35,7 +35,11 @@ DRIFT_SPEC = {
 }
 
 
+OUTPUT_NAME = 'dense_2'
+
+
 def preprocess(df):
+    labels = df['Class'].astype(int).values
     rob_scaler = RobustScaler()
     df['scaled_amount'] = rob_scaler.fit_transform(
         df['Amount'].values.reshape(-1, 1)
@@ -44,10 +48,10 @@ def preprocess(df):
         df['Time'].values.reshape(-1, 1)
     )
     df.drop(['Time', 'Amount', 'Class'], axis=1, inplace=True)
-    return df[FEATURE_COLUMNS]
+    return df[FEATURE_COLUMNS], labels
 
 
-def to_kserve_payload(data, precision=6):
+def to_kserve_inputs(data, precision=5):
     rounded = np.round(data, precision)
     return {
         'inputs': [{
@@ -56,6 +60,38 @@ def to_kserve_payload(data, precision=6):
             'datatype': 'FP32',
             'data': rounded.tolist(),
         }]
+    }
+
+
+def generate_outputs(labels, rng):
+    """Generate synthetic softmax outputs matching the class labels."""
+    n = len(labels)
+    outputs = np.zeros((n, 2), dtype='float32')
+    noise = rng.uniform(0.0, 0.08, size=n).astype('float32')
+    for i in range(n):
+        if labels[i] == 0:
+            outputs[i] = [0.92 + noise[i], 0.08 - noise[i]]
+        else:
+            outputs[i] = [0.08 - noise[i], 0.92 + noise[i]]
+    return outputs
+
+
+def to_kserve_reference(data, outputs, precision=5):
+    rounded_data = np.round(data, precision)
+    rounded_outputs = np.round(outputs, precision)
+    return {
+        'inputs': [{
+            'name': 'dense_input',
+            'shape': list(rounded_data.shape),
+            'datatype': 'FP32',
+            'data': rounded_data.tolist(),
+        }],
+        'outputs': [{
+            'name': OUTPUT_NAME,
+            'shape': list(rounded_outputs.shape),
+            'datatype': 'FP32',
+            'data': rounded_outputs.tolist(),
+        }],
     }
 
 
@@ -73,7 +109,7 @@ def main():
     print(f'  {len(df)} rows loaded')
 
     print('Preprocessing...')
-    df = preprocess(df)
+    df, labels = preprocess(df)
     values = df.values.astype('float32')
 
     rng = np.random.default_rng(SEED)
@@ -96,19 +132,21 @@ def main():
         drift_data[:, idx] += offset
         print(f'  {feat_name} (index {idx}): {shift_stdevs:+.0f} stdev = {offset:+.4f}')
 
+    ref_outputs = generate_outputs(labels[ref_indices], rng)
+
     print('\nWriting JSON files:')
     DATA_DIR.mkdir(parents=True, exist_ok=True)
 
     write_json(
-        to_kserve_payload(values[ref_indices]),
+        to_kserve_reference(values[ref_indices], ref_outputs),
         DATA_DIR / 'reference_data.json',
     )
     write_json(
-        to_kserve_payload(values[normal_indices]),
+        to_kserve_inputs(values[normal_indices]),
         DATA_DIR / 'live_data_normal.json',
     )
     write_json(
-        to_kserve_payload(drift_data),
+        to_kserve_inputs(drift_data),
         DATA_DIR / 'live_data_drift.json',
     )
 
