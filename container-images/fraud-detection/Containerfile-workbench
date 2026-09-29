@@ -1,8 +1,8 @@
-FROM quay.io/modh/odh-workbench-jupyter-tensorflow-cuda-py311-ubi9:rhoai-2.22-840a528e16fb6287231a9388e9de0a569b13f24f
+FROM registry.redhat.io/rhoai/odh-workbench-jupyter-tensorflow-cuda-py312-rhel9:v3.5.1
 
-RUN pip install --upgrade pip==25.1.1 setuptools==80.9.0
+RUN pip install --upgrade pip==26.1.2 setuptools==83.0.0
 
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt && \
-    chmod -R g+w /opt/app-root/lib/python3.11/site-packages && \
+    chmod -R g+w /opt/app-root/lib/python3.12/site-packages && \
     fix-permissions /opt/app-root -P
