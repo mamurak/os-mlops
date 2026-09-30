@@ -13,7 +13,15 @@ spec:
 kind: Secret
 apiVersion: v1
 metadata:
-  name: quay-push-secret
+  name: quay-secret
+data:
+  .dockerconfigjson: REPLACE_ME
+type: kubernetes.io/dockerconfigjson
+---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: rh-registry-secret
 data:
   .dockerconfigjson: REPLACE_ME
 type: kubernetes.io/dockerconfigjson
@@ -317,8 +325,21 @@ spec:
           ENTITLEMENT_VOLUME="--volume /tmp/entitlement:/etc/pki/entitlement"
         fi
 
+        PULL_AUTHFILE_ARG=""
+
+        if [[ "$(workspaces.pull-dockerconfig.bound)" == "true" ]]; then
+          if test -f "$(workspaces.pull-dockerconfig.path)/config.json"; then
+            PULL_AUTHFILE_ARG="--authfile $(workspaces.pull-dockerconfig.path)/config.json"
+          elif test -f "$(workspaces.pull-dockerconfig.path)/.dockerconfigjson"; then
+            PULL_AUTHFILE_ARG="--authfile $(workspaces.pull-dockerconfig.path)/.dockerconfigjson"
+          else
+            echo "neither 'config.json' nor '.dockerconfigjson' found at pull-dockerconfig workspace root"
+            exit 1
+          fi
+        fi
+
         buildah bud --storage-driver=$(params.STORAGE_DRIVER) \
-          $ENTITLEMENT_VOLUME $(params.BUILD_EXTRA_ARGS) \
+          $ENTITLEMENT_VOLUME $PULL_AUTHFILE_ARG $(params.BUILD_EXTRA_ARGS) \
           --format=$(params.FORMAT) --tls-verify=$(params.TLSVERIFY) \
           -f $(params.DOCKERFILE) -t $(params.IMAGE) $(params.CONTEXT)
 
@@ -367,6 +388,9 @@ spec:
     - description: An optional workspace that allows providing the entitlement keys for Buildah to access subscription. The mounted workspace contains entitlement.pem and entitlement-key.pem.
       mountPath: /tmp/entitlement
       name: rhel-entitlement
+      optional: true
+    - description: An optional workspace that allows providing a .docker/config.json file for Buildah to authenticate when pulling base images during build. The file should be placed at the root of the Workspace with name config.json or .dockerconfigjson.
+      name: pull-dockerconfig
       optional: true
 ---
 apiVersion: tekton.dev/v1
@@ -435,7 +459,9 @@ spec:
         - name: source
           workspace: app-source
         - name: dockerconfig
-          workspace: dockersecret
+          workspace: quay-secret
+        - name: pull-dockerconfig
+          workspace: rh-registry-secret
     - name: build-and-push-runtime-image
       params:
         - name: IMAGE
@@ -467,10 +493,13 @@ spec:
         - name: source
           workspace: app-source
         - name: dockerconfig
-          workspace: dockersecret
+          workspace: quay-secret
+        - name: pull-dockerconfig
+          workspace: rh-registry-secret
   workspaces:
     - name: app-source
-    - name: dockersecret
+    - name: quay-secret
+    - name: rh-registry-secret
 ---
 apiVersion: tekton.dev/v1
 kind: Pipeline
@@ -549,7 +578,10 @@ spec:
         - name: source
           workspace: app-source
         - name: dockerconfig
-          workspace: dockersecret
+          workspace: quay-secret
+        - name: pull-dockerconfig
+          workspace: rh-registry-secret
   workspaces:
     - name: app-source
-    - name: dockersecret
+    - name: quay-secret
+    - name: rh-registry-secret

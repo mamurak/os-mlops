@@ -28,6 +28,9 @@ spec:
     - name: app-source
       persistentVolumeClaim:
         claimName: local-repository
-    - name: dockersecret
+    - name: quay-secret
       secret:
-        secretName: quay-push-secret
+        secretName: quay-secret
+    - name: rh-registry-secret
+      secret:
+        secretName: rh-registry-secret
