@@ -2,7 +2,7 @@ from kfp.dsl import (component, Dataset, Input, Metrics,
                      Model, Output)
 
 
-runtime_image = 'quay.io/mmurakam/runtimes:fraud-detection-v2.6.1'
+runtime_image = 'quay.io/mmurakam/runtimes:fraud-detection-v3.0.4'
 
 
 @component(base_image=runtime_image)
@@ -15,14 +15,18 @@ def train_model(
     from pickle import dump, load
 
     environ['CUDA_VISIBLE_DEVICES'] = '-1'
+    environ['TF_USE_LEGACY_KERAS'] = '1'
 
-    from keras.models import Sequential
-    from keras.layers import Dense
-    from keras.optimizers import Adam
+    from mlflow import set_experiment
+    from tf_keras.models import Sequential
+    from tf_keras.layers import Dense
+    from tf_keras.optimizers import Adam
     from onnx import save
     from tf2onnx import convert
 
     print('training model')
+
+    set_experiment("fraud detection")
 
     with open(training_samples.path, 'rb') as samples_file:
         Xsm_train = load(samples_file)

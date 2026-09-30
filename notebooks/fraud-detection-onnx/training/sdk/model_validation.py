@@ -2,7 +2,7 @@ from kfp.dsl import (component, ClassificationMetrics,
                      Input, Model, Output)
 
 
-runtime_image = 'quay.io/mmurakam/runtimes:fraud-detection-v2.6.1'
+runtime_image = 'quay.io/mmurakam/runtimes:fraud-detection-v3.0.4'
 
 
 @component(base_image=runtime_image)
