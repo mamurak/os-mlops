@@ -5,3 +5,4 @@ imbalanced-learn==0.14.2
 tf2onnx==1.17.0
 tf_keras==2.21.0
 onnxruntime==1.30.0
+model-registry==0.3.14
