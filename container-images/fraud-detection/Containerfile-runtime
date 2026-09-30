@@ -5,6 +5,5 @@ RUN pip install --upgrade pip==26.1.2 setuptools==83.0.0
 COPY requirements-elyra.txt ./
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt && \
-    pip install --no-cache-dir -r requirements-elyra.txt && \
     chmod -R g+w /opt/app-root/lib/python3.12/site-packages && \
     fix-permissions /opt/app-root -P
