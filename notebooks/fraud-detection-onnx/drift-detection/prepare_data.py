@@ -116,11 +116,13 @@ def main():
     all_indices = np.arange(len(values))
 
     ref_indices = rng.choice(all_indices, size=REFERENCE_SIZE, replace=False)
+
+    # Use a subset of the reference samples for in-distribution inference so
+    # that the KS test sees identical distributions and produces p-values near
+    # 1.0, giving a clear visual baseline in the dashboard.
+    normal_indices = rng.choice(ref_indices, size=NORMAL_SIZE, replace=False)
+
     remaining = np.setdiff1d(all_indices, ref_indices)
-
-    normal_indices = rng.choice(remaining, size=NORMAL_SIZE, replace=False)
-    remaining = np.setdiff1d(remaining, normal_indices)
-
     drift_base_indices = rng.choice(remaining, size=DRIFT_SIZE, replace=False)
     drift_data = values[drift_base_indices].copy()
 
