@@ -1,10 +1,7 @@
-boto3==1.35.34
+--extra-index-url https://pypi.org/simple/
+
 seaborn==0.13.2
-imbalanced-learn==0.12.4
-onnx==1.17.0
-tensorflow==2.15.0
-tf2onnx==1.16.1
-onnxruntime==1.19.2
-pyarrow==17.0.0
-model_registry==0.2.21
-gitpython==3.1.43
+imbalanced-learn==0.14.2
+tf2onnx==1.17.0
+tf_keras==2.21.0
+onnxruntime==1.30.0
