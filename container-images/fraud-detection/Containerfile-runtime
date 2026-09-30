@@ -2,7 +2,6 @@ FROM registry.redhat.io/rhoai/odh-pipeline-runtime-tensorflow-cuda-py312-rhel9:v
 
 RUN pip install --upgrade pip==26.1.2 setuptools==83.0.0
 
-COPY requirements-elyra.txt ./
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt && \
     chmod -R g+w /opt/app-root/lib/python3.12/site-packages && \
